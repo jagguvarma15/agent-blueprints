@@ -1,0 +1,61 @@
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.venv/
+venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+dist/
+*.egg-info/
+.eggs/
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+
+# Node / TypeScript
+node_modules/
+dist/
+.next/
+out/
+*.tsbuildinfo
+
+# Docusaurus
+website/build/
+website/.docusaurus/
+
+# pnpm
+.pnpm-store/
+
+# uv
+.uv/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Docker
+*.override.yml
+
+# ChromaDB local data
+chroma/
+chroma-data/
+
+# Secrets
+*.pem
+*.key
+secrets.json

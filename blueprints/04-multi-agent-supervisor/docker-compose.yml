@@ -1,0 +1,37 @@
+services:
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # Python implementation
+  # ─────────────────────────────────────────────────────────────────────────
+  python:
+    build:
+      context: ./python
+      dockerfile: Dockerfile
+    image: agent-blueprints/04-multi-agent-supervisor-python:latest
+    environment:
+      # Pass the API key from the host environment (or a .env file in this
+      # directory — Docker Compose loads it automatically).
+      ANTHROPIC_API_KEY: "${ANTHROPIC_API_KEY}"
+      ANTHROPIC_MODEL: "${ANTHROPIC_MODEL:-claude-sonnet-4-5}"
+      MAX_SUPERVISOR_ITERATIONS: "${MAX_SUPERVISOR_ITERATIONS:-10}"
+      LOG_LEVEL: "${LOG_LEVEL:-INFO}"
+    # Run the demo and exit. Remove the `command` override to drop into a
+    # shell for interactive exploration.
+    command: ["uv", "run", "python", "-m", "src.main"]
+    restart: "no"
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # TypeScript implementation
+  # ─────────────────────────────────────────────────────────────────────────
+  typescript:
+    build:
+      context: ./typescript
+      dockerfile: Dockerfile
+    image: agent-blueprints/04-multi-agent-supervisor-typescript:latest
+    environment:
+      ANTHROPIC_API_KEY: "${ANTHROPIC_API_KEY}"
+      ANTHROPIC_MODEL: "${ANTHROPIC_MODEL:-claude-sonnet-4-5}"
+      MAX_SUPERVISOR_ITERATIONS: "${MAX_SUPERVISOR_ITERATIONS:-10}"
+      LOG_LEVEL: "${LOG_LEVEL:-info}"
+    command: ["node", "dist/index.js"]
+    restart: "no"

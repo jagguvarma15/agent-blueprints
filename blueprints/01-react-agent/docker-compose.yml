@@ -1,0 +1,67 @@
+# Docker Compose for Blueprint 01: ReAct Agent
+#
+# The basic ReAct agent has no external service dependencies — it only needs
+# an Anthropic API key, which is read from the environment / .env file.
+#
+# This file provides:
+#   1. A commented-out Python agent service (useful for containerised CI)
+#   2. An optional Jaeger tracing service for observability / debugging
+#
+# To start with optional tracing:
+#   docker compose --profile tracing up
+#
+# To run the Python agent in Docker (after building):
+#   docker compose --profile agent up python-agent
+
+services:
+  # ---------------------------------------------------------------------------
+  # Python ReAct Agent
+  # Uncomment and build when you want to run the agent in a container.
+  # ---------------------------------------------------------------------------
+  python-agent:
+    profiles: ["agent"]
+    build:
+      context: ./python
+      dockerfile: Dockerfile
+    image: blueprints/react-agent-python:latest
+    environment:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:?ANTHROPIC_API_KEY is required}
+      - MODEL=${MODEL:-claude-opus-4-6}
+      - MAX_ITERATIONS=${MAX_ITERATIONS:-10}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      # If using Jaeger tracing, point the SDK at the collector
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://jaeger:4318
+    depends_on:
+      jaeger:
+        condition: service_started
+        required: false
+
+  # ---------------------------------------------------------------------------
+  # Jaeger — distributed tracing (optional, for observability)
+  #
+  # Access the Jaeger UI at http://localhost:16686 after starting.
+  # Useful for visualising multi-step agent traces.
+  #
+  # Start with:
+  #   docker compose --profile tracing up jaeger
+  # ---------------------------------------------------------------------------
+  jaeger:
+    profiles: ["tracing"]
+    image: jaegertracing/all-in-one:1.62
+    container_name: react-agent-jaeger
+    restart: unless-stopped
+    ports:
+      - "16686:16686"   # Jaeger UI
+      - "4317:4317"     # OTLP gRPC receiver
+      - "4318:4318"     # OTLP HTTP receiver
+      - "6831:6831/udp" # Jaeger Thrift compact (legacy)
+      - "14268:14268"   # Jaeger HTTP collector (legacy)
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+      - LOG_LEVEL=warn
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:16686"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
