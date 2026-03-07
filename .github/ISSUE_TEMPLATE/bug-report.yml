@@ -1,0 +1,96 @@
+name: Bug Report
+description: Report a bug in an agent blueprint
+labels:
+  - bug
+body:
+  - type: dropdown
+    id: blueprint
+    attributes:
+      label: Affected Blueprint
+      description: Which blueprint is exhibiting the bug?
+      options:
+        - "01 - Chain of Thought"
+        - "02 - Tool Use"
+        - "03 - Multi-Agent Orchestration"
+        - "04 - Memory and Context"
+        - "05 - RAG Pipeline"
+        - "06 - Control Flow"
+        - "07 - Human in the Loop"
+        - "08 - Parallelization"
+        - "09 - Routing"
+        - "10 - Evaluator Optimizer"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: language
+    attributes:
+      label: Language / Implementation
+      description: Which language implementation is affected?
+      options:
+        - Python
+        - TypeScript
+        - Both
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment Information
+      description: >
+        Please include your OS, runtime version, and relevant package versions.
+      placeholder: |
+        OS: macOS 14.5 / Ubuntu 22.04 / Windows 11
+        Python: 3.11.9  (or Node.js: 20.14.0)
+        anthropic SDK: 0.x.x  (or @anthropic-ai/sdk: 0.x.x)
+        uv: 0.x.x  (or pnpm: 9.x.x)
+    validations:
+      required: true
+
+  - type: textarea
+    id: error-message
+    attributes:
+      label: Error Message or Stack Trace
+      description: Paste the full error output here.
+      placeholder: |
+        Traceback (most recent call last):
+          File "src/agent.py", line 42, in ...
+        anthropic.APIError: ...
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to Reproduce
+      description: >
+        Provide the minimal, numbered steps needed to reliably reproduce the
+        bug from a fresh checkout.
+      placeholder: |
+        1. Clone the repository and navigate to `blueprints/XX-.../python/`
+        2. Run `uv sync`
+        3. Set the `ANTHROPIC_API_KEY` environment variable
+        4. Run `uv run python src/agent.py`
+        5. Observe the error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen?
+      placeholder: The agent should successfully call the tool and return a response.
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual-behavior
+    attributes:
+      label: Actual Behavior
+      description: What actually happened instead?
+      placeholder: The agent raises an exception immediately after the first API call.
+    validations:
+      required: true

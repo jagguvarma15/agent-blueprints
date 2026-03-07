@@ -1,0 +1,28 @@
+name: Publish CLI to npm
+
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  publish:
+    name: Build and Publish CLI
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+          cache: "npm"
+          cache-dependency-path: cli/package-lock.json
+
+      - name: Install, build, and publish
+        run: cd cli && npm ci && npm run build && npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

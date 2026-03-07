@@ -1,0 +1,122 @@
+name: Blueprint Proposal
+description: Propose a new agent blueprint to be added to the collection
+labels:
+  - blueprint-proposal
+body:
+  - type: input
+    id: title
+    attributes:
+      label: Blueprint Title
+      description: A short, descriptive name for the proposed blueprint (e.g. "Stateful Conversation Agent").
+      placeholder: "My Agent Blueprint"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: pattern-type
+    attributes:
+      label: Pattern Type
+      description: Which primary agent design pattern does this blueprint demonstrate?
+      options:
+        - Orchestration
+        - Multi-agent
+        - Memory
+        - Tools
+        - RAG
+        - Control flow
+    validations:
+      required: true
+
+  - type: dropdown
+    id: complexity
+    attributes:
+      label: Complexity Level
+      description: What is the intended skill level for someone consuming this blueprint?
+      options:
+        - Beginner
+        - Intermediate
+        - Advanced
+    validations:
+      required: true
+
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Use Case Description
+      description: >
+        Describe the real-world problem or scenario this blueprint addresses.
+        What does the agent do, and why is this pattern useful?
+      placeholder: |
+        This blueprint demonstrates how to...
+
+        It is useful when...
+    validations:
+      required: true
+
+  - type: textarea
+    id: python-implementation
+    attributes:
+      label: Proposed Python Implementation
+      description: >
+        Outline the Python implementation approach. Include key files,
+        dependencies (e.g. `anthropic`, `uv`, third-party libraries), and a
+        high-level description of how the agent logic is structured.
+      placeholder: |
+        Key files:
+        - src/agent.py — main agent loop
+        - src/tools.py — tool definitions
+        - tests/test_agent.py — pytest tests
+
+        Dependencies: anthropic, ...
+
+        Implementation notes: ...
+      render: markdown
+    validations:
+      required: false
+
+  - type: textarea
+    id: typescript-implementation
+    attributes:
+      label: Proposed TypeScript Implementation
+      description: >
+        Outline the TypeScript implementation approach. Include key files,
+        dependencies (e.g. `@anthropic-ai/sdk`, pnpm packages), and a
+        high-level description of how the agent logic is structured.
+      placeholder: |
+        Key files:
+        - src/agent.ts — main agent loop
+        - src/tools.ts — tool definitions
+        - tests/agent.test.ts — vitest tests
+
+        Dependencies: @anthropic-ai/sdk, ...
+
+        Implementation notes: ...
+      render: markdown
+    validations:
+      required: false
+
+  - type: textarea
+    id: references
+    attributes:
+      label: Existing Implementations or References
+      description: >
+        List any existing open-source projects, papers, blog posts, or other
+        agent-blueprints blueprints that inspired or are related to this
+        proposal.
+      placeholder: |
+        - https://github.com/...
+        - https://arxiv.org/abs/...
+        - Blueprint 03 (multi-agent orchestration) for the subagent pattern
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution Intent
+      description: Let us know if you plan to open a PR for this blueprint.
+      options:
+        - label: I am willing to implement the Python version of this blueprint.
+          required: false
+        - label: I am willing to implement the TypeScript version of this blueprint.
+          required: false

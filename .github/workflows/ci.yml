@@ -1,0 +1,122 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  lint-test-python:
+    name: Lint & Test Python (${{ matrix.blueprint }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        blueprint:
+          - blueprints/01-chain-of-thought/python
+          - blueprints/02-tool-use/python
+          - blueprints/03-multi-agent-orchestration/python
+          - blueprints/04-memory-and-context/python
+          - blueprints/05-rag-pipeline/python
+          - blueprints/06-control-flow/python
+          - blueprints/07-human-in-the-loop/python
+          - blueprints/08-parallelization/python
+          - blueprints/09-routing/python
+          - blueprints/10-evaluator-optimizer/python
+
+    defaults:
+      run:
+        working-directory: ${{ matrix.blueprint }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install uv
+        run: pip install uv
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Lint with ruff
+        run: uv run ruff check src/
+
+      - name: Type-check with mypy
+        run: uv run mypy src/
+
+      - name: Run tests
+        run: uv run pytest tests/ -v
+
+  lint-test-typescript:
+    name: Lint & Test TypeScript (${{ matrix.blueprint }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        blueprint:
+          - blueprints/01-chain-of-thought/typescript
+          - blueprints/02-tool-use/typescript
+          - blueprints/03-multi-agent-orchestration/typescript
+          - blueprints/04-memory-and-context/typescript
+          - blueprints/05-rag-pipeline/typescript
+          - blueprints/06-control-flow/typescript
+          - blueprints/07-human-in-the-loop/typescript
+          - blueprints/08-parallelization/typescript
+          - blueprints/09-routing/typescript
+          - blueprints/10-evaluator-optimizer/typescript
+
+    defaults:
+      run:
+        working-directory: ${{ matrix.blueprint }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Enable corepack and install dependencies
+        run: corepack enable && pnpm install
+
+      - name: Lint
+        run: pnpm run lint
+
+      - name: Type-check
+        run: pnpm run typecheck
+
+      - name: Run tests
+        run: pnpm run test
+
+  build-docs:
+    name: Build Docs
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: website
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: website/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Docusaurus site
+        run: npm run build
