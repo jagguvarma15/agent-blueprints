@@ -13,7 +13,7 @@ import os
 import anthropic
 import chromadb
 
-from src.ingestion import Chunk
+from .ingestion import Chunk
 
 
 class VectorRetriever:

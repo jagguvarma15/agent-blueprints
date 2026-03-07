@@ -22,9 +22,9 @@ from dotenv import load_dotenv
 # Load .env file before importing modules that read env vars
 load_dotenv()
 
-from src.ingestion import DocumentIngester  # noqa: E402
-from src.rag_chain import RAGChain  # noqa: E402
-from src.retrieval import VectorRetriever  # noqa: E402
+from .ingestion import DocumentIngester  # noqa: E402
+from .rag_chain import RAGChain  # noqa: E402
+from .retrieval import VectorRetriever  # noqa: E402
 
 # ---------------------------------------------------------------------------
 # Configuration

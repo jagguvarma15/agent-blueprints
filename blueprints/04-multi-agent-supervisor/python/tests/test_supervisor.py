@@ -202,7 +202,12 @@ class TestRouting:
         assert "blog post" in result.lower()
 
     def test_raises_on_unknown_agent(self, supervisor: Any) -> None:
-        """Supervisor raises ValueError when a tool_use names an unknown agent."""
+        """Supervisor raises RuntimeError (max iterations) when a tool_use names an unknown agent.
+
+        The ValueError from _invoke_agent is caught by the dispatcher and converted to an
+        error string passed back as a tool_result. The supervisor keeps retrying until it
+        hits the iteration cap, which raises RuntimeError.
+        """
         round1 = _make_response(
             content=[_tool_use_block("tu_004", "nonexistent_agent", "Do something")],
             stop_reason="tool_use",

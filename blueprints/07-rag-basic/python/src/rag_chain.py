@@ -13,8 +13,8 @@ from dataclasses import dataclass, field
 
 import anthropic
 
-from src.ingestion import Chunk
-from src.retrieval import VectorRetriever
+from .ingestion import Chunk
+from .retrieval import VectorRetriever
 
 
 # ---------------------------------------------------------------------------
