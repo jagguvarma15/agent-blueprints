@@ -275,7 +275,9 @@ class SupervisorAgent:
             ValueError: If no agent is registered under ``block.name``.
         """
         agent_name: str = block.name
-        inputs: dict[str, Any] = block.input if isinstance(block.input, dict) else json.loads(block.input)
+        inputs: dict[str, Any] = (
+            block.input if isinstance(block.input, dict) else json.loads(block.input)
+        )
         task: str = inputs.get("task", "")
 
         agent = self._agents.get(agent_name)

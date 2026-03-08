@@ -1,5 +1,5 @@
 ---
-id: blueprints/index
+id: blueprints-index
 title: Blueprints
 sidebar_position: 1
 description: Browse all 10 production-ready AI agent blueprints — complete with architecture diagrams, Python and TypeScript implementations, test suites, and Docker Compose environments.

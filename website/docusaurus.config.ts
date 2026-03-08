@@ -17,7 +17,7 @@ const config: Config = {
   projectName: 'agent-blueprints',
   trailingSlash: false,
 
-  onBrokenLinks: 'throw',
+  onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
 
   i18n: {

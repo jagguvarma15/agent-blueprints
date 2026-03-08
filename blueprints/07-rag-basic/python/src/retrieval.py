@@ -9,6 +9,7 @@ with similarity scores.
 from __future__ import annotations
 
 import os
+from typing import Any
 
 import anthropic
 import chromadb
@@ -108,13 +109,13 @@ class VectorRetriever:
         # ChromaDB returns lists-of-lists (one per query); we only have one query
         ids: list[str] = results["ids"][0]
         documents: list[str] = results["documents"][0]
-        metadatas: list[dict] = results["metadatas"][0]
+        metadatas: list[dict[str, Any]] = [dict(m) for m in (results["metadatas"][0] or [])]
         # ChromaDB cosine space returns distances where distance = 1 - similarity
         distances: list[float] = results["distances"][0]
 
         chunks: list[Chunk] = []
         for chunk_id, content, metadata, distance in zip(
-            ids, documents, metadatas, distances
+            ids, documents, metadatas, distances, strict=False
         ):
             # Convert distance to similarity score for readability
             similarity = 1.0 - distance

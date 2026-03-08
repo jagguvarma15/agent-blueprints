@@ -16,7 +16,6 @@ import anthropic
 from .ingestion import Chunk
 from .retrieval import VectorRetriever
 
-
 # ---------------------------------------------------------------------------
 # Response model
 # ---------------------------------------------------------------------------

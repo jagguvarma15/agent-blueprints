@@ -1,5 +1,5 @@
 ---
-id: patterns/index
+id: patterns-index
 title: Patterns
 sidebar_position: 1
 description: Conceptual guides for every AI agent design pattern used in Agent Blueprints — when to use each pattern, trade-offs, and variations.

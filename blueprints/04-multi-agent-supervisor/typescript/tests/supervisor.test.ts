@@ -85,7 +85,8 @@ let agentRegistry: Map<string, WorkerAgent>;
 let mockCreate: MockInstance;
 
 beforeEach(async () => {
-  vi.resetAllMocks();
+  // Keep module mock implementations; only clear call history between tests.
+  vi.clearAllMocks();
 
   // Fresh mock agents before each test
   researchAgent = makeMockAgent(

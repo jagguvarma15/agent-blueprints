@@ -159,7 +159,12 @@ Always be transparent about what tools you used and what you found.\
                         continue
 
                     tool_name = block.name
-                    tool_input = block.tool_input
+                    tool_input: dict[str, Any] = {}
+                    for input_attr in ("input", "tool_input"):
+                        candidate = getattr(block, input_attr, None)
+                        if isinstance(candidate, dict):
+                            tool_input = candidate
+                            break
                     tool_use_id = block.id
 
                     print(f"\n  [Tool call] {tool_name}({json.dumps(tool_input, indent=2)})")

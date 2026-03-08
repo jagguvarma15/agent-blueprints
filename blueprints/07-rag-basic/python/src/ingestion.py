@@ -16,7 +16,6 @@ from pathlib import Path
 import anthropic
 import chromadb
 
-
 # ---------------------------------------------------------------------------
 # Data models
 # ---------------------------------------------------------------------------
@@ -32,7 +31,7 @@ class Document:
     metadata: dict = field(default_factory=dict)
 
     @classmethod
-    def from_file(cls, path: Path) -> "Document":
+    def from_file(cls, path: Path) -> Document:
         """Load a Document from a file on disk."""
         content = path.read_text(encoding="utf-8")
         source = str(path.resolve())
@@ -329,7 +328,7 @@ class DocumentIngester:
             embeddings = [item.embedding for item in response.data]
 
             # Store embeddings in chunk objects (optional, for inspection)
-            for chunk, embedding in zip(batch, embeddings):
+            for chunk, embedding in zip(batch, embeddings, strict=False):
                 chunk.embedding = embedding
 
             # Upsert into ChromaDB

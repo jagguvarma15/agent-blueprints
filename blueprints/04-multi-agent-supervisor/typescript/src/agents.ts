@@ -201,7 +201,7 @@ export class WritingAgent extends BaseAgent {
  * Global registry mapping agent names to their instances.
  * The supervisor loads this at startup to derive tool schemas.
  */
-export const AGENT_REGISTRY: Map<string, WorkerAgent> = new Map([
+export const AGENT_REGISTRY: Map<string, WorkerAgent> = new Map<string, WorkerAgent>([
   ["research_agent", new ResearchAgent()],
   ["code_agent", new CodeAgent()],
   ["writing_agent", new WritingAgent()],

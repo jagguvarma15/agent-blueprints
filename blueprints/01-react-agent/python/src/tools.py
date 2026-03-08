@@ -12,11 +12,11 @@ TOOL_DEFINITIONS is the registry consumed by the Anthropic Messages API.
 from __future__ import annotations
 
 import ast
+import datetime
 import math
 import operator
-import datetime
+from typing import Callable
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
-
 
 # ---------------------------------------------------------------------------
 # Tool implementations
@@ -38,7 +38,8 @@ def calculator(expression: str) -> str:
         The result as a string, or an error message if evaluation fails.
     """
     # Allowed names in expressions
-    allowed_names: dict[str, object] = {
+    Number = int | float
+    allowed_names: dict[str, Number | Callable[..., Number]] = {
         "abs": abs,
         "round": round,
         "sqrt": math.sqrt,
@@ -67,6 +68,7 @@ def calculator(expression: str) -> str:
         ast.Call,
         ast.Constant,
         ast.Name,
+        ast.Load,
         ast.Add,
         ast.Sub,
         ast.Mult,
@@ -88,9 +90,12 @@ def calculator(expression: str) -> str:
         elif isinstance(node, ast.Name):
             if node.id not in allowed_names:
                 raise ValueError(f"Unknown name: {node.id!r}")
-            return allowed_names[node.id]  # type: ignore[return-value]
+            value = allowed_names[node.id]
+            if callable(value):
+                raise ValueError(f"Function {node.id!r} must be called with parentheses")
+            return value
         elif isinstance(node, ast.BinOp):
-            ops = {
+            ops: dict[type[ast.operator], Callable[[Number, Number], Number]] = {
                 ast.Add: operator.add,
                 ast.Sub: operator.sub,
                 ast.Mult: operator.mul,
@@ -102,12 +107,12 @@ def calculator(expression: str) -> str:
             op_fn = ops.get(type(node.op))
             if op_fn is None:
                 raise ValueError(f"Unsupported operator: {type(node.op).__name__}")
-            return op_fn(_safe_eval(node.left), _safe_eval(node.right))  # type: ignore[arg-type]
+            return op_fn(_safe_eval(node.left), _safe_eval(node.right))
         elif isinstance(node, ast.UnaryOp):
             if isinstance(node.op, ast.USub):
-                return -_safe_eval(node.operand)  # type: ignore[return-value]
+                return -_safe_eval(node.operand)
             elif isinstance(node.op, ast.UAdd):
-                return +_safe_eval(node.operand)  # type: ignore[return-value]
+                return +_safe_eval(node.operand)
             raise ValueError(f"Unsupported unary operator: {type(node.op).__name__}")
         elif isinstance(node, ast.Call):
             if not isinstance(node.func, ast.Name):
@@ -116,7 +121,7 @@ def calculator(expression: str) -> str:
             if not callable(func):
                 raise ValueError(f"Unknown function: {node.func.id!r}")
             args = [_safe_eval(arg) for arg in node.args]
-            return func(*args)  # type: ignore[operator, return-value]
+            return func(*args)
         else:
             raise ValueError(f"Unsupported AST node: {type(node).__name__}")
 
@@ -153,7 +158,7 @@ def get_current_time(timezone: str = "UTC") -> str:
     try:
         tz = ZoneInfo(timezone)
         now = datetime.datetime.now(tz)
-        return now.strftime(f"%Y-%m-%d %H:%M:%S %Z (UTC%z)")
+        return now.strftime("%Y-%m-%d %H:%M:%S %Z (UTC%z)")
     except ZoneInfoNotFoundError:
         return (
             f"Error: Unknown timezone {timezone!r}. "

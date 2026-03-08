@@ -33,6 +33,15 @@ export interface Chunk {
   embedding?: number[]; // Populated after embedAndStore()
 }
 
+type EmbeddingsApi = {
+  embeddings: {
+    create(args: {
+      model: string;
+      input: string[];
+    }): Promise<{ data: Array<{ embedding: number[] }> }>;
+  };
+};
+
 // ---------------------------------------------------------------------------
 // Document loading
 // ---------------------------------------------------------------------------
@@ -108,13 +117,13 @@ export interface IngesterConfig {
  * ```
  */
 export class DocumentIngester {
-  private readonly anthropic: Anthropic;
+  private readonly anthropic: Anthropic & EmbeddingsApi;
   private readonly chroma: ChromaClient;
 
   constructor(config: IngesterConfig = {}) {
     this.anthropic = new Anthropic({
       apiKey: config.anthropicApiKey ?? process.env.ANTHROPIC_API_KEY,
-    });
+    }) as Anthropic & EmbeddingsApi;
 
     const host = config.chromaHost ?? process.env.CHROMA_HOST ?? "localhost";
     const port = config.chromaPort ?? Number(process.env.CHROMA_PORT ?? "8000");

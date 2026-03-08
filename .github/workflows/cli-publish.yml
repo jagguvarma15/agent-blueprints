@@ -19,10 +19,8 @@ jobs:
         with:
           node-version: "20"
           registry-url: "https://registry.npmjs.org"
-          cache: "npm"
-          cache-dependency-path: cli/package-lock.json
 
       - name: Install, build, and publish
-        run: cd cli && npm ci && npm run build && npm publish
+        run: cd cli && npm install && npm run build && npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

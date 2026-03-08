@@ -17,7 +17,7 @@ import { fileURLToPath } from "node:url";
 import "dotenv/config";
 
 import { DocumentIngester } from "./ingestion.js";
-import { formatRAGResponse, RAGChain } from "./ragChain.js";
+import { RAGChain } from "./ragChain.js";
 import { VectorRetriever } from "./retrieval.js";
 
 // ---------------------------------------------------------------------------

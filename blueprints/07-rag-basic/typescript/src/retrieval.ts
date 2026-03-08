@@ -18,6 +18,15 @@ export interface RetrieverConfig {
   anthropicApiKey?: string;
 }
 
+type EmbeddingsApi = {
+  embeddings: {
+    create(args: {
+      model: string;
+      input: string[];
+    }): Promise<{ data: Array<{ embedding: number[] }> }>;
+  };
+};
+
 /**
  * Retrieves the most relevant document chunks for a given query.
  *
@@ -35,7 +44,7 @@ export interface RetrieverConfig {
  * ```
  */
 export class VectorRetriever {
-  private readonly anthropic: Anthropic;
+  private readonly anthropic: Anthropic & EmbeddingsApi;
   private readonly chroma: ChromaClient;
   private readonly collectionName: string;
   private collection: Collection | null = null;
@@ -48,7 +57,7 @@ export class VectorRetriever {
 
     this.anthropic = new Anthropic({
       apiKey: config.anthropicApiKey ?? process.env.ANTHROPIC_API_KEY,
-    });
+    }) as Anthropic & EmbeddingsApi;
     this.chroma = new ChromaClient({ path: `http://${host}:${port}` });
   }
 
@@ -99,10 +108,13 @@ export class VectorRetriever {
     const queryEmbedding = embedResponse.data[0].embedding;
 
     // Perform vector similarity search in ChromaDB
+    const include = ["documents", "metadatas", "distances"] as unknown as NonNullable<
+      Parameters<Collection["query"]>[0]["include"]
+    >;
     const results = await collection.query({
       queryEmbeddings: [queryEmbedding],
       nResults: effectiveTopK,
-      include: ["documents", "metadatas", "distances"] as any,
+      include,
     });
 
     // ChromaDB returns lists-of-lists (one per query); we have one query

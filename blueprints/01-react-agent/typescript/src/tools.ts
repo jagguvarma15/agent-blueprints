@@ -66,14 +66,6 @@ export function calculator(input: CalculatorInput): string {
 
   const { expression } = parsed.data;
 
-  // Allowlist of safe tokens: digits, operators, spaces, parentheses, dots,
-  // commas, and Math identifiers
-  const safePattern =
-    /^[\d\s\+\-\*\/\%\(\)\.\,\^]+$|^(Math\.[a-zA-Z]+[\d\s\+\-\*\/\%\(\)\.\,]*)+$/;
-
-  // More permissive: allow any combination of math tokens
-  const allowedTokens = /^[0-9\s\+\-\*\/\%\(\)\.\,\^]+$|Math\.[a-zA-Z0-9]+/;
-
   // Disallow anything that looks like code injection
   const dangerousPatterns = [
     /import/i,
@@ -132,7 +124,6 @@ export function calculator(input: CalculatorInput): string {
     const paramNames = Object.keys(mathContext);
     const paramValues = Object.values(mathContext);
 
-    // eslint-disable-next-line no-new-func
     const fn = new Function(...paramNames, `"use strict"; return (${sanitized});`);
     const result: unknown = fn(...paramValues);
 

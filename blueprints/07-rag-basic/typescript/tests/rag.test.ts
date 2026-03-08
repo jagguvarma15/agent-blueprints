@@ -1,7 +1,7 @@
 /**
  * Tests for Blueprint 07: RAG Basic (TypeScript).
  *
- * Uses vitest with vi.mock() to patch ChromaDB and Anthropic so tests run
+ * Uses vitest with vi.doMock() to patch ChromaDB and Anthropic so tests run
  * without external services or API keys. Covers:
  *
  *   - Document loading (from temp files)
@@ -16,6 +16,7 @@ import * as os from "node:os";
 import * as path from "node:path";
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import type { VectorRetriever } from "../src/retrieval.js";
 
 // ---------------------------------------------------------------------------
 // Environment setup
@@ -61,10 +62,10 @@ function makeEmbeddingResponse(texts: string[], dims = 8) {
 describe("DocumentIngester.loadDocuments", () => {
   it("loads a single .txt file", async () => {
     // Mock Anthropic and ChromaDB constructors before importing
-    vi.mock("@anthropic-ai/sdk", () => ({
+    vi.doMock("@anthropic-ai/sdk", () => ({
       default: vi.fn(() => ({ embeddings: { create: vi.fn() } })),
     }));
-    vi.mock("chromadb", () => ({
+    vi.doMock("chromadb", () => ({
       ChromaClient: vi.fn(() => ({ getOrCreateCollection: vi.fn() })),
     }));
 
@@ -85,10 +86,10 @@ describe("DocumentIngester.loadDocuments", () => {
   });
 
   it("recursively loads .txt and .md files from a directory", async () => {
-    vi.mock("@anthropic-ai/sdk", () => ({
+    vi.doMock("@anthropic-ai/sdk", () => ({
       default: vi.fn(() => ({ embeddings: { create: vi.fn() } })),
     }));
-    vi.mock("chromadb", () => ({
+    vi.doMock("chromadb", () => ({
       ChromaClient: vi.fn(() => ({ getOrCreateCollection: vi.fn() })),
     }));
 
@@ -110,10 +111,10 @@ describe("DocumentIngester.loadDocuments", () => {
   });
 
   it("throws FileNotFoundError for non-existent path", async () => {
-    vi.mock("@anthropic-ai/sdk", () => ({
+    vi.doMock("@anthropic-ai/sdk", () => ({
       default: vi.fn(() => ({ embeddings: { create: vi.fn() } })),
     }));
-    vi.mock("chromadb", () => ({
+    vi.doMock("chromadb", () => ({
       ChromaClient: vi.fn(() => ({ getOrCreateCollection: vi.fn() })),
     }));
 
@@ -126,10 +127,10 @@ describe("DocumentIngester.loadDocuments", () => {
   });
 
   it("throws when no supported files found", async () => {
-    vi.mock("@anthropic-ai/sdk", () => ({
+    vi.doMock("@anthropic-ai/sdk", () => ({
       default: vi.fn(() => ({ embeddings: { create: vi.fn() } })),
     }));
-    vi.mock("chromadb", () => ({
+    vi.doMock("chromadb", () => ({
       ChromaClient: vi.fn(() => ({ getOrCreateCollection: vi.fn() })),
     }));
 
@@ -151,10 +152,10 @@ describe("DocumentIngester.loadDocuments", () => {
 
 describe("DocumentIngester.chunkDocuments", () => {
   async function makeIngester() {
-    vi.mock("@anthropic-ai/sdk", () => ({
+    vi.doMock("@anthropic-ai/sdk", () => ({
       default: vi.fn(() => ({ embeddings: { create: vi.fn() } })),
     }));
-    vi.mock("chromadb", () => ({
+    vi.doMock("chromadb", () => ({
       ChromaClient: vi.fn(() => ({ getOrCreateCollection: vi.fn() })),
     }));
     const { DocumentIngester } = await import("../src/ingestion.js");
@@ -179,7 +180,6 @@ describe("DocumentIngester.chunkDocuments", () => {
   });
 
   it("chunk metadata is correctly populated", async () => {
-    const ingester = await makeIngester();
     const tmpDir = makeTempDir();
     const filePath = writeFile(tmpDir, "meta.txt", "Alpha beta gamma. ".repeat(30));
 
@@ -245,14 +245,14 @@ describe("DocumentIngester.embedAndStore", () => {
     const mockUpsert = vi.fn().mockResolvedValue(undefined);
     const mockGetOrCreate = vi.fn().mockResolvedValue({ upsert: mockUpsert });
 
-    vi.mock("chromadb", () => ({
+    vi.doMock("chromadb", () => ({
       ChromaClient: vi.fn(() => ({ getOrCreateCollection: mockGetOrCreate })),
     }));
 
     const mockEmbeddingsCreate = vi
       .fn()
       .mockResolvedValue(makeEmbeddingResponse(["chunk 1", "chunk 2"]));
-    vi.mock("@anthropic-ai/sdk", () => ({
+    vi.doMock("@anthropic-ai/sdk", () => ({
       default: vi.fn(() => ({ embeddings: { create: mockEmbeddingsCreate } })),
     }));
 
@@ -290,10 +290,10 @@ describe("DocumentIngester.embedAndStore", () => {
     const mockUpsert = vi.fn();
     const mockGetOrCreate = vi.fn().mockResolvedValue({ upsert: mockUpsert });
 
-    vi.mock("chromadb", () => ({
+    vi.doMock("chromadb", () => ({
       ChromaClient: vi.fn(() => ({ getOrCreateCollection: mockGetOrCreate })),
     }));
-    vi.mock("@anthropic-ai/sdk", () => ({
+    vi.doMock("@anthropic-ai/sdk", () => ({
       default: vi.fn(() => ({ embeddings: { create: mockEmbeddingsCreate } })),
     }));
 
@@ -329,14 +329,14 @@ describe("VectorRetriever", () => {
       .fn()
       .mockResolvedValue({ query: mockQuery, count: mockCount });
 
-    vi.mock("chromadb", () => ({
+    vi.doMock("chromadb", () => ({
       ChromaClient: vi.fn(() => ({ getOrCreateCollection: mockGetOrCreate })),
     }));
 
     const mockEmbeddingsCreate = vi
       .fn()
       .mockResolvedValue(makeEmbeddingResponse(["test query"]));
-    vi.mock("@anthropic-ai/sdk", () => ({
+    vi.doMock("@anthropic-ai/sdk", () => ({
       default: vi.fn(() => ({ embeddings: { create: mockEmbeddingsCreate } })),
     }));
 
@@ -359,10 +359,10 @@ describe("VectorRetriever", () => {
       .fn()
       .mockResolvedValue({ count: mockCount });
 
-    vi.mock("chromadb", () => ({
+    vi.doMock("chromadb", () => ({
       ChromaClient: vi.fn(() => ({ getOrCreateCollection: mockGetOrCreate })),
     }));
-    vi.mock("@anthropic-ai/sdk", () => ({
+    vi.doMock("@anthropic-ai/sdk", () => ({
       default: vi.fn(() => ({ embeddings: { create: vi.fn() } })),
     }));
 
@@ -376,10 +376,10 @@ describe("VectorRetriever", () => {
     const mockCount = vi.fn().mockResolvedValue(0);
     const mockGetOrCreate = vi.fn().mockResolvedValue({ count: mockCount });
 
-    vi.mock("chromadb", () => ({
+    vi.doMock("chromadb", () => ({
       ChromaClient: vi.fn(() => ({ getOrCreateCollection: mockGetOrCreate })),
     }));
-    vi.mock("@anthropic-ai/sdk", () => ({
+    vi.doMock("@anthropic-ai/sdk", () => ({
       default: vi.fn(() => ({ embeddings: { create: vi.fn() } })),
     }));
 
@@ -401,10 +401,10 @@ describe("VectorRetriever", () => {
       .fn()
       .mockResolvedValue({ query: mockQuery, count: mockCount });
 
-    vi.mock("chromadb", () => ({
+    vi.doMock("chromadb", () => ({
       ChromaClient: vi.fn(() => ({ getOrCreateCollection: mockGetOrCreate })),
     }));
-    vi.mock("@anthropic-ai/sdk", () => ({
+    vi.doMock("@anthropic-ai/sdk", () => ({
       default: vi.fn(() => ({
         embeddings: { create: vi.fn().mockResolvedValue(makeEmbeddingResponse(["q"])) },
       })),
@@ -442,19 +442,21 @@ describe("RAGChain", () => {
   }
 
   it("returns a RAGResponse with answer, sources, and retrievedChunks", async () => {
-    vi.mock("chromadb", () => ({
+    vi.doMock("chromadb", () => ({
       ChromaClient: vi.fn(() => ({ getOrCreateCollection: vi.fn() })),
     }));
 
     const mockCreate = vi.fn().mockResolvedValue({
       content: [{ type: "text", text: "RAG retrieves relevant document chunks." }],
     });
-    vi.mock("@anthropic-ai/sdk", () => ({
+    vi.doMock("@anthropic-ai/sdk", () => ({
       default: vi.fn(() => ({ messages: { create: mockCreate } })),
     }));
 
     const { RAGChain } = await import("../src/ragChain.js");
-    const mockRetriever = { retrieve: vi.fn().mockResolvedValue(makeChunks()) } as any;
+    const mockRetriever = {
+      retrieve: vi.fn().mockResolvedValue(makeChunks()),
+    } as unknown as VectorRetriever;
     const chain = new RAGChain(mockRetriever, { model: "claude-opus-4-6", topK: 3 });
 
     const response = await chain.query("What is RAG?");
@@ -465,19 +467,21 @@ describe("RAGChain", () => {
   });
 
   it("passes retrieved content in the user message to Claude", async () => {
-    vi.mock("chromadb", () => ({
+    vi.doMock("chromadb", () => ({
       ChromaClient: vi.fn(() => ({ getOrCreateCollection: vi.fn() })),
     }));
 
     const mockCreate = vi.fn().mockResolvedValue({
       content: [{ type: "text", text: "Some answer." }],
     });
-    vi.mock("@anthropic-ai/sdk", () => ({
+    vi.doMock("@anthropic-ai/sdk", () => ({
       default: vi.fn(() => ({ messages: { create: mockCreate } })),
     }));
 
     const { RAGChain } = await import("../src/ragChain.js");
-    const mockRetriever = { retrieve: vi.fn().mockResolvedValue(makeChunks()) } as any;
+    const mockRetriever = {
+      retrieve: vi.fn().mockResolvedValue(makeChunks()),
+    } as unknown as VectorRetriever;
     const chain = new RAGChain(mockRetriever, { model: "claude-opus-4-6" });
 
     await chain.query("What is RAG?");
@@ -492,29 +496,29 @@ describe("RAGChain", () => {
   });
 
   it("throws for empty question", async () => {
-    vi.mock("chromadb", () => ({
+    vi.doMock("chromadb", () => ({
       ChromaClient: vi.fn(() => ({ getOrCreateCollection: vi.fn() })),
     }));
-    vi.mock("@anthropic-ai/sdk", () => ({
+    vi.doMock("@anthropic-ai/sdk", () => ({
       default: vi.fn(() => ({ messages: { create: vi.fn() } })),
     }));
 
     const { RAGChain } = await import("../src/ragChain.js");
-    const mockRetriever = { retrieve: vi.fn() } as any;
+    const mockRetriever = { retrieve: vi.fn() } as unknown as VectorRetriever;
     const chain = new RAGChain(mockRetriever);
 
     await expect(chain.query("  ")).rejects.toThrow("Question must not be empty");
   });
 
   it("deduplicates sources from multiple chunks of the same document", async () => {
-    vi.mock("chromadb", () => ({
+    vi.doMock("chromadb", () => ({
       ChromaClient: vi.fn(() => ({ getOrCreateCollection: vi.fn() })),
     }));
 
     const mockCreate = vi.fn().mockResolvedValue({
       content: [{ type: "text", text: "Answer here." }],
     });
-    vi.mock("@anthropic-ai/sdk", () => ({
+    vi.doMock("@anthropic-ai/sdk", () => ({
       default: vi.fn(() => ({ messages: { create: mockCreate } })),
     }));
 
@@ -538,7 +542,7 @@ describe("RAGChain", () => {
 
     const mockRetriever = {
       retrieve: vi.fn().mockResolvedValue(duplicateSourceChunks),
-    } as any;
+    } as unknown as VectorRetriever;
     const chain = new RAGChain(mockRetriever);
 
     const response = await chain.query("Some question?");
@@ -548,10 +552,10 @@ describe("RAGChain", () => {
   });
 
   it("formatRAGResponse produces readable output", async () => {
-    vi.mock("chromadb", () => ({
+    vi.doMock("chromadb", () => ({
       ChromaClient: vi.fn(() => ({ getOrCreateCollection: vi.fn() })),
     }));
-    vi.mock("@anthropic-ai/sdk", () => ({
+    vi.doMock("@anthropic-ai/sdk", () => ({
       default: vi.fn(() => ({})),
     }));
 
@@ -597,7 +601,7 @@ describe("End-to-end pipeline", () => {
       count: mockCount,
     });
 
-    vi.mock("chromadb", () => ({
+    vi.doMock("chromadb", () => ({
       ChromaClient: vi.fn(() => ({ getOrCreateCollection: mockGetOrCreate })),
     }));
 
@@ -607,7 +611,7 @@ describe("End-to-end pipeline", () => {
     const mockMessagesCreate = vi.fn().mockResolvedValue({
       content: [{ type: "text", text: "AI is transforming industries." }],
     });
-    vi.mock("@anthropic-ai/sdk", () => ({
+    vi.doMock("@anthropic-ai/sdk", () => ({
       default: vi.fn(() => ({
         embeddings: { create: mockEmbeddingsCreate },
         messages: { create: mockMessagesCreate },

@@ -1,5 +1,5 @@
 ---
-id: architectures/index
+id: architectures-index
 title: Reference Architectures
 sidebar_position: 1
 description: End-to-end production system designs that combine multiple Agent Blueprints and patterns into complete, deployable AI agent systems.
