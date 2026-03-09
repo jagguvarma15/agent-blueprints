@@ -2,6 +2,7 @@
 id: intro
 title: Introduction
 sidebar_position: 1
+slug: /
 description: Agent Blueprints — production-ready AI agent system design patterns, blueprints, and reference architectures for Python and TypeScript.
 ---
 
@@ -10,6 +11,14 @@ description: Agent Blueprints — production-ready AI agent system design patter
 **The definitive open-source reference for production-ready AI agent system design.**
 
 `agent-blueprints` is a curated collection of battle-tested, framework-agnostic blueprints for building AI agent systems that are ready for production. Each blueprint ships with a full architecture diagram, dual implementations in Python and TypeScript, test suites, and a Docker Compose environment — giving you everything you need to go from idea to deployed agent in minutes, not days.
+
+---
+
+## At a Glance
+
+- **Goal:** Help engineers start with proven agent architecture boilerplates instead of building from scratch.
+- **Current implementation set:** 3 runnable blueprints (`01`, `04`, `07`) with a structured roadmap for `02/03/05/06/08/09/10`.
+- **What you get:** Pattern docs, architecture references, CLI scaffolding, and Python/TypeScript starter implementations.
 
 ---
 

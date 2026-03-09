@@ -213,12 +213,12 @@ function generateSidebars(entries) {
 const sidebars: SidebarsConfig = {
   docsSidebar: [{ type: "doc", id: "intro", label: "Introduction" }],
   blueprintsSidebar: [
-    { type: "doc", id: "blueprints-index", label: "Overview" },
+    { type: "doc", id: "blueprints/blueprints-index", label: "Overview" },
 ${readyLinks}
   ],
-  patternsSidebar: [{ type: "doc", id: "patterns-index", label: "Overview" }],
+  patternsSidebar: [{ type: "doc", id: "patterns/patterns-index", label: "Overview" }],
   architecturesSidebar: [
-    { type: "doc", id: "architectures-index", label: "Overview" },
+    { type: "doc", id: "architectures/architectures-index", label: "Overview" },
   ],
 };
 

@@ -6,11 +6,11 @@ const config: Config = {
   title: 'Agent Blueprints',
   tagline:
     'Production-ready AI agent system design patterns, blueprints, and reference architectures',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/agent-blueprints-logo.png',
 
   // Production URL
   url: 'https://jvarma.github.io',
-  baseUrl: '/agent-blueprints/',
+  baseUrl: '/',
 
   // GitHub Pages deployment config
   organizationName: 'jvarma',
@@ -62,7 +62,7 @@ const config: Config = {
 
   themeConfig: {
     // Social card image shown when the site is shared
-    image: 'img/agent-blueprints-social-card.png',
+    image: 'img/agent-blueprints-logo.png',
 
     colorMode: {
       defaultMode: 'dark',
@@ -84,8 +84,8 @@ const config: Config = {
       title: 'Agent Blueprints',
       logo: {
         alt: 'Agent Blueprints Logo',
-        src: 'img/logo.svg',
-        srcDark: 'img/logo-dark.svg',
+        src: 'img/agent-blueprints-logo.png',
+        srcDark: 'img/agent-blueprints-logo.png',
       },
       hideOnScroll: false,
       items: [
@@ -108,7 +108,7 @@ const config: Config = {
           label: 'Architectures',
         },
         {
-          to: '/intro',
+          to: '/',
           label: 'Docs',
           position: 'left',
         },
@@ -135,7 +135,7 @@ const config: Config = {
           items: [
             {
               label: 'Introduction',
-              to: '/intro',
+              to: '/',
             },
             {
               label: 'Blueprints',
@@ -156,23 +156,23 @@ const config: Config = {
           items: [
             {
               label: 'ReAct Agent',
-              to: '/blueprints/react-agent',
+              href: 'https://github.com/jvarma/agent-blueprints/tree/main/blueprints/01-react-agent',
             },
             {
               label: 'Plan & Execute',
-              to: '/blueprints/plan-execute',
+              href: 'https://github.com/jvarma/agent-blueprints/tree/main/blueprints/02-plan-and-execute',
             },
             {
               label: 'Multi-Agent Supervisor',
-              to: '/blueprints/multi-agent-supervisor',
+              href: 'https://github.com/jvarma/agent-blueprints/tree/main/blueprints/04-multi-agent-supervisor',
             },
             {
               label: 'RAG Advanced',
-              to: '/blueprints/rag-advanced',
+              href: 'https://github.com/jvarma/agent-blueprints/tree/main/blueprints/08-rag-advanced',
             },
             {
               label: 'Human-in-the-Loop',
-              to: '/blueprints/human-in-the-loop',
+              href: 'https://github.com/jvarma/agent-blueprints/tree/main/blueprints/10-human-in-the-loop',
             },
           ],
         },
