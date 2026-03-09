@@ -86,6 +86,9 @@ npx agent-blueprints@latest init --blueprint 04 --lang typescript --out ./my-age
 
 ## Blueprint Overview
 
+Implemented now: **01/04/07**  
+Planned: **02/03/05/06/08/09/10**
+
 | # | Blueprint | Complexity | Pattern | Description |
 |---|-----------|------------|---------|-------------|
 | 01 | [ReAct Agent](https://github.com/jvarma/agent-blueprints/tree/main/blueprints/01-react-agent) | Beginner | Orchestration | Reason + Act loop with tool use; the foundational agentic pattern |

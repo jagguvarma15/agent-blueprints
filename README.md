@@ -19,6 +19,9 @@
 
 ## Blueprints
 
+Implemented now: **01/04/07**  
+Planned: **02/03/05/06/08/09/10**
+
 ### Implemented in this repo
 
 | # | Blueprint | Complexity | Pattern | Python | TypeScript |

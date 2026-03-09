@@ -126,6 +126,9 @@ function generateReadmeSection(entries) {
 
   return `## Blueprints
 
+Implemented now: **${ready.map((e) => idPrefix(e.id)).join("/")}**  
+Planned: **${planned.map((e) => idPrefix(e.id)).join("/")}**
+
 ### Implemented in this repo
 
 ${markdownTable(

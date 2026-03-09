@@ -7,6 +7,34 @@ on:
       - main
 
 jobs:
+  consistency-checks:
+    name: Consistency Checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Manifest vs filesystem consistency
+        run: node scripts/check-manifest-consistency.mjs
+
+      - name: Markdown local link check
+        run: node scripts/check-markdown-links.mjs
+
+      - name: Build CLI
+        run: |
+          cd cli
+          npm install
+          npm run build
+
+      - name: CLI smoke scaffold
+        run: node scripts/cli-smoke-test.mjs
+
   lint-test-python:
     name: Lint & Test Python (${{ matrix.blueprint }})
     runs-on: ubuntu-latest
