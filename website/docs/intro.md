@@ -157,6 +157,6 @@ Every blueprint directory is **self-contained**: copy any single folder into you
 
 ## Contributing
 
-Contributions are very welcome. Read the [Contributing Guide](https://github.com/anthropics/agent-blueprints/blob/main/CONTRIBUTING.md) before submitting a PR — it explains the blueprint requirements checklist, code standards, and the review process.
+Contributions are very welcome. Read the [Contributing Guide](https://github.com/jvarma/agent-blueprints/blob/main/CONTRIBUTING.md) before submitting a PR — it explains the blueprint requirements checklist, code standards, and the review process.
 
-For major proposals, [open an issue](https://github.com/anthropics/agent-blueprints/issues/new/choose) using the **New Blueprint** template before writing code.
+For major proposals, [open an issue](https://github.com/jvarma/agent-blueprints/issues/new/choose) using the **New Blueprint** template before writing code.

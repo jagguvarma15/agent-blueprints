@@ -9,11 +9,11 @@ const config: Config = {
   favicon: 'img/favicon.ico',
 
   // Production URL
-  url: 'https://anthropics.github.io',
+  url: 'https://jvarma.github.io',
   baseUrl: '/agent-blueprints/',
 
   // GitHub Pages deployment config
-  organizationName: 'anthropics',
+  organizationName: 'jvarma',
   projectName: 'agent-blueprints',
   trailingSlash: false,
 
@@ -42,7 +42,7 @@ const config: Config = {
           sidebarPath: './sidebars.ts',
           // Edit-on-GitHub link at the bottom of every doc page
           editUrl:
-            'https://github.com/anthropics/agent-blueprints/edit/main/website/',
+            'https://github.com/jvarma/agent-blueprints/edit/main/website/',
           showLastUpdateTime: true,
           showLastUpdateAuthor: true,
         },
@@ -113,7 +113,7 @@ const config: Config = {
           position: 'left',
         },
         {
-          href: 'https://github.com/anthropics/agent-blueprints',
+          href: 'https://github.com/jvarma/agent-blueprints',
           label: 'GitHub',
           position: 'right',
           'aria-label': 'GitHub repository',
@@ -181,19 +181,19 @@ const config: Config = {
           items: [
             {
               label: 'GitHub Discussions',
-              href: 'https://github.com/anthropics/agent-blueprints/discussions',
+              href: 'https://github.com/jvarma/agent-blueprints/discussions',
             },
             {
               label: 'Contributing Guide',
-              href: 'https://github.com/anthropics/agent-blueprints/blob/main/CONTRIBUTING.md',
+              href: 'https://github.com/jvarma/agent-blueprints/blob/main/CONTRIBUTING.md',
             },
             {
               label: 'Open an Issue',
-              href: 'https://github.com/anthropics/agent-blueprints/issues/new/choose',
+              href: 'https://github.com/jvarma/agent-blueprints/issues/new/choose',
             },
             {
               label: 'Code of Conduct',
-              href: 'https://github.com/anthropics/agent-blueprints/blob/main/CODE_OF_CONDUCT.md',
+              href: 'https://github.com/jvarma/agent-blueprints/blob/main/CODE_OF_CONDUCT.md',
             },
           ],
         },
@@ -202,7 +202,7 @@ const config: Config = {
           items: [
             {
               label: 'GitHub',
-              href: 'https://github.com/anthropics/agent-blueprints',
+              href: 'https://github.com/jvarma/agent-blueprints',
             },
             {
               label: 'npm',
@@ -210,11 +210,11 @@ const config: Config = {
             },
             {
               label: 'Roadmap',
-              href: 'https://github.com/anthropics/agent-blueprints/discussions/categories/roadmap',
+              href: 'https://github.com/jvarma/agent-blueprints/discussions/categories/roadmap',
             },
             {
               label: 'Releases',
-              href: 'https://github.com/anthropics/agent-blueprints/releases',
+              href: 'https://github.com/jvarma/agent-blueprints/releases',
             },
           ],
         },

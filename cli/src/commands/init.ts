@@ -200,16 +200,16 @@ export async function initCommand(options: InitOptions): Promise<void> {
   const relTarget = path.relative(process.cwd(), absoluteTarget) || '.';
 
   const installCmd = language === 'python'
-    ? 'pip install -r requirements.txt'
+    ? 'uv sync'
     : language === 'typescript'
-      ? 'npm install'
-      : 'pip install -r python/requirements.txt  &&  cd typescript && npm install';
+      ? 'pnpm install'
+      : 'cd python && uv sync && cd ../typescript && pnpm install';
 
   const runCmd = language === 'python'
-    ? 'python main.py'
+    ? 'uv run dev'
     : language === 'typescript'
-      ? 'npm run dev'
-      : 'python python/main.py   # or:  cd typescript && npm run dev';
+      ? 'pnpm dev'
+      : 'cd python && uv run dev   # or: cd typescript && pnpm dev';
 
   outro(
     [
@@ -220,7 +220,7 @@ export async function initCommand(options: InitOptions): Promise<void> {
       `  ${pc.cyan('2.')} ${installCmd}`,
       `  ${pc.cyan('3.')} ${runCmd}`,
       '',
-      `${pc.dim('Docs & examples:')} ${pc.underline('https://github.com/anthropics/agent-blueprints')}`,
+      `${pc.dim('Docs & examples:')} ${pc.underline('https://github.com/jvarma/agent-blueprints')}`,
     ].join('\n'),
   );
 }

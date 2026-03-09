@@ -28,7 +28,7 @@ A multi-tier support system that triages inbound tickets, resolves common issues
 - Escalation to human agents with summarised conversation history
 - CSAT feedback loop for continuous improvement
 
-[View Architecture →](/architectures/customer-support-agent)
+[View Architecture →](https://github.com/jvarma/agent-blueprints/blob/main/architectures/customer-support/README.md)
 
 ---
 
@@ -45,7 +45,7 @@ An autonomous research pipeline that decomposes complex research questions, sear
 - Iterative report refinement via Reflexion loop
 - Structured output with inline citations and a confidence score
 
-[View Architecture →](/architectures/research-assistant)
+[View Architecture →](https://github.com/jvarma/agent-blueprints/blob/main/architectures/research-assistant/README.md)
 
 ---
 
@@ -62,7 +62,7 @@ An automated code review system that analyses pull requests, identifies bugs and
 - Human-in-the-loop approval for blocking issues
 - Feedback loop that improves future reviews
 
-[View Architecture →](/architectures/code-review-agent)
+[View Architecture →](https://github.com/jvarma/agent-blueprints/blob/main/architectures/code-review/README.md)
 
 ---
 
@@ -79,7 +79,7 @@ An end-to-end data analysis system that ingests raw datasets, generates and exec
 - Self-correction when code execution fails
 - Human approval gates before report publication
 
-[View Architecture →](/architectures/data-analysis-pipeline)
+[View Architecture →](https://github.com/jvarma/agent-blueprints/blob/main/architectures/data-analyst/README.md)
 
 ---
 
@@ -96,7 +96,7 @@ A complete OpenTelemetry integration guide for agent blueprints — traces, metr
 - Alerting on error rates, latency regressions, and cost anomalies
 - Dashboards in Grafana, Datadog, and Honeycomb
 
-[View Architecture →](/architectures/observability)
+Planned (not yet added to this repo).
 
 ---
 
@@ -111,7 +111,7 @@ Production deployment strategies for agent systems — from simple single-contai
 - Secret management for API keys
 - Rate limiting and cost guardrails
 
-[View Architecture →](/architectures/deployment)
+Planned (not yet added to this repo).
 
 ---
 
@@ -126,7 +126,7 @@ A practical guide to evaluating agent systems — moving beyond vibes to systema
 - Regression testing across blueprint versions
 - Cost-quality Pareto frontiers
 
-[View Architecture →](/architectures/evaluation)
+Planned (not yet added to this repo).
 
 ---
 
@@ -153,7 +153,7 @@ Each architecture includes an evaluation harness from day one. Without measureme
 
 ## Roadmap
 
-Upcoming reference architectures (track progress in [GitHub Discussions](https://github.com/anthropics/agent-blueprints/discussions/categories/roadmap)):
+Upcoming reference architectures (track progress in [GitHub Discussions](https://github.com/jvarma/agent-blueprints/discussions/categories/roadmap)):
 
 - [ ] **Document Processing Pipeline** — ingest, classify, extract, and index at scale
 - [ ] **Multi-tenant Agent Service** — one agent service serving many customers with isolation

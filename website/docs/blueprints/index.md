@@ -7,7 +7,7 @@ description: Browse all 10 production-ready AI agent blueprints — complete wit
 
 # Blueprints
 
-Each blueprint is a **complete, runnable reference implementation** of an AI agent design pattern. They are self-contained: copy any single directory into your project and it works without touching the rest of the repository.
+Each implemented blueprint is a **complete, runnable reference implementation** of an AI agent design pattern. They are self-contained: copy any single directory into your project and it works without touching the rest of the repository.
 
 Every blueprint includes:
 - Annotated **Mermaid architecture diagram** with design rationale
@@ -43,7 +43,7 @@ The foundational agentic pattern. The agent alternates between **Reason** (gener
 
 **When to use:** Any task requiring tool use with a small, bounded set of actions. Best starting point for anyone new to agent development.
 
-[View Blueprint →](/blueprints/react-agent)
+[View Blueprint →](https://github.com/jvarma/agent-blueprints/tree/main/blueprints/01-react-agent)
 
 ---
 
@@ -55,7 +55,7 @@ Separates planning from execution using two distinct agents: a **Planner** that 
 
 **When to use:** Long-horizon tasks where upfront decomposition improves reliability. Particularly effective for code generation, research, and data processing pipelines.
 
-[View Blueprint →](/blueprints/plan-execute)
+Planned (not yet added to this repo).
 
 ---
 
@@ -67,7 +67,7 @@ Implements the **Reflexion** paper (Shinn et al., 2023). After each attempt the 
 
 **When to use:** Tasks where output quality matters more than latency. Ideal for essay writing, code review, mathematical reasoning, and any domain with a clear correctness signal.
 
-[View Blueprint →](/blueprints/reflexion)
+Planned (not yet added to this repo).
 
 ---
 
@@ -79,7 +79,7 @@ A **Supervisor** agent receives the user request, selects the most appropriate *
 
 **When to use:** Tasks that span multiple specialised domains. The Supervisor pattern keeps each sub-agent focused on a single capability while providing unified coordination.
 
-[View Blueprint →](/blueprints/multi-agent-supervisor)
+[View Blueprint →](https://github.com/jvarma/agent-blueprints/tree/main/blueprints/04-multi-agent-supervisor)
 
 ---
 
@@ -91,7 +91,7 @@ Fans out a task to **N agents running in parallel**, then aggregates their resul
 
 **When to use:** Tasks that can be decomposed into independent subtasks — e.g. analysing multiple documents simultaneously, running parallel web searches, or generating multiple candidate solutions to pick the best.
 
-[View Blueprint →](/blueprints/multi-agent-parallel)
+Planned (not yet added to this repo).
 
 ---
 
@@ -107,7 +107,7 @@ Extends a base ReAct agent with **four types of memory**:
 
 **When to use:** Assistants that need to remember user preferences, accumulated knowledge across sessions, or domain facts that exceed the context window.
 
-[View Blueprint →](/blueprints/memory-agent)
+Planned (not yet added to this repo).
 
 ---
 
@@ -119,7 +119,7 @@ The canonical **Retrieval-Augmented Generation** pipeline: embed the user query 
 
 **When to use:** Q&A over a private document corpus, knowledge base assistants, and as a stepping stone to the more sophisticated RAG Advanced blueprint.
 
-[View Blueprint →](/blueprints/rag-basic)
+[View Blueprint →](https://github.com/jvarma/agent-blueprints/tree/main/blueprints/07-rag-basic)
 
 ---
 
@@ -136,7 +136,7 @@ Production-grade RAG with:
 
 **When to use:** Production document Q&A systems where accuracy, latency, and cost all matter. Replace individual components as your infrastructure evolves.
 
-[View Blueprint →](/blueprints/rag-advanced)
+Planned (not yet added to this repo).
 
 ---
 
@@ -148,7 +148,7 @@ A focused deep-dive into **structured tool use**: defining tools with JSON Schem
 
 **When to use:** As a standalone reference for tool integration patterns, or as a component of any other blueprint.
 
-[View Blueprint →](/blueprints/tool-calling)
+Planned (not yet added to this repo).
 
 ---
 
@@ -160,7 +160,7 @@ Extends a base agent with **checkpoints** where execution pauses and waits for a
 
 **When to use:** Any agentic workflow where full automation is not yet trusted — e.g. financial transactions, infrastructure changes, content publishing, or high-stakes decisions.
 
-[View Blueprint →](/blueprints/human-in-the-loop)
+Planned (not yet added to this repo).
 
 ---
 
