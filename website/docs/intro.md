@@ -47,7 +47,7 @@ The documentation is split into three sections:
 
 | Section | What you'll find |
 |---------|-----------------|
-| **[Blueprints](/blueprints)** | 10 complete, runnable implementations. Start here if you want to scaffold something quickly. |
+| **[Blueprints](/blueprints)** | 3 implemented blueprints today (01, 04, 07) with additional entries planned. Start here if you want to scaffold something quickly. |
 | **[Patterns](/patterns)** | Conceptual guides for each design pattern — when to use it, trade-offs, variations. |
 | **[Reference Architectures](/architectures)** | End-to-end system designs that combine multiple blueprints and patterns into production deployments. |
 
@@ -88,16 +88,16 @@ npx agent-blueprints@latest init --blueprint 04 --lang typescript --out ./my-age
 
 | # | Blueprint | Complexity | Pattern | Description |
 |---|-----------|------------|---------|-------------|
-| 01 | [ReAct Agent](/blueprints/react-agent) | Beginner | Orchestration | Reason + Act loop with tool use; the foundational agentic pattern |
-| 02 | [Plan & Execute](/blueprints/plan-execute) | Intermediate | Orchestration | Separate planner and executor agents; better for long-horizon tasks |
-| 03 | [Reflexion](/blueprints/reflexion) | Intermediate | Orchestration | Self-critique and iterative refinement loop for improved output quality |
-| 04 | [Multi-Agent Supervisor](/blueprints/multi-agent-supervisor) | Intermediate | Multi-agent | Central supervisor delegates tasks to specialised sub-agents |
-| 05 | [Multi-Agent Parallel](/blueprints/multi-agent-parallel) | Intermediate | Multi-agent | Fan-out to parallel agents then aggregate results; maximises throughput |
-| 06 | [Memory Agent](/blueprints/memory-agent) | Intermediate | Memory | Persistent short- and long-term memory with semantic search |
-| 07 | [RAG Basic](/blueprints/rag-basic) | Beginner | RAG | Naive retrieve-then-generate pipeline; simplest starting point for RAG |
-| 08 | [RAG Advanced](/blueprints/rag-advanced) | Advanced | RAG | Hybrid retrieval, re-ranking, query decomposition, and self-correction |
-| 09 | [Tool Calling](/blueprints/tool-calling) | Beginner | Tools | Structured tool definitions, parallel calls, error handling, and retries |
-| 10 | [Human-in-the-Loop](/blueprints/human-in-the-loop) | Intermediate | Control Flow | Interrupt execution to request human approval or clarification |
+| 01 | [ReAct Agent](https://github.com/jvarma/agent-blueprints/tree/main/blueprints/01-react-agent) | Beginner | Orchestration | Reason + Act loop with tool use; the foundational agentic pattern |
+| 02 | Plan & Execute (Planned) | Intermediate | Orchestration | Separate planner and executor agents; better for long-horizon tasks |
+| 03 | Reflexion (Planned) | Intermediate | Orchestration | Self-critique and iterative refinement loop for improved output quality |
+| 04 | [Multi-Agent Supervisor](https://github.com/jvarma/agent-blueprints/tree/main/blueprints/04-multi-agent-supervisor) | Intermediate | Multi-agent | Central supervisor delegates tasks to specialised sub-agents |
+| 05 | Multi-Agent Parallel (Planned) | Intermediate | Multi-agent | Fan-out to parallel agents then aggregate results; maximises throughput |
+| 06 | Memory Agent (Planned) | Intermediate | Memory | Persistent short- and long-term memory with semantic search |
+| 07 | [RAG Basic](https://github.com/jvarma/agent-blueprints/tree/main/blueprints/07-rag-basic) | Beginner | RAG | Naive retrieve-then-generate pipeline; simplest starting point for RAG |
+| 08 | RAG Advanced (Planned) | Advanced | RAG | Hybrid retrieval, re-ranking, query decomposition, and self-correction |
+| 09 | Tool Calling (Planned) | Beginner | Tools | Structured tool definitions, parallel calls, error handling, and retries |
+| 10 | Human-in-the-Loop (Planned) | Intermediate | Control Flow | Interrupt execution to request human approval or clarification |
 
 ### Complexity guide
 
@@ -142,7 +142,7 @@ agent-blueprints/
 │   │   │   ├── package.json
 │   │   │   └── tests/
 │   │   └── docker-compose.yml
-│   └── ...                       # 02 – 10 follow identical layout
+│   └── ...                       # Additional blueprints are added incrementally
 ├── packages/
 │   └── cli/                      # npx agent-blueprints CLI (TypeScript)
 ├── website/                      # This documentation site
