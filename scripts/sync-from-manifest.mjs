@@ -151,7 +151,7 @@ function generateWebsiteBlueprintIndex(entries) {
 
   const readyRows = ready.map((e) => [
     idPrefix(e.id),
-    `[${displayName(e.id)}](https://github.com/jvarma/agent-blueprints/tree/main/blueprints/${e.id})`,
+    `[${displayName(e.id)}](https://github.com/jagguvarma15/agent-blueprints/tree/main/blueprints/${e.id})`,
     e.complexity,
     e.pattern,
     "Ready",
@@ -203,7 +203,7 @@ function generateSidebars(entries) {
         `    {
       type: "link",
       label: "${idPrefix(e.id)} ${displayName(e.id)} (Repo)",
-      href: "https://github.com/jvarma/agent-blueprints/tree/main/blueprints/${e.id}",
+      href: "https://github.com/jagguvarma15/agent-blueprints/tree/main/blueprints/${e.id}",
     },`,
     )
     .join("\n");

@@ -4,10 +4,10 @@
   "description": "CLI scaffolding tool for agent-blueprints — production-ready AI agent system design",
   "keywords": ["ai", "agents", "llm", "claude", "scaffolding", "cli"],
   "license": "MIT",
-  "homepage": "https://github.com/jvarma/agent-blueprints",
+  "homepage": "https://github.com/jagguvarma15/agent-blueprints",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jvarma/agent-blueprints.git",
+    "url": "https://github.com/jagguvarma15/agent-blueprints.git",
     "directory": "cli"
   },
   "type": "module",

@@ -11,11 +11,11 @@ const config: Config = {
   favicon: 'img/agent-blueprints-logo.png',
 
   // Production URL
-  url: 'https://jvarma.github.io',
+  url: 'https://jagguvarma15.github.io',
   baseUrl: siteBaseUrl,
 
   // GitHub Pages deployment config
-  organizationName: 'jvarma',
+  organizationName: 'jagguvarma15',
   projectName: 'agent-blueprints',
   trailingSlash: false,
 
@@ -44,7 +44,7 @@ const config: Config = {
           sidebarPath: './sidebars.ts',
           // Edit-on-GitHub link at the bottom of every doc page
           editUrl:
-            'https://github.com/jvarma/agent-blueprints/edit/main/website/',
+            'https://github.com/jagguvarma15/agent-blueprints/edit/main/website/',
           showLastUpdateTime: true,
           showLastUpdateAuthor: true,
         },
@@ -115,7 +115,7 @@ const config: Config = {
           position: 'left',
         },
         {
-          href: 'https://github.com/jvarma/agent-blueprints',
+          href: 'https://github.com/jagguvarma15/agent-blueprints',
           label: 'GitHub',
           position: 'right',
           'aria-label': 'GitHub repository',
@@ -158,23 +158,23 @@ const config: Config = {
           items: [
             {
               label: 'ReAct Agent',
-              href: 'https://github.com/jvarma/agent-blueprints/tree/main/blueprints/01-react-agent',
+              href: 'https://github.com/jagguvarma15/agent-blueprints/tree/main/blueprints/01-react-agent',
             },
             {
               label: 'Plan & Execute',
-              href: 'https://github.com/jvarma/agent-blueprints/tree/main/blueprints/02-plan-and-execute',
+              href: 'https://github.com/jagguvarma15/agent-blueprints/tree/main/blueprints/02-plan-and-execute',
             },
             {
               label: 'Multi-Agent Supervisor',
-              href: 'https://github.com/jvarma/agent-blueprints/tree/main/blueprints/04-multi-agent-supervisor',
+              href: 'https://github.com/jagguvarma15/agent-blueprints/tree/main/blueprints/04-multi-agent-supervisor',
             },
             {
               label: 'RAG Advanced',
-              href: 'https://github.com/jvarma/agent-blueprints/tree/main/blueprints/08-rag-advanced',
+              href: 'https://github.com/jagguvarma15/agent-blueprints/tree/main/blueprints/08-rag-advanced',
             },
             {
               label: 'Human-in-the-Loop',
-              href: 'https://github.com/jvarma/agent-blueprints/tree/main/blueprints/10-human-in-the-loop',
+              href: 'https://github.com/jagguvarma15/agent-blueprints/tree/main/blueprints/10-human-in-the-loop',
             },
           ],
         },
@@ -183,19 +183,19 @@ const config: Config = {
           items: [
             {
               label: 'GitHub Discussions',
-              href: 'https://github.com/jvarma/agent-blueprints/discussions',
+              href: 'https://github.com/jagguvarma15/agent-blueprints/discussions',
             },
             {
               label: 'Contributing Guide',
-              href: 'https://github.com/jvarma/agent-blueprints/blob/main/CONTRIBUTING.md',
+              href: 'https://github.com/jagguvarma15/agent-blueprints/blob/main/CONTRIBUTING.md',
             },
             {
               label: 'Open an Issue',
-              href: 'https://github.com/jvarma/agent-blueprints/issues/new/choose',
+              href: 'https://github.com/jagguvarma15/agent-blueprints/issues/new/choose',
             },
             {
               label: 'Code of Conduct',
-              href: 'https://github.com/jvarma/agent-blueprints/blob/main/CODE_OF_CONDUCT.md',
+              href: 'https://github.com/jagguvarma15/agent-blueprints/blob/main/CODE_OF_CONDUCT.md',
             },
           ],
         },
@@ -204,7 +204,7 @@ const config: Config = {
           items: [
             {
               label: 'GitHub',
-              href: 'https://github.com/jvarma/agent-blueprints',
+              href: 'https://github.com/jagguvarma15/agent-blueprints',
             },
             {
               label: 'npm',
@@ -212,11 +212,11 @@ const config: Config = {
             },
             {
               label: 'Roadmap',
-              href: 'https://github.com/jvarma/agent-blueprints/discussions/categories/roadmap',
+              href: 'https://github.com/jagguvarma15/agent-blueprints/discussions/categories/roadmap',
             },
             {
               label: 'Releases',
-              href: 'https://github.com/jvarma/agent-blueprints/releases',
+              href: 'https://github.com/jagguvarma15/agent-blueprints/releases',
             },
           ],
         },

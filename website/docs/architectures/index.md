@@ -28,7 +28,7 @@ A multi-tier support system that triages inbound tickets, resolves common issues
 - Escalation to human agents with summarised conversation history
 - CSAT feedback loop for continuous improvement
 
-[View Architecture →](https://github.com/jvarma/agent-blueprints/blob/main/architectures/customer-support/README.md)
+[View Architecture →](https://github.com/jagguvarma15/agent-blueprints/blob/main/architectures/customer-support/README.md)
 
 ---
 
@@ -45,7 +45,7 @@ An autonomous research pipeline that decomposes complex research questions, sear
 - Iterative report refinement via Reflexion loop
 - Structured output with inline citations and a confidence score
 
-[View Architecture →](https://github.com/jvarma/agent-blueprints/blob/main/architectures/research-assistant/README.md)
+[View Architecture →](https://github.com/jagguvarma15/agent-blueprints/blob/main/architectures/research-assistant/README.md)
 
 ---
 
@@ -62,7 +62,7 @@ An automated code review system that analyses pull requests, identifies bugs and
 - Human-in-the-loop approval for blocking issues
 - Feedback loop that improves future reviews
 
-[View Architecture →](https://github.com/jvarma/agent-blueprints/blob/main/architectures/code-review/README.md)
+[View Architecture →](https://github.com/jagguvarma15/agent-blueprints/blob/main/architectures/code-review/README.md)
 
 ---
 
@@ -79,7 +79,7 @@ An end-to-end data analysis system that ingests raw datasets, generates and exec
 - Self-correction when code execution fails
 - Human approval gates before report publication
 
-[View Architecture →](https://github.com/jvarma/agent-blueprints/blob/main/architectures/data-analyst/README.md)
+[View Architecture →](https://github.com/jagguvarma15/agent-blueprints/blob/main/architectures/data-analyst/README.md)
 
 ---
 
@@ -153,7 +153,7 @@ Each architecture includes an evaluation harness from day one. Without measureme
 
 ## Roadmap
 
-Upcoming reference architectures (track progress in [GitHub Discussions](https://github.com/jvarma/agent-blueprints/discussions/categories/roadmap)):
+Upcoming reference architectures (track progress in [GitHub Discussions](https://github.com/jagguvarma15/agent-blueprints/discussions/categories/roadmap)):
 
 - [ ] **Document Processing Pipeline** — ingest, classify, extract, and index at scale
 - [ ] **Multi-tenant Agent Service** — one agent service serving many customers with isolation

@@ -234,7 +234,7 @@ export async function initCommand(options: InitOptions): Promise<void> {
       `  ${pc.cyan('2.')} ${installCmd}`,
       `  ${pc.cyan('3.')} ${runCmd}`,
       '',
-      `${pc.dim('Docs & examples:')} ${pc.underline('https://github.com/jvarma/agent-blueprints')}`,
+      `${pc.dim('Docs & examples:')} ${pc.underline('https://github.com/jagguvarma15/agent-blueprints')}`,
     ].join('\n'),
   );
 }

@@ -2,8 +2,8 @@
 
 # agent-blueprints
 
-[![GitHub Stars](https://img.shields.io/github/stars/jvarma/agent-blueprints?style=flat-square&logo=github)](https://github.com/jvarma/agent-blueprints/stargazers)
-[![CI](https://img.shields.io/github/actions/workflow/status/jvarma/agent-blueprints/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/jvarma/agent-blueprints/actions/workflows/ci.yml)
+[![GitHub Stars](https://img.shields.io/github/stars/jvarma/agent-blueprints?style=flat-square&logo=github)](https://github.com/jagguvarma15/agent-blueprints/stargazers)
+[![CI](https://img.shields.io/github/actions/workflow/status/jvarma/agent-blueprints/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/jagguvarma15/agent-blueprints/actions/workflows/ci.yml)
 [![License](https://img.shields.io/github/license/jvarma/agent-blueprints?style=flat-square)](./LICENSE)
 [![npm version](https://img.shields.io/npm/v/agent-blueprints?style=flat-square&logo=npm)](https://www.npmjs.com/package/agent-blueprints)
 
@@ -154,7 +154,7 @@ The Compose file spins up the agent alongside any required backing services (vec
 
 Contributions are very welcome. If you have an idea for a new blueprint, found a bug, or want to improve an existing implementation, please read the [Contributing Guide](./CONTRIBUTING.md) first — it explains the blueprint requirements checklist, code standards, and PR process.
 
-For major proposals (new blueprints or significant refactors), please [open an issue](https://github.com/jvarma/agent-blueprints/issues/new/choose) using the **New Blueprint** template before writing code.
+For major proposals (new blueprints or significant refactors), please [open an issue](https://github.com/jagguvarma15/agent-blueprints/issues/new/choose) using the **New Blueprint** template before writing code.
 
 Please note that this project adheres to the [Contributor Covenant Code of Conduct](./CODE_OF_CONDUCT.md). By participating, you agree to uphold it.
 
@@ -168,7 +168,7 @@ Please note that this project adheres to the [Contributor Covenant Code of Condu
 - [ ] VS Code extension for one-click scaffold
 - [ ] OpenTelemetry tracing guide for all blueprints
 
-Track progress and vote on priorities in the [GitHub Discussions](https://github.com/jvarma/agent-blueprints/discussions).
+Track progress and vote on priorities in the [GitHub Discussions](https://github.com/jagguvarma15/agent-blueprints/discussions).
 
 ---
 

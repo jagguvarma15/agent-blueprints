@@ -22,9 +22,9 @@ npx agent-blueprints@latest init
 
 | # | Blueprint | Complexity | Pattern | Status |
 |---|---|---|---|---|
-| 01 | [ReAct Agent](https://github.com/jvarma/agent-blueprints/tree/main/blueprints/01-react-agent) | Beginner | Orchestration | Ready |
-| 04 | [Multi Agent Supervisor](https://github.com/jvarma/agent-blueprints/tree/main/blueprints/04-multi-agent-supervisor) | Intermediate | Multi-agent | Ready |
-| 07 | [RAG Basic](https://github.com/jvarma/agent-blueprints/tree/main/blueprints/07-rag-basic) | Beginner | RAG | Ready |
+| 01 | [ReAct Agent](https://github.com/jagguvarma15/agent-blueprints/tree/main/blueprints/01-react-agent) | Beginner | Orchestration | Ready |
+| 04 | [Multi Agent Supervisor](https://github.com/jagguvarma15/agent-blueprints/tree/main/blueprints/04-multi-agent-supervisor) | Intermediate | Multi-agent | Ready |
+| 07 | [RAG Basic](https://github.com/jagguvarma15/agent-blueprints/tree/main/blueprints/07-rag-basic) | Beginner | RAG | Ready |
 
 ## Planned blueprints
 

@@ -25,14 +25,14 @@ Orchestration patterns control **how an agent decides what to do next**. They go
 
 | Pattern | Summary | Best for |
 |---------|---------|---------|
-| [ReAct Loop](https://github.com/jvarma/agent-blueprints/blob/main/patterns/orchestration/react.md) | Interleave reasoning traces with tool calls in a tight loop | General-purpose tool-using agents |
-| [Plan & Execute](https://github.com/jvarma/agent-blueprints/blob/main/patterns/orchestration/plan-execute.md) | Separate upfront planning from step-by-step execution | Long-horizon, multi-step tasks |
-| [Reflexion Loop](https://github.com/jvarma/agent-blueprints/blob/main/patterns/orchestration/reflexion.md) | Self-critique and iterative retry until quality threshold | Quality-critical outputs |
+| [ReAct Loop](https://github.com/jagguvarma15/agent-blueprints/blob/main/patterns/orchestration/react.md) | Interleave reasoning traces with tool calls in a tight loop | General-purpose tool-using agents |
+| [Plan & Execute](https://github.com/jagguvarma15/agent-blueprints/blob/main/patterns/orchestration/plan-execute.md) | Separate upfront planning from step-by-step execution | Long-horizon, multi-step tasks |
+| [Reflexion Loop](https://github.com/jagguvarma15/agent-blueprints/blob/main/patterns/orchestration/reflexion.md) | Self-critique and iterative retry until quality threshold | Quality-critical outputs |
 | Chain-of-Thought | Explicit intermediate reasoning steps before the final answer | Complex reasoning without tool use |
 
 Orchestration patterns are the foundation of every blueprint. Even the multi-agent blueprints use an orchestration pattern internally in each sub-agent.
 
-[Explore Orchestration Patterns →](https://github.com/jvarma/agent-blueprints/tree/main/patterns/orchestration)
+[Explore Orchestration Patterns →](https://github.com/jagguvarma15/agent-blueprints/tree/main/patterns/orchestration)
 
 ---
 
@@ -42,15 +42,15 @@ Multi-agent patterns define **how multiple agents are structured and how they co
 
 | Pattern | Summary | Best for |
 |---------|---------|---------|
-| [Supervisor](https://github.com/jvarma/agent-blueprints/blob/main/patterns/multi-agent/supervisor.md) | Central coordinator delegates to specialised sub-agents | Tasks spanning multiple capability domains |
-| [Parallel Fan-Out](https://github.com/jvarma/agent-blueprints/blob/main/patterns/multi-agent/parallel.md) | Task fanned out to N agents concurrently, results aggregated | Independent subtasks where latency matters |
-| [Debate/Critique](https://github.com/jvarma/agent-blueprints/blob/main/patterns/multi-agent/debate-critique.md) | Agents critique each other's outputs to improve quality | Negotiation, debate, and collaborative refinement |
+| [Supervisor](https://github.com/jagguvarma15/agent-blueprints/blob/main/patterns/multi-agent/supervisor.md) | Central coordinator delegates to specialised sub-agents | Tasks spanning multiple capability domains |
+| [Parallel Fan-Out](https://github.com/jagguvarma15/agent-blueprints/blob/main/patterns/multi-agent/parallel.md) | Task fanned out to N agents concurrently, results aggregated | Independent subtasks where latency matters |
+| [Debate/Critique](https://github.com/jagguvarma15/agent-blueprints/blob/main/patterns/multi-agent/debate-critique.md) | Agents critique each other's outputs to improve quality | Negotiation, debate, and collaborative refinement |
 
 :::tip When to introduce multiple agents
 A second agent is only warranted when the task genuinely benefits from specialisation or parallelism. A well-prompted single agent with a clear tool set will outperform a poorly orchestrated multi-agent system every time. Start with Blueprint 01 (ReAct) and reach for multi-agent only when you hit a clear ceiling.
 :::
 
-[Explore Multi-Agent Patterns →](https://github.com/jvarma/agent-blueprints/tree/main/patterns/multi-agent)
+[Explore Multi-Agent Patterns →](https://github.com/jagguvarma15/agent-blueprints/tree/main/patterns/multi-agent)
 
 ---
 
@@ -60,14 +60,14 @@ Memory patterns control **what the agent remembers, how it stores information, a
 
 | Pattern | Summary | Best for |
 |---------|---------|---------|
-| [Short-Term Memory](https://github.com/jvarma/agent-blueprints/blob/main/patterns/memory/in-context.md) | In-context conversation window with summarisation | Within-session continuity |
-| [Long-Term Memory](https://github.com/jvarma/agent-blueprints/blob/main/patterns/memory/vector-store.md) | Persistent vector store for cross-session recall | User personalisation, accumulated knowledge |
-| [Episodic Memory](https://github.com/jvarma/agent-blueprints/blob/main/patterns/memory/episodic.md) | Structured logs of past task executions | Learning from past successes and failures |
+| [Short-Term Memory](https://github.com/jagguvarma15/agent-blueprints/blob/main/patterns/memory/in-context.md) | In-context conversation window with summarisation | Within-session continuity |
+| [Long-Term Memory](https://github.com/jagguvarma15/agent-blueprints/blob/main/patterns/memory/vector-store.md) | Persistent vector store for cross-session recall | User personalisation, accumulated knowledge |
+| [Episodic Memory](https://github.com/jagguvarma15/agent-blueprints/blob/main/patterns/memory/episodic.md) | Structured logs of past task executions | Learning from past successes and failures |
 | Semantic Memory | Knowledge graph of extracted facts and relationships | Structured domain knowledge, entity tracking |
 
 Memory patterns are orthogonal to orchestration and can be layered on top of any blueprint. Blueprint 06 (Memory Agent) demonstrates all four types working together.
 
-[Explore Memory Patterns →](https://github.com/jvarma/agent-blueprints/tree/main/patterns/memory)
+[Explore Memory Patterns →](https://github.com/jagguvarma15/agent-blueprints/tree/main/patterns/memory)
 
 ---
 
@@ -77,13 +77,13 @@ Tool patterns define **how an agent discovers, selects, calls, and recovers from
 
 | Pattern | Summary | Best for |
 |---------|---------|---------|
-| [Tool Selection](https://github.com/jvarma/agent-blueprints/blob/main/patterns/tools/tool-selection.md) | Dynamic selection from a large tool registry | Agents with 10+ available tools |
-| [Parallel Tool Calls](https://github.com/jvarma/agent-blueprints/blob/main/patterns/tools/parallel-tools.md) | Coordinating multiple tool calls in the same step | Complex workflows requiring multiple steps |
+| [Tool Selection](https://github.com/jagguvarma15/agent-blueprints/blob/main/patterns/tools/tool-selection.md) | Dynamic selection from a large tool registry | Agents with 10+ available tools |
+| [Parallel Tool Calls](https://github.com/jagguvarma15/agent-blueprints/blob/main/patterns/tools/parallel-tools.md) | Coordinating multiple tool calls in the same step | Complex workflows requiring multiple steps |
 | Error Recovery | Retry strategies, fallbacks, and graceful degradation | Production reliability |
 
 Blueprint 09 (Tool Calling) provides a focused deep-dive into all three tool patterns with runnable examples.
 
-[Explore Tool Patterns →](https://github.com/jvarma/agent-blueprints/tree/main/patterns/tools)
+[Explore Tool Patterns →](https://github.com/jagguvarma15/agent-blueprints/tree/main/patterns/tools)
 
 ---
 
@@ -93,14 +93,14 @@ Retrieval-Augmented Generation patterns govern **how an agent accesses external 
 
 | Pattern | Summary | Best for |
 |---------|---------|---------|
-| [Naive RAG](https://github.com/jvarma/agent-blueprints/blob/main/patterns/rag/basic-rag.md) | Embed → retrieve top-K → generate | Prototypes, small corpora |
-| [Advanced RAG](https://github.com/jvarma/agent-blueprints/blob/main/patterns/rag/advanced-rag.md) | Hybrid retrieval + re-ranking + self-correction | Production document Q&A |
-| [Agentic RAG](https://github.com/jvarma/agent-blueprints/blob/main/patterns/rag/agentic-rag.md) | Agent controls retrieval strategy dynamically | Complex multi-hop questions |
+| [Naive RAG](https://github.com/jagguvarma15/agent-blueprints/blob/main/patterns/rag/basic-rag.md) | Embed → retrieve top-K → generate | Prototypes, small corpora |
+| [Advanced RAG](https://github.com/jagguvarma15/agent-blueprints/blob/main/patterns/rag/advanced-rag.md) | Hybrid retrieval + re-ranking + self-correction | Production document Q&A |
+| [Agentic RAG](https://github.com/jagguvarma15/agent-blueprints/blob/main/patterns/rag/agentic-rag.md) | Agent controls retrieval strategy dynamically | Complex multi-hop questions |
 | Hybrid Retrieval | Dense + sparse retrieval fused via RRF | High-precision recall |
 
 Blueprints 07 and 08 implement Naive RAG and Advanced RAG respectively. Agentic RAG will be covered in the upcoming Blueprint 13.
 
-[Explore RAG Patterns →](https://github.com/jvarma/agent-blueprints/tree/main/patterns/rag)
+[Explore RAG Patterns →](https://github.com/jagguvarma15/agent-blueprints/tree/main/patterns/rag)
 
 ---
 
@@ -172,4 +172,4 @@ Each pattern guide follows the same structure:
 
 ## Contributing a new pattern
 
-If you have identified a pattern that is not covered here, we welcome contributions. Read the [Contributing Guide](https://github.com/jvarma/agent-blueprints/blob/main/CONTRIBUTING.md) and open an issue using the **New Blueprint** template — new patterns typically accompany a new blueprint.
+If you have identified a pattern that is not covered here, we welcome contributions. Read the [Contributing Guide](https://github.com/jagguvarma15/agent-blueprints/blob/main/CONTRIBUTING.md) and open an issue using the **New Blueprint** template — new patterns typically accompany a new blueprint.

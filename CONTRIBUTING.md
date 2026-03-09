@@ -28,18 +28,18 @@ This project follows the [Contributor Covenant Code of Conduct](./CODE_OF_CONDUC
 
 | Contribution type | Where to start |
 |-------------------|---------------|
-| Bug report | [Open a Bug Report issue](https://github.com/jvarma/agent-blueprints/issues/new/choose) |
+| Bug report | [Open a Bug Report issue](https://github.com/jagguvarma15/agent-blueprints/issues/new/choose) |
 | Documentation improvement | Edit the relevant `README.md` or `architecture.md` and open a PR |
 | Fix in an existing blueprint | Fork, fix, and open a PR against `main` |
 | New blueprint | Read [Proposing a new blueprint](#proposing-a-new-blueprint) first |
 | CLI / tooling improvement | See `packages/cli/` and open a PR |
-| Question / idea | Start a [GitHub Discussion](https://github.com/jvarma/agent-blueprints/discussions) |
+| Question / idea | Start a [GitHub Discussion](https://github.com/jagguvarma15/agent-blueprints/discussions) |
 
 ---
 
 ## Proposing a new blueprint
 
-Before writing any code for a new blueprint, **please open an issue** using the [New Blueprint issue template](https://github.com/jvarma/agent-blueprints/issues/new?template=new-blueprint.yml). The template will prompt you for:
+Before writing any code for a new blueprint, **please open an issue** using the [New Blueprint issue template](https://github.com/jagguvarma15/agent-blueprints/issues/new?template=new-blueprint.yml). The template will prompt you for:
 
 - **Blueprint name and number** (check existing blueprints and claim the next available slot).
 - **Pattern category** — one of: Orchestration, Multi-agent, Memory, RAG, Tools, Control flow.
@@ -73,7 +73,7 @@ git clone https://github.com/<your-username>/agent-blueprints.git
 cd agent-blueprints
 
 # 2. Add the upstream remote
-git remote add upstream https://github.com/jvarma/agent-blueprints.git
+git remote add upstream https://github.com/jagguvarma15/agent-blueprints.git
 ```
 
 ### Install CLI tooling (TypeScript workspace)
@@ -376,8 +376,8 @@ pnpm run lint
 
 ## Getting help
 
-- **Questions about a blueprint's design** — open a [GitHub Discussion](https://github.com/jvarma/agent-blueprints/discussions) in the "Blueprint Design" category.
-- **Bug reports** — open a [GitHub Issue](https://github.com/jvarma/agent-blueprints/issues/new/choose).
+- **Questions about a blueprint's design** — open a [GitHub Discussion](https://github.com/jagguvarma15/agent-blueprints/discussions) in the "Blueprint Design" category.
+- **Bug reports** — open a [GitHub Issue](https://github.com/jagguvarma15/agent-blueprints/issues/new/choose).
 - **Security vulnerabilities** — do not open a public issue. Email the maintainers directly (see `SECURITY.md`).
 - **General chat** — join the `#agent-blueprints` channel in the community Discord (link in the GitHub repo description).
 

@@ -4,12 +4,15 @@ import fs from "node:fs";
 import path from "node:path";
 
 const root = process.cwd();
-const canonicalRepo = "https://github.com/jvarma/agent-blueprints";
+const canonicalRepo = "https://github.com/jagguvarma15/agent-blueprints";
 
 const disallowedPatterns = [
   /https:\/\/github\.com\/anthropics\/agent-blueprints/gi,
   /https:\/\/anthropics\.github\.io\/agent-blueprints/gi,
   /organizationName:\s*['"]anthropics['"]/g,
+  /https:\/\/github\.com\/jvarma\/agent-blueprints/gi,
+  /https:\/\/jvarma\.github\.io\/agent-blueprints/gi,
+  /organizationName:\s*['"]jvarma['"]/g,
 ];
 
 const allowedSubstrings = [
