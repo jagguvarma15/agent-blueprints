@@ -70,12 +70,6 @@ You can also pass flags directly:
 ```bash
 # Scaffold blueprint 04 in TypeScript into ./my-agent
 npx agent-blueprints@latest init --blueprint 04 --lang typescript --out ./my-agent
-
-# List all available blueprints
-npx agent-blueprints@latest list
-
-# Show details for a specific blueprint
-npx agent-blueprints@latest info --blueprint 08
 ```
 
 ### Requirements

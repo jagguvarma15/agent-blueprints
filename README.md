@@ -55,9 +55,6 @@ The interactive CLI will ask you which blueprint you want, which language (Pytho
 ```bash
 # Scaffold blueprint 04 in TypeScript into ./my-agent
 npx agent-blueprints@latest init --blueprint 04 --lang typescript --out ./my-agent
-
-# List all available blueprints
-npx agent-blueprints@latest list
 ```
 
 > **Requirements:** Node 20+. Python blueprints additionally require Python 3.11+ and [uv](https://github.com/astral-sh/uv). TypeScript blueprints require [pnpm](https://pnpm.io/) 9+.

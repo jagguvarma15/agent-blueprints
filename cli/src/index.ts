@@ -37,11 +37,29 @@ program
     'Language implementation to copy',
   )
   .option(
+    '--lang <python|typescript|both>',
+    'Alias for --language',
+  )
+  .option(
     '--dir <directory>',
     'Target directory for the scaffolded project',
   )
-  .action(async (options: { blueprint?: string; language?: string; dir?: string }) => {
-    await initCommand(options);
+  .option(
+    '--out <directory>',
+    'Alias for --dir',
+  )
+  .action(async (options: {
+    blueprint?: string;
+    language?: string;
+    lang?: string;
+    dir?: string;
+    out?: string;
+  }) => {
+    await initCommand({
+      blueprint: options.blueprint,
+      language: options.language ?? options.lang,
+      dir: options.dir ?? options.out,
+    });
   });
 
 // Default to showing help when no sub-command is provided
@@ -50,8 +68,8 @@ program.addHelpText(
   `
 Examples:
   $ npx agent-blueprints@latest init
-  $ npx agent-blueprints@latest init --blueprint 01-react-agent --language typescript
-  $ npx agent-blueprints@latest init --blueprint 07 --language python --dir ./my-rag-bot
+  $ npx agent-blueprints@latest init --blueprint 01-react-agent --lang typescript
+  $ npx agent-blueprints@latest init --blueprint 07 --lang python --out ./my-rag-bot
 `,
 );
 
