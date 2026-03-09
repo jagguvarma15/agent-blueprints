@@ -2,6 +2,8 @@ import { themes as prismThemes } from 'prism-react-renderer';
 import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
+const siteBaseUrl = '/agent-blueprints/';
+
 const config: Config = {
   title: 'Agent Blueprints',
   tagline:
@@ -10,7 +12,7 @@ const config: Config = {
 
   // Production URL
   url: 'https://jvarma.github.io',
-  baseUrl: '/',
+  baseUrl: siteBaseUrl,
 
   // GitHub Pages deployment config
   organizationName: 'jvarma',
@@ -74,7 +76,7 @@ const config: Config = {
     announcementBar: {
       id: 'v1_launch',
       content:
-        'Agent Blueprints v1 is here — 10 production-ready blueprints, Python & TypeScript. <a href="/blueprints">Explore now →</a>',
+        `Agent Blueprints v0.1 is here — 10 production-ready blueprints, Python & TypeScript. <a href="${siteBaseUrl}blueprints">Explore now →</a>`,
       backgroundColor: '#1a1a2e',
       textColor: '#a78bfa',
       isCloseable: true,
