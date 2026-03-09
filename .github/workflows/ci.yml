@@ -26,6 +26,9 @@ jobs:
       - name: Markdown local link check
         run: node scripts/check-markdown-links.mjs
 
+      - name: Identity link consistency
+        run: node scripts/check-identity-links.mjs
+
       - name: Build CLI
         run: |
           cd cli
