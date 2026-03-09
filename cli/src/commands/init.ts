@@ -55,7 +55,7 @@ export async function initCommand(options: InitOptions): Promise<void> {
 
     const blueprintChoice = await select({
       message: 'Which blueprint would you like to scaffold?',
-      options: BLUEPRINTS.map((b) => ({
+      options: BLUEPRINTS.filter((b) => b.status === 'ready').map((b) => ({
         value: b.id,
         label: `${pc.bold(b.name)} ${pc.dim(`(${b.complexity} — ${b.pattern})`)}`,
         hint: b.description,
@@ -64,6 +64,14 @@ export async function initCommand(options: InitOptions): Promise<void> {
 
     assertNotCancelled(blueprintChoice);
     selectedBlueprint = BLUEPRINTS.find((b) => b.id === blueprintChoice)!;
+  }
+
+  if (selectedBlueprint.status === 'planned') {
+    log.error(
+      `Blueprint "${selectedBlueprint.id}" is planned and not scaffoldable yet. ` +
+      'Choose one of the ready blueprints: 01-react-agent, 04-multi-agent-supervisor, 07-rag-basic.',
+    );
+    process.exit(1);
   }
 
   log.info(

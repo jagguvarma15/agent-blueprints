@@ -3,6 +3,7 @@ export interface Blueprint {
   name: string;
   complexity: 'Beginner' | 'Intermediate' | 'Advanced';
   pattern: string;
+  status: 'ready' | 'planned';
   description: string;
 }
 
@@ -12,80 +13,80 @@ export const BLUEPRINTS: Blueprint[] = [
     name: 'ReAct Agent',
     complexity: 'Beginner',
     pattern: 'Orchestration',
-    description:
-      'A reasoning + acting loop where the agent thinks step-by-step and calls tools to gather information before producing a final answer.',
+    status: 'ready',
+    description: 'Orchestration blueprint (Beginner) ready to scaffold.',
   },
   {
     id: '02-plan-and-execute',
     name: 'Plan & Execute',
     complexity: 'Intermediate',
     pattern: 'Orchestration',
-    description:
-      'Separates high-level planning from low-level execution. The planner produces a structured task list; an executor works through each step sequentially.',
+    status: 'planned',
+    description: 'Planned Orchestration blueprint (not scaffoldable yet).',
   },
   {
     id: '03-reflexion',
     name: 'Reflexion',
     complexity: 'Intermediate',
     pattern: 'Orchestration',
-    description:
-      'Adds a self-critique loop on top of generation. The agent evaluates its own output, identifies shortcomings, and iteratively improves its response.',
+    status: 'planned',
+    description: 'Planned Orchestration blueprint (not scaffoldable yet).',
   },
   {
     id: '04-multi-agent-supervisor',
-    name: 'Multi-Agent Supervisor',
+    name: 'Multi Agent Supervisor',
     complexity: 'Intermediate',
     pattern: 'Multi-agent',
-    description:
-      'A supervisor agent delegates subtasks to specialised sub-agents and aggregates their results, enabling role-based parallelism with centralised control.',
+    status: 'ready',
+    description: 'Multi-agent blueprint (Intermediate) ready to scaffold.',
   },
   {
     id: '05-multi-agent-parallel',
-    name: 'Multi-Agent Parallel',
+    name: 'Multi Agent Parallel',
     complexity: 'Intermediate',
     pattern: 'Multi-agent',
-    description:
-      'Multiple independent agents run concurrently on different slices of a problem and their outputs are merged, maximising throughput for embarrassingly parallel workloads.',
+    status: 'planned',
+    description: 'Planned Multi-agent blueprint (not scaffoldable yet).',
   },
   {
     id: '06-memory-agent',
     name: 'Memory Agent',
     complexity: 'Intermediate',
     pattern: 'Memory',
-    description:
-      'Augments an agent with short-term working memory and long-term persistent storage so it can recall facts across sessions and avoid repeating work.',
+    status: 'planned',
+    description: 'Planned Memory blueprint (not scaffoldable yet).',
   },
   {
     id: '07-rag-basic',
     name: 'RAG Basic',
     complexity: 'Beginner',
     pattern: 'RAG',
-    description:
-      'Retrieval-Augmented Generation: embeds a document corpus and retrieves the top-k passages at query time to ground the model response in source material.',
+    status: 'ready',
+    description: 'RAG blueprint (Beginner) ready to scaffold.',
   },
   {
     id: '08-rag-advanced',
     name: 'RAG Advanced',
     complexity: 'Advanced',
     pattern: 'RAG',
-    description:
-      'Extends basic RAG with query rewriting, hybrid search, re-ranking, and answer faithfulness checks for production-grade retrieval quality.',
+    status: 'planned',
+    description: 'Planned RAG blueprint (not scaffoldable yet).',
   },
   {
     id: '09-tool-calling',
     name: 'Tool Calling',
     complexity: 'Beginner',
     pattern: 'Tools',
-    description:
-      'Demonstrates structured tool / function calling: defining tool schemas, dispatching calls, handling results, and feeding them back into the conversation.',
+    status: 'planned',
+    description: 'Planned Tools blueprint (not scaffoldable yet).',
   },
   {
     id: '10-human-in-the-loop',
-    name: 'Human-in-the-Loop',
+    name: 'Human in the Loop',
     complexity: 'Intermediate',
     pattern: 'Control flow',
-    description:
-      'Pauses agent execution at key decision points to request human review or approval, combining automated reasoning with human oversight for high-stakes actions.',
+    status: 'planned',
+    description: 'Planned Control flow blueprint (not scaffoldable yet).',
   },
 ];
 
