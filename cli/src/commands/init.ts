@@ -206,6 +206,12 @@ export async function initCommand(options: InitOptions): Promise<void> {
 
   // ── 6. Outro / next steps ───────────────────────────────────────────────
   const relTarget = path.relative(process.cwd(), absoluteTarget) || '.';
+  const pythonRunByBlueprint: Record<string, string> = {
+    '01-react-agent': 'uv run dev',
+    '04-multi-agent-supervisor': 'uv run python src/main.py',
+    '07-rag-basic': 'uv run dev',
+  };
+  const pythonRunCmd = pythonRunByBlueprint[selectedBlueprint.id] ?? 'uv run dev';
 
   const installCmd = language === 'python'
     ? 'uv sync'
@@ -214,10 +220,10 @@ export async function initCommand(options: InitOptions): Promise<void> {
       : 'cd python && uv sync && cd ../typescript && pnpm install';
 
   const runCmd = language === 'python'
-    ? 'uv run dev'
+    ? pythonRunCmd
     : language === 'typescript'
       ? 'pnpm dev'
-      : 'cd python && uv run dev   # or: cd typescript && pnpm dev';
+      : `cd python && ${pythonRunCmd}   # or: cd typescript && pnpm dev`;
 
   outro(
     [

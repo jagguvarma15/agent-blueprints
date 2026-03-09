@@ -2,9 +2,9 @@
 
 # agent-blueprints
 
-[![GitHub Stars](https://img.shields.io/github/stars/jvarma/agent-blueprints?style=flat-square&logo=github&color=FFD700)](https://github.com/jvarma/agent-blueprints/stargazers)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](./LICENSE)
-[![CI](https://img.shields.io/github/actions/workflow/status/jvarma/agent-blueprints/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/jvarma/agent-blueprints/actions)
+[![GitHub Stars](https://img.shields.io/github/stars/jvarma/agent-blueprints?style=flat-square&logo=github)](https://github.com/jvarma/agent-blueprints/stargazers)
+[![CI](https://img.shields.io/github/actions/workflow/status/jvarma/agent-blueprints/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/jvarma/agent-blueprints/actions/workflows/ci.yml)
+[![License](https://img.shields.io/github/license/jvarma/agent-blueprints?style=flat-square)](./LICENSE)
 [![npm version](https://img.shields.io/npm/v/agent-blueprints?style=flat-square&logo=npm)](https://www.npmjs.com/package/agent-blueprints)
 
 **The definitive open-source reference for production-ready AI agent system design.**
