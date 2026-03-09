@@ -19,18 +19,25 @@
 
 ## Blueprints
 
+### Implemented in this repo
+
 | # | Blueprint | Complexity | Pattern | Python | TypeScript |
 |---|-----------|-----------|---------|--------|------------|
 | 01 | [ReAct Agent](./blueprints/01-react-agent/) | Beginner | Orchestration | [python](./blueprints/01-react-agent/python/) | [typescript](./blueprints/01-react-agent/typescript/) |
-| 02 | [Plan & Execute](./blueprints/02-plan-execute/) | Intermediate | Orchestration | [python](./blueprints/02-plan-execute/python/) | [typescript](./blueprints/02-plan-execute/typescript/) |
-| 03 | [Reflexion](./blueprints/03-reflexion/) | Intermediate | Orchestration | [python](./blueprints/03-reflexion/python/) | [typescript](./blueprints/03-reflexion/typescript/) |
 | 04 | [Multi-Agent Supervisor](./blueprints/04-multi-agent-supervisor/) | Intermediate | Multi-agent | [python](./blueprints/04-multi-agent-supervisor/python/) | [typescript](./blueprints/04-multi-agent-supervisor/typescript/) |
-| 05 | [Multi-Agent Parallel](./blueprints/05-multi-agent-parallel/) | Intermediate | Multi-agent | [python](./blueprints/05-multi-agent-parallel/python/) | [typescript](./blueprints/05-multi-agent-parallel/typescript/) |
-| 06 | [Memory Agent](./blueprints/06-memory-agent/) | Intermediate | Memory | [python](./blueprints/06-memory-agent/python/) | [typescript](./blueprints/06-memory-agent/typescript/) |
 | 07 | [RAG Basic](./blueprints/07-rag-basic/) | Beginner | RAG | [python](./blueprints/07-rag-basic/python/) | [typescript](./blueprints/07-rag-basic/typescript/) |
-| 08 | [RAG Advanced](./blueprints/08-rag-advanced/) | Advanced | RAG | [python](./blueprints/08-rag-advanced/python/) | [typescript](./blueprints/08-rag-advanced/typescript/) |
-| 09 | [Tool Calling](./blueprints/09-tool-calling/) | Beginner | Tools | [python](./blueprints/09-tool-calling/python/) | [typescript](./blueprints/09-tool-calling/typescript/) |
-| 10 | [Human-in-the-Loop](./blueprints/10-human-in-the-loop/) | Intermediate | Control flow | [python](./blueprints/10-human-in-the-loop/python/) | [typescript](./blueprints/10-human-in-the-loop/typescript/) |
+
+### Planned blueprints
+
+| # | Blueprint | Complexity | Pattern | Status |
+|---|-----------|-----------|---------|--------|
+| 02 | Plan & Execute | Intermediate | Orchestration | Planned |
+| 03 | Reflexion | Intermediate | Orchestration | Planned |
+| 05 | Multi-Agent Parallel | Intermediate | Multi-agent | Planned |
+| 06 | Memory Agent | Intermediate | Memory | Planned |
+| 08 | RAG Advanced | Advanced | RAG | Planned |
+| 09 | Tool Calling | Beginner | Tools | Planned |
+| 10 | Human-in-the-Loop | Intermediate | Control flow | Planned |
 
 ### Complexity guide
 
@@ -78,9 +85,7 @@ agent-blueprints/
 │   │   │   ├── package.json
 │   │   │   └── tests/
 │   │   └── docker-compose.yml
-│   ├── 02-plan-execute/
-│   │   └── ...                   # Same structure as above
-│   └── ...                       # 03 – 10 follow identical layout
+│   └── ...                       # Additional blueprints are added incrementally
 ├── packages/
 │   └── cli/                      # npx agent-blueprints CLI (TypeScript)
 ├── .github/
