@@ -72,7 +72,11 @@ export async function copyTemplate(
   targetDir: string,
 ): Promise<CopyResult> {
   const root = monorepoRoot();
-  const blueprintSrc = path.join(root, blueprintId);
+  const primaryBlueprintSrc = path.join(root, 'blueprints', blueprintId);
+  const legacyBlueprintSrc = path.join(root, blueprintId);
+  const blueprintSrc = await fs.pathExists(primaryBlueprintSrc)
+    ? primaryBlueprintSrc
+    : legacyBlueprintSrc;
   const dest = path.resolve(targetDir);
 
   // Ensure destination exists
