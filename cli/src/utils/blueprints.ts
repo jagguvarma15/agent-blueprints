@@ -21,8 +21,8 @@ export const BLUEPRINTS: Blueprint[] = [
     name: 'Plan & Execute',
     complexity: 'Intermediate',
     pattern: 'Orchestration',
-    status: 'planned',
-    description: 'Planned Orchestration blueprint (not scaffoldable yet).',
+    status: 'ready',
+    description: 'Orchestration blueprint (Intermediate) ready to scaffold.',
   },
   {
     id: '03-reflexion',
