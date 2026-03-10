@@ -11,6 +11,11 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: "link",
+      label: "02 Plan & Execute (Repo)",
+      href: "https://github.com/jagguvarma15/agent-blueprints/tree/main/blueprints/02-plan-and-execute",
+    },
+    {
+      type: "link",
       label: "04 Multi Agent Supervisor (Repo)",
       href: "https://github.com/jagguvarma15/agent-blueprints/tree/main/blueprints/04-multi-agent-supervisor",
     },
