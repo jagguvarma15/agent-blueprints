@@ -19,14 +19,15 @@
 
 ## Blueprints
 
-Implemented now: **01/04/07**  
-Planned: **02/03/05/06/08/09/10**
+Implemented now: **01/02/04/07**  
+Planned: **03/05/06/08/09/10**
 
 ### Implemented in this repo
 
 | # | Blueprint | Complexity | Pattern | Python | TypeScript |
 |---|---|---|---|---|---|
 | 01 | [ReAct Agent](./blueprints/01-react-agent/) | Beginner | Orchestration | [python](./blueprints/01-react-agent/python/) | [typescript](./blueprints/01-react-agent/typescript/) |
+| 02 | [Plan & Execute](./blueprints/02-plan-and-execute/) | Intermediate | Orchestration | [python](./blueprints/02-plan-and-execute/python/) | [typescript](./blueprints/02-plan-and-execute/typescript/) |
 | 04 | [Multi Agent Supervisor](./blueprints/04-multi-agent-supervisor/) | Intermediate | Multi-agent | [python](./blueprints/04-multi-agent-supervisor/python/) | [typescript](./blueprints/04-multi-agent-supervisor/typescript/) |
 | 07 | [RAG Basic](./blueprints/07-rag-basic/) | Beginner | RAG | [python](./blueprints/07-rag-basic/python/) | [typescript](./blueprints/07-rag-basic/typescript/) |
 
@@ -34,7 +35,6 @@ Planned: **02/03/05/06/08/09/10**
 
 | # | Blueprint | Complexity | Pattern | Status |
 |---|---|---|---|---|
-| 02 | Plan & Execute | Intermediate | Orchestration | Planned |
 | 03 | Reflexion | Intermediate | Orchestration | Planned |
 | 05 | Multi Agent Parallel | Intermediate | Multi-agent | Planned |
 | 06 | Memory Agent | Intermediate | Memory | Planned |

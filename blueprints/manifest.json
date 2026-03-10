@@ -9,7 +9,7 @@
   },
   {
     "id": "02-plan-and-execute",
-    "status": "planned",
+    "status": "ready",
     "languages": ["python", "typescript"],
     "docsSlug": "plan-execute",
     "complexity": "Intermediate",
