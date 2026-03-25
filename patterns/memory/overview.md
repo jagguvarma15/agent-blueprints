@@ -1,0 +1,83 @@
+# Memory — Overview
+
+The memory pattern enables an agent to persist information across conversations, building context over time. Short-term memory maintains state within a session; long-term memory stores and retrieves information across sessions using external storage.
+
+**Evolves from:** [Prompt Chaining](../../workflows/prompt-chaining/overview.md) — adds conversation state management, summarization, and persistent retrieval.
+
+## Architecture
+
+```mermaid
+graph TD
+    Input([User Message]) -->|"new input"| Agent[Agent Core]
+    Agent -->|"read"| STM[Short-term Memory:<br/>Current session history]
+    Agent -->|"query"| LTM[(Long-term Memory:<br/>Vector store / DB)]
+    LTM -->|"relevant context"| Agent
+    STM -->|"recent context"| Agent
+    Agent -->|"response"| Output([Response])
+    Agent -->|"write"| STM
+    Agent -->|"store"| LTM
+    Summarizer[Summarizer:<br/>Compress old context] -->|"summary"| STM
+    STM -->|"overflow"| Summarizer
+
+    style Input fill:#e3f2fd
+    style Agent fill:#fff3e0
+    style STM fill:#f3e5f5
+    style LTM fill:#e8f5e9
+    style Output fill:#e3f2fd
+    style Summarizer fill:#fff8e1
+```
+
+*Figure: The agent reads from both short-term (session) and long-term (persistent) memory. When short-term memory overflows the context window, a summarizer compresses it. Important information is stored in long-term memory for future sessions.*
+
+## How It Works
+
+1. **Receive input** — A new user message arrives.
+2. **Retrieve context** — The agent queries long-term memory for relevant past information and reads recent short-term memory (conversation history).
+3. **Reason and respond** — The agent processes the input with the retrieved context and generates a response.
+4. **Update short-term memory** — The new exchange (input + response) is added to the session history.
+5. **Store to long-term memory** — Important information, decisions, or facts are extracted and stored persistently.
+6. **Compress if needed** — When the session history exceeds the context window, a summarizer compresses older messages into a summary.
+
+## Input / Output
+
+- **Input:** User message + retrieved context from both memory types
+- **Output:** Response informed by current and past interactions
+- **Short-term store:** Recent conversation turns (message list)
+- **Long-term store:** Persistent facts, preferences, decisions (vector store, database, or file)
+
+## Key Tradeoffs
+
+| Strength | Limitation |
+|----------|-----------|
+| Enables multi-session continuity | Storage and retrieval add complexity |
+| Personalizes responses over time | Memory retrieval quality affects response quality |
+| Handles conversations exceeding context window | Summarization can lose important details |
+| Agents can learn from past interactions | Stale or incorrect memories can mislead the agent |
+| More natural, human-like interaction | Memory management (what to store, what to forget) is hard |
+
+## When to Use
+
+- Multi-turn conversations that span sessions
+- Personal assistants that should remember user preferences
+- Agents that need to learn from past interactions
+- When conversation history exceeds the context window
+- Tasks that build on previous work (iterative document editing, ongoing research)
+
+## When NOT to Use
+
+- Single-turn interactions — no memory needed
+- When all context fits in one prompt — don't add overhead
+- When privacy requirements prevent storing conversation data
+- Stateless processing tasks (classification, extraction)
+
+## Related Patterns
+
+- **Evolves from:** [Prompt Chaining](../../workflows/prompt-chaining/overview.md) — see [evolution.md](./evolution.md)
+- **Combines with:** [ReAct](../react/overview.md) (agent loop + memory), [RAG](../rag/overview.md) (long-term memory can use the same vector store), [Multi-Agent](../multi-agent/overview.md) (shared memory between agents)
+- **Related to:** [RAG](../rag/overview.md) — RAG retrieves from a document store; Memory retrieves from interaction history. The retrieval mechanism is similar but the data source is different.
+
+## Deeper Dive
+
+- **[Design](./design.md)** — Memory types, storage strategies, retrieval patterns, summarization, forgetting policies
+- **[Implementation](./implementation.md)** — Pseudocode, context window management, vector store integration, testing
+- **[Evolution](./evolution.md)** — How memory evolves from prompt chaining
