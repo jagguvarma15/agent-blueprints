@@ -1,179 +1,114 @@
-<div align="center">
+# Agent Blueprints
 
-# agent-blueprints
-
-[![GitHub Stars](https://img.shields.io/github/stars/jvarma/agent-blueprints?style=flat-square&logo=github)](https://github.com/jagguvarma15/agent-blueprints/stargazers)
-[![CI](https://img.shields.io/github/actions/workflow/status/jvarma/agent-blueprints/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/jagguvarma15/agent-blueprints/actions/workflows/ci.yml)
-[![License](https://img.shields.io/github/license/jvarma/agent-blueprints?style=flat-square)](./LICENSE)
-[![npm version](https://img.shields.io/npm/v/agent-blueprints?style=flat-square&logo=npm)](https://www.npmjs.com/package/agent-blueprints)
-
-**The definitive open-source reference for production-ready AI agent system design.**
-
-</div>
+**An architecture-first guide to designing LLM workflow and agent systems.**
 
 ---
 
-`agent-blueprints` is a curated collection of battle-tested, framework-agnostic blueprints for building AI agent systems that are ready for production. Each blueprint ships with a full architecture diagram, dual implementations in Python and TypeScript, test suites, and a Docker Compose environment — giving you everything you need to go from idea to deployed agent in minutes, not days. Whether you are an AI engineer exploring agentic patterns for the first time or an experienced team standardising on a proven reference architecture, this repo is the single source of truth.
+This repository teaches you how to *think about and design* agent systems — before you write a single line of code. It covers both LLM workflows (where the developer controls the flow) and agent patterns (where the LLM controls the flow), with an explicit progression showing how one evolves into the other.
+
+Every pattern is documented at three levels of depth. Read only what you need:
+- **Overview** (Tier 1) — Architecture diagram, tradeoffs, when to use it. 1–2 pages.
+- **Design** (Tier 2) — Component breakdown, data flow, error handling, scaling. 3–5 pages.
+- **Implementation** (Tier 3) — Pseudocode, interfaces, testing strategy, pitfalls. 5–10 pages.
 
 ---
 
-## Blueprints
+## Start Here
 
-Implemented now: **01/02/04/07**  
-Planned: **03/05/06/08/09/10**
+| If You... | Read This |
+|-----------|-----------|
+| Are new to LLM systems | [Foundations](./foundations/README.md) — concepts, terminology, mental models |
+| Need to pick a pattern | [Choosing a Pattern](./foundations/choosing-a-pattern.md) — decision flowchart |
+| Want structured LLM pipelines | [Workflows](./workflows/README.md) — 4 pre-agent patterns |
+| Want autonomous LLM behavior | [Agent Patterns](./patterns/README.md) — 8 agent architectures |
+| Are designing a production system | [Composition](./composition/README.md) — how patterns combine |
 
-### Implemented in this repo
+## Workflow Patterns
 
-| # | Blueprint | Complexity | Pattern | Python | TypeScript |
-|---|---|---|---|---|---|
-| 01 | [ReAct Agent](./blueprints/01-react-agent/) | Beginner | Orchestration | [python](./blueprints/01-react-agent/python/) | [typescript](./blueprints/01-react-agent/typescript/) |
-| 02 | [Plan & Execute](./blueprints/02-plan-and-execute/) | Intermediate | Orchestration | [python](./blueprints/02-plan-and-execute/python/) | [typescript](./blueprints/02-plan-and-execute/typescript/) |
-| 04 | [Multi Agent Supervisor](./blueprints/04-multi-agent-supervisor/) | Intermediate | Multi-agent | [python](./blueprints/04-multi-agent-supervisor/python/) | [typescript](./blueprints/04-multi-agent-supervisor/typescript/) |
-| 07 | [RAG Basic](./blueprints/07-rag-basic/) | Beginner | RAG | [python](./blueprints/07-rag-basic/python/) | [typescript](./blueprints/07-rag-basic/typescript/) |
+Workflows are orchestrated patterns where **the code controls the flow**. The developer defines the structure; the LLM fills in the content.
 
-### Planned blueprints
+| Pattern | What It Does | Overview | Design | Implementation |
+|---------|-------------|----------|--------|----------------|
+| **Prompt Chaining** | Sequential LLM calls with validation gates | [overview](./workflows/prompt-chaining/overview.md) | [design](./workflows/prompt-chaining/design.md) | [implementation](./workflows/prompt-chaining/implementation.md) |
+| **Parallel Calls** | Concurrent LLM calls on independent inputs | [overview](./workflows/parallel-calls/overview.md) | [design](./workflows/parallel-calls/design.md) | [implementation](./workflows/parallel-calls/implementation.md) |
+| **Orchestrator-Worker** | LLM decomposes task, delegates to workers | [overview](./workflows/orchestrator-worker/overview.md) | [design](./workflows/orchestrator-worker/design.md) | [implementation](./workflows/orchestrator-worker/implementation.md) |
+| **Evaluator-Optimizer** | Generate-evaluate feedback loop | [overview](./workflows/evaluator-optimizer/overview.md) | [design](./workflows/evaluator-optimizer/design.md) | [implementation](./workflows/evaluator-optimizer/implementation.md) |
 
-| # | Blueprint | Complexity | Pattern | Status |
-|---|---|---|---|---|
-| 03 | Reflexion | Intermediate | Orchestration | Planned |
-| 05 | Multi Agent Parallel | Intermediate | Multi-agent | Planned |
-| 06 | Memory Agent | Intermediate | Memory | Planned |
-| 08 | RAG Advanced | Advanced | RAG | Planned |
-| 09 | Tool Calling | Beginner | Tools | Planned |
-| 10 | Human in the Loop | Intermediate | Control flow | Planned |
+## Agent Patterns
 
-### Complexity guide
+Agents are systems where **the LLM controls the flow**. The developer provides tools and constraints; the LLM decides what to do.
 
-| Level | Description |
-|-------|-------------|
-| **Beginner** | Single-agent, minimal dependencies, ideal starting point |
-| **Intermediate** | Multi-step reasoning, external state, or coordination between agents |
-| **Advanced** | Production-scale concerns: caching, re-ranking, hybrid retrieval, observability |
+| Pattern | What It Does | Evolves From | Overview | Design | Implementation |
+|---------|-------------|-------------|----------|--------|----------------|
+| **ReAct** | Reason-act loop with tools | Prompt Chaining | [overview](./patterns/react/overview.md) | [design](./patterns/react/design.md) | [impl](./patterns/react/implementation.md) |
+| **Plan & Execute** | Plan first, then execute steps | Orchestrator-Worker | [overview](./patterns/plan-and-execute/overview.md) | [design](./patterns/plan-and-execute/design.md) | [impl](./patterns/plan-and-execute/implementation.md) |
+| **Tool Use** | Structured function calling | Prompt Chaining | [overview](./patterns/tool-use/overview.md) | [design](./patterns/tool-use/design.md) | [impl](./patterns/tool-use/implementation.md) |
+| **Memory** | Persistent state across sessions | Prompt Chaining | [overview](./patterns/memory/overview.md) | [design](./patterns/memory/design.md) | [impl](./patterns/memory/implementation.md) |
+| **RAG** | Retrieval-augmented generation | Parallel Calls | [overview](./patterns/rag/overview.md) | [design](./patterns/rag/design.md) | [impl](./patterns/rag/implementation.md) |
+| **Reflection** | Self-critique and refinement | Evaluator-Optimizer | [overview](./patterns/reflection/overview.md) | [design](./patterns/reflection/design.md) | [impl](./patterns/reflection/implementation.md) |
+| **Routing** | Intent classification + dispatch | Parallel Calls | [overview](./patterns/routing/overview.md) | [design](./patterns/routing/design.md) | [impl](./patterns/routing/implementation.md) |
+| **Multi-Agent** | Supervisor-worker delegation | Orchestrator-Worker + Routing | [overview](./patterns/multi-agent/overview.md) | [design](./patterns/multi-agent/design.md) | [impl](./patterns/multi-agent/implementation.md) |
 
----
+## How Workflows Become Agents
 
-## Quickstart
+Each agent pattern evolves from a workflow. When a workflow's conditional logic becomes too complex, it's time to let the LLM make those decisions.
 
-The fastest way to scaffold a blueprint into your own project:
+```mermaid
+graph LR
+    PC[Prompt Chaining] -->|"+ dynamic tools"| ReAct[ReAct]
+    PC -->|"+ function schemas"| TU[Tool Use]
+    PC -->|"+ persistence"| Mem[Memory]
+    PAR[Parallel Calls] -->|"+ retrieval"| RAG[RAG]
+    PAR -->|"+ classification"| Route[Routing]
+    OW[Orchestrator-Worker] -->|"+ planning"| PE[Plan & Execute]
+    OW -->|"+ agent workers"| MA[Multi-Agent]
+    Route -->|"+ agent workers"| MA
+    EO[Evaluator-Optimizer] -->|"+ self-critique"| Ref[Reflection]
 
-```bash
-npx agent-blueprints@latest init
+    style PC fill:#e8f5e9
+    style PAR fill:#e8f5e9
+    style OW fill:#e8f5e9
+    style EO fill:#e8f5e9
+    style ReAct fill:#fff3e0
+    style TU fill:#fff3e0
+    style Mem fill:#fff3e0
+    style RAG fill:#fff3e0
+    style Route fill:#fff3e0
+    style PE fill:#fff3e0
+    style MA fill:#fff3e0
+    style Ref fill:#fff3e0
 ```
 
-The interactive CLI will ask you which blueprint you want, which language (Python or TypeScript), and where to place the generated files. You can also pass flags directly:
+Each agent pattern includes an [evolution.md](./patterns/react/evolution.md) document that traces this bridge in detail.
 
-```bash
-# Scaffold blueprint 04 in TypeScript into ./my-agent
-npx agent-blueprints@latest init --blueprint 04 --lang typescript --out ./my-agent
-```
-
-> **Requirements:** Node 20+. Python blueprints additionally require Python 3.11+ and [uv](https://github.com/astral-sh/uv). TypeScript blueprints require [pnpm](https://pnpm.io/) 9+.
-
----
-
-## Project structure
+## Repository Structure
 
 ```
 agent-blueprints/
-├── blueprints/
-│   ├── 01-react-agent/
-│   │   ├── README.md             # Blueprint overview & usage
-│   │   ├── architecture.md       # Mermaid diagram + design rationale
-│   │   ├── python/
-│   │   │   ├── agent.py
-│   │   │   ├── pyproject.toml
-│   │   │   └── tests/
-│   │   ├── typescript/
-│   │   │   ├── src/agent.ts
-│   │   │   ├── package.json
-│   │   │   └── tests/
-│   │   └── docker-compose.yml
-│   └── ...                       # Additional blueprints are added incrementally
-├── packages/
-│   └── cli/                      # npx agent-blueprints CLI (TypeScript)
-├── .github/
-│   ├── workflows/
-│   │   └── ci.yml
-│   └── ISSUE_TEMPLATE/
-│       └── new-blueprint.yml
-├── CONTRIBUTING.md
-├── CODE_OF_CONDUCT.md
-└── LICENSE
+├── foundations/          # Core concepts, terminology, pattern selection
+├── workflows/           # 4 pre-agent workflow patterns (3 tiers each)
+├── patterns/            # 8 agent patterns (3 tiers + evolution bridge each)
+├── composition/         # How patterns combine into production systems
+├── meta/                # Contributing, style guide, roadmap
+└── legacy/              # Archived code implementations from Phase 1
 ```
 
-Every blueprint directory is self-contained: you can copy any single folder into your project and it works without touching the rest of the repo.
+## Design Principles
 
----
-
-## Why agent-blueprints?
-
-Most AI agent tutorials stop at toy examples. `agent-blueprints` is different:
-
-- **Framework-agnostic** — Implementations avoid tying you to a single SDK. Where a framework adds genuine value (e.g. LangGraph for stateful graphs) it is used, but always as a thin, swappable layer.
-- **Production-first** — Each blueprint includes error handling, retries, structured logging, and environment-variable-driven configuration out of the box.
-- **Parity across languages** — Python and TypeScript implementations are functionally equivalent and maintained together, so you can compare idioms directly.
-- **Tested** — Every blueprint ships with a unit test suite and, where applicable, integration tests that run against a local LLM stub so CI never hits a paid API.
-- **Composable** — Blueprints are designed to be combined. The Memory Agent slot cleanly into the Multi-Agent Supervisor, for example.
-
----
-
-## Running a blueprint locally
-
-### Python (using uv)
-
-```bash
-cd blueprints/01-react-agent/python
-uv sync
-cp .env.example .env        # add your API keys
-uv run python agent.py
-uv run pytest
-```
-
-### TypeScript (using pnpm)
-
-```bash
-cd blueprints/01-react-agent/typescript
-pnpm install
-cp .env.example .env        # add your API keys
-pnpm dev
-pnpm test
-```
-
-### Docker Compose (full stack)
-
-```bash
-cd blueprints/01-react-agent
-docker compose up
-```
-
-The Compose file spins up the agent alongside any required backing services (vector store, Redis, etc.) with a single command.
-
----
+1. **Architecture-first** — Teach readers to design before they build
+2. **3-tier depth** — Overview → Design → Implementation. Read only what you need.
+3. **Workflows → Agents** — Workflows are the foundation. Agents build on them.
+4. **Generalized, not use-case-bound** — Patterns are abstract and composable
+5. **Framework-agnostic** — No provider lock-in. The LLM is a swappable layer.
 
 ## Contributing
 
-Contributions are very welcome. If you have an idea for a new blueprint, found a bug, or want to improve an existing implementation, please read the [Contributing Guide](./CONTRIBUTING.md) first — it explains the blueprint requirements checklist, code standards, and PR process.
-
-For major proposals (new blueprints or significant refactors), please [open an issue](https://github.com/jagguvarma15/agent-blueprints/issues/new/choose) using the **New Blueprint** template before writing code.
-
-Please note that this project adheres to the [Contributor Covenant Code of Conduct](./CODE_OF_CONDUCT.md). By participating, you agree to uphold it.
-
----
+See the [Contributing Guide](./meta/contributing.md) and [Style Guide](./meta/style-guide.md).
 
 ## Roadmap
 
-- [ ] Blueprint 11: Long-horizon task agent with checkpointing
-- [ ] Blueprint 12: Evaluator-Optimizer loop
-- [ ] Blueprint 13: Agentic RAG (query decomposition + self-correction)
-- [ ] VS Code extension for one-click scaffold
-- [ ] OpenTelemetry tracing guide for all blueprints
-
-Track progress and vote on priorities in the [GitHub Discussions](https://github.com/jagguvarma15/agent-blueprints/discussions).
-
----
+This is Phase 1 (documentation). Code implementations, advanced patterns, and tooling are planned for future phases. See the [full roadmap](./meta/roadmap.md).
 
 ## License
 
 Released under the [MIT License](./LICENSE). Copyright (c) 2026 Jagadesh Varma Nadimpalli.
-
-You are free to use, modify, and distribute these blueprints in your own projects — commercial or otherwise — with no strings attached. Attribution is appreciated but not required.
