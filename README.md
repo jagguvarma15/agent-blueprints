@@ -1,5 +1,10 @@
 # Agent Blueprints
 
+[![Documentation Validation](https://github.com/jagguvarma15/agent-blueprints/actions/workflows/docs.yml/badge.svg)](https://github.com/jagguvarma15/agent-blueprints/actions/workflows/docs.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![Framework Agnostic](https://img.shields.io/badge/framework-agnostic-blue)](./foundations/README.md)
+[![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen)](./meta/contributing.md)
+
 **An architecture-first guide to designing LLM workflow and agent systems.**
 
 ---
