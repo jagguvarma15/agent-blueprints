@@ -1,0 +1,61 @@
+---
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import { readMarkdown } from '../../utils/content';
+import { renderMarkdown } from '../../utils/markdown';
+
+const readmeMd = readMarkdown('foundations/README.md');
+const readmeHtml = readmeMd ? renderMarkdown(readmeMd) : null;
+
+const base = import.meta.env.BASE_URL || '/agent-blueprints';
+
+const pages = [
+  {
+    slug: 'terminology',
+    title: 'Terminology',
+    description: 'Precise definitions of core concepts: LLM, Prompt, Tool, State, Memory, Context Window, and more.',
+    file: 'foundations/terminology.md',
+  },
+  {
+    slug: 'anatomy-of-an-agent',
+    title: 'Anatomy of an Agent',
+    description: 'The components that make up an agent system: Agent Core, Goal, Tools, State, Memory, Constraints.',
+    file: 'foundations/anatomy-of-an-agent.md',
+  },
+  {
+    slug: 'choosing-a-pattern',
+    title: 'Choosing a Pattern',
+    description: 'A decision flowchart to help you pick the right workflow or agent pattern for your problem.',
+    file: 'foundations/choosing-a-pattern.md',
+  },
+];
+---
+
+<DocsLayout title="Foundations" description="Core concepts, terminology, and mental models for LLM systems.">
+  <div class="max-w-prose">
+    <div class="mb-8">
+      <h1 class="font-display font-bold text-4xl tracking-display text-text mb-3">Foundations</h1>
+      <p class="text-lg text-text-secondary">
+        Before picking a pattern, build the mental models. This section covers the vocabulary, anatomy, and decision frameworks you'll use throughout the repository.
+      </p>
+    </div>
+
+    <!-- Foundation pages grid -->
+    <div class="grid sm:grid-cols-1 gap-4 mb-10">
+      {pages.map((p) => (
+        <a
+          href={`${base}/foundations/${p.slug}/`}
+          class="group bg-bg border border-surface-border rounded-xl p-5 hover:shadow-card-hover hover:-translate-y-0.5 transition-all"
+        >
+          <h2 class="font-display font-bold text-base tracking-display text-text group-hover:text-accent transition-colors mb-1.5">
+            {p.title}
+          </h2>
+          <p class="text-sm text-text-secondary leading-relaxed">{p.description}</p>
+        </a>
+      ))}
+    </div>
+
+    {readmeHtml && (
+      <div class="prose-content border-t border-surface-border pt-8" set:html={readmeHtml} />
+    )}
+  </div>
+</DocsLayout>

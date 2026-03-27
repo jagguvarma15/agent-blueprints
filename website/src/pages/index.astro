@@ -1,0 +1,241 @@
+---
+import Base from '../layouts/Base.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import PatternCard from '../components/PatternCard.astro';
+import ComplexityBadge from '../components/ComplexityBadge.astro';
+import HeroViz from '../components/HeroViz';
+import { WORKFLOWS, AGENT_PATTERNS } from '../data/patterns';
+
+const base = import.meta.env.BASE_URL || '/agent-blueprints';
+---
+
+<Base title="Home" description="Architecture-first patterns for building LLM workflow and agent systems.">
+  <div class="min-h-screen flex flex-col">
+    <Navbar />
+
+    <main class="flex-1">
+
+      <!-- ── Hero ─────────────────────────────────────────────── -->
+      <section class="max-w-landing mx-auto px-6 py-16 lg:py-24">
+        <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+
+          <!-- Left: copy -->
+          <div class="animate-fade-up">
+            <div class="inline-flex items-center gap-2 text-xs font-mono text-text-secondary bg-surface border border-surface-border px-3 py-1.5 rounded-full mb-6">
+              <div class="w-1.5 h-1.5 bg-success rounded-full animate-pulse-soft"></div>
+              Open source · MIT License · 12 patterns
+            </div>
+
+            <h1 class="font-display font-bold text-5xl lg:text-6xl tracking-display text-text mb-5 leading-heading text-balance">
+              Agent<br/>Blueprints
+            </h1>
+
+            <p class="text-lg text-text-secondary leading-relaxed mb-8 max-w-md">
+              Architecture-first patterns for building LLM workflow and agent systems.
+              Learn to <em>design</em> before you code.
+            </p>
+
+            <div class="flex flex-wrap gap-3">
+              <a
+                href={`${base}/foundations/`}
+                class="inline-flex items-center gap-2 px-5 py-2.5 bg-accent text-white font-medium rounded-xl hover:bg-accent-hover transition-colors shadow-sm"
+              >
+                Start with Foundations
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+              </a>
+              <a
+                href={`${base}/playground/`}
+                class="inline-flex items-center gap-2 px-5 py-2.5 bg-bg border border-surface-border text-text font-medium rounded-xl hover:bg-surface hover:border-accent/40 transition-colors"
+              >
+                Jump to Playground
+              </a>
+            </div>
+
+            <!-- Stats row -->
+            <div class="mt-10 flex items-center gap-6 text-sm">
+              <div>
+                <span class="font-display font-bold text-2xl text-text">4</span>
+                <span class="text-text-secondary ml-1">Workflows</span>
+              </div>
+              <div class="w-px h-6 bg-surface-border"></div>
+              <div>
+                <span class="font-display font-bold text-2xl text-text">8</span>
+                <span class="text-text-secondary ml-1">Agent Patterns</span>
+              </div>
+              <div class="w-px h-6 bg-surface-border"></div>
+              <div>
+                <span class="font-display font-bold text-2xl text-text">3</span>
+                <span class="text-text-secondary ml-1">Tiers of depth</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: interactive viz -->
+          <div class="relative h-80 lg:h-96 animate-fade-up" style="animation-delay:150ms">
+            <HeroViz client:load />
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Navigation cards ──────────────────────────────────── -->
+      <section class="bg-bg-alt border-y border-surface-border">
+        <div class="max-w-landing mx-auto px-6 py-14">
+          <h2 class="font-display font-bold text-2xl tracking-display text-text mb-2 text-center">
+            How to navigate this repo
+          </h2>
+          <p class="text-text-secondary text-center mb-10">Three entry points, one through line.</p>
+
+          <div class="grid md:grid-cols-3 gap-5">
+
+            <!-- Foundations -->
+            <a
+              href={`${base}/foundations/`}
+              class="group bg-bg border border-surface-border rounded-2xl p-6 hover:shadow-card-hover hover:-translate-y-0.5 transition-all"
+            >
+              <div class="w-10 h-10 bg-accent-light rounded-xl flex items-center justify-center mb-4">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4F46E5" stroke-width="1.5">
+                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+              </div>
+              <h3 class="font-display font-bold text-base tracking-display text-text group-hover:text-accent transition-colors mb-2">
+                Foundations
+              </h3>
+              <p class="text-sm text-text-secondary leading-relaxed">
+                Core vocabulary, mental models, and how to choose the right pattern for your problem.
+              </p>
+            </a>
+
+            <!-- Patterns -->
+            <a
+              href={`${base}/workflows/`}
+              class="group bg-bg border border-surface-border rounded-2xl p-6 hover:shadow-card-hover hover:-translate-y-0.5 transition-all"
+            >
+              <div class="w-10 h-10 bg-amber-50 rounded-xl flex items-center justify-center mb-4">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="1.5">
+                  <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+                </svg>
+              </div>
+              <h3 class="font-display font-bold text-base tracking-display text-text group-hover:text-accent transition-colors mb-2">
+                Workflows & Patterns
+              </h3>
+              <p class="text-sm text-text-secondary leading-relaxed">
+                4 LLM workflows and 8 agent patterns. Each documented at 3 levels of depth.
+              </p>
+            </a>
+
+            <!-- Playground -->
+            <a
+              href={`${base}/playground/`}
+              class="group bg-bg border border-surface-border rounded-2xl p-6 hover:shadow-card-hover hover:-translate-y-0.5 transition-all"
+            >
+              <div class="w-10 h-10 bg-emerald-50 rounded-xl flex items-center justify-center mb-4">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="1.5">
+                  <polygon points="5 3 19 12 5 21 5 3"/>
+                </svg>
+              </div>
+              <h3 class="font-display font-bold text-base tracking-display text-text group-hover:text-accent transition-colors mb-2">
+                Interactive Playground
+              </h3>
+              <p class="text-sm text-text-secondary leading-relaxed">
+                Toggle components on/off in any pattern to see exactly what each piece does.
+              </p>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Pattern grid ──────────────────────────────────────── -->
+      <section class="max-w-landing mx-auto px-6 py-16">
+        <div class="text-center mb-12">
+          <h2 class="font-display font-bold text-3xl tracking-display text-text mb-3">
+            12 Patterns, 3 Levels of Depth
+          </h2>
+          <p class="text-text-secondary">
+            Every pattern is documented from high-level overview to implementation detail.
+          </p>
+        </div>
+
+        <!-- Workflows -->
+        <div class="mb-12">
+          <div class="flex items-center gap-3 mb-5">
+            <div class="flex items-center gap-2">
+              <div class="w-2 h-2 rounded-full bg-emerald-400"></div>
+              <h3 class="font-display font-bold text-lg tracking-display text-text">LLM Workflows</h3>
+            </div>
+            <div class="flex-1 h-px bg-surface-border"></div>
+            <a href={`${base}/workflows/`} class="text-sm text-accent hover:text-accent-hover transition-colors font-medium">
+              View all →
+            </a>
+          </div>
+          <p class="text-sm text-text-secondary mb-5">
+            The code controls the flow. Developer-defined structure, LLM-filled content.
+          </p>
+          <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {WORKFLOWS.map((p) => <PatternCard pattern={p} />)}
+          </div>
+        </div>
+
+        <!-- Dotted evolution line -->
+        <div class="flex items-center gap-4 mb-10 py-4">
+          <div class="flex-1 border-t border-dashed border-surface-border"></div>
+          <div class="flex items-center gap-2 px-4 py-2 bg-bg-alt border border-surface-border rounded-full text-xs text-text-secondary font-mono">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="2">
+              <path d="M12 19V5M5 12l7-7 7 7"/>
+            </svg>
+            Workflows evolve into Agent Patterns
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="2">
+              <path d="M12 5v14M19 12l-7 7-7-7"/>
+            </svg>
+          </div>
+          <div class="flex-1 border-t border-dashed border-surface-border"></div>
+        </div>
+
+        <!-- Agent Patterns -->
+        <div>
+          <div class="flex items-center gap-3 mb-5">
+            <div class="flex items-center gap-2">
+              <div class="w-2 h-2 rounded-full bg-amber-400"></div>
+              <h3 class="font-display font-bold text-lg tracking-display text-text">Agent Patterns</h3>
+            </div>
+            <div class="flex-1 h-px bg-surface-border"></div>
+            <a href={`${base}/patterns/`} class="text-sm text-accent hover:text-accent-hover transition-colors font-medium">
+              View all →
+            </a>
+          </div>
+          <p class="text-sm text-text-secondary mb-5">
+            The LLM controls the flow. Developer-provided tools and constraints, LLM-decided actions.
+          </p>
+          <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {AGENT_PATTERNS.map((p) => <PatternCard pattern={p} showEvolution />)}
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Call to action ────────────────────────────────────── -->
+      <section class="bg-bg-alt border-t border-surface-border">
+        <div class="max-w-landing mx-auto px-6 py-16 text-center">
+          <h2 class="font-display font-bold text-2xl tracking-display text-text mb-3">
+            Ready to design your agent?
+          </h2>
+          <p class="text-text-secondary mb-8 max-w-md mx-auto">
+            Use the decision flowchart to find the right pattern, or explore the evolution explorer to understand the full design space.
+          </p>
+          <div class="flex flex-wrap gap-3 justify-center">
+            <a href={`${base}/compare/`} class="px-5 py-2.5 bg-accent text-white font-medium rounded-xl hover:bg-accent-hover transition-colors">
+              Compare Patterns
+            </a>
+            <a href={`${base}/explorer/`} class="px-5 py-2.5 bg-bg border border-surface-border text-text font-medium rounded-xl hover:bg-surface transition-colors">
+              Evolution Explorer
+            </a>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <Footer />
+  </div>
+</Base>

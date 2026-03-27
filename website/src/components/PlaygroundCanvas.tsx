@@ -7,8 +7,10 @@ import {
   type Node,
   type Edge,
   type NodeTypes,
-  useNodesState,
-  useEdgesState,
+  type NodeChange,
+  type EdgeChange,
+  applyNodeChanges,
+  applyEdgeChanges,
   MarkerType,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
@@ -108,6 +110,8 @@ interface PlaygroundCanvasProps {
 export default function PlaygroundCanvas({ pattern }: PlaygroundCanvasProps) {
   const [disabledNodes, setDisabledNodes] = useState<Set<string>>(new Set());
   const [info, setInfo] = useState<InfoState>({ type: 'default' });
+  // Track node positions (for drag support)
+  const [nodePositions, setNodePositions] = useState<Record<string, { x: number; y: number }>>({});
 
   // Compute cascade-disabled nodes
   const cascadeDisabled = useMemo(() => {
@@ -152,6 +156,18 @@ export default function PlaygroundCanvas({ pattern }: PlaygroundCanvasProps) {
     },
     [pattern.nodes, disabledNodes, cascadeDisabled],
   );
+
+  const handleNodesChange = useCallback((changes: NodeChange[]) => {
+    setNodePositions((prev) => {
+      const next = { ...prev };
+      for (const change of changes) {
+        if (change.type === 'position' && 'position' in change && change.position) {
+          next[change.id] = change.position;
+        }
+      }
+      return next;
+    });
+  }, []);
 
   const rfNodes: Node[] = useMemo(
     () =>

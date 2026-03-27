@@ -1,0 +1,50 @@
+---
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import PatternCard from '../../components/PatternCard.astro';
+import { WORKFLOWS } from '../../data/patterns';
+
+const base = import.meta.env.BASE_URL || '/agent-blueprints';
+---
+
+<DocsLayout
+  title="Workflows"
+  description="4 LLM workflow patterns where the code controls the flow."
+>
+  <div class="max-w-prose">
+    <div class="mb-8">
+      <div class="flex items-center gap-2 mb-3">
+        <div class="w-2 h-2 rounded-full bg-emerald-400"></div>
+        <span class="text-xs font-mono text-text-tertiary uppercase tracking-wider">Workflows</span>
+      </div>
+      <h1 class="font-display font-bold text-4xl tracking-display text-text mb-3">LLM Workflows</h1>
+      <p class="text-lg text-text-secondary leading-relaxed">
+        Workflows are orchestrated patterns where <strong>the code controls the flow</strong>.
+        The developer defines the structure; the LLM fills in the content.
+      </p>
+    </div>
+
+    <div class="bg-bg-alt border border-surface-border rounded-xl p-5 mb-10 text-sm text-text-secondary">
+      <p class="mb-2"><strong class="text-text">When to use workflows</strong> instead of agents:</p>
+      <ul class="list-disc pl-4 space-y-1">
+        <li>The task can be broken into known, predictable steps</li>
+        <li>You need deterministic, auditable behavior</li>
+        <li>Low latency is critical — no dynamic decision overhead</li>
+        <li>You're not yet sure if agent autonomy is needed</li>
+      </ul>
+    </div>
+
+    <div class="grid sm:grid-cols-2 gap-4 mb-12">
+      {WORKFLOWS.map((p) => <PatternCard pattern={p} />)}
+    </div>
+
+    <!-- Evolution bridge -->
+    <div class="border border-dashed border-surface-border rounded-xl p-6 text-center">
+      <p class="text-sm text-text-secondary mb-3">
+        When workflow logic becomes too complex, it's time to graduate to agent patterns.
+      </p>
+      <a href={`${base}/explorer/`} class="text-sm text-accent hover:text-accent-hover font-medium transition-colors">
+        Explore the evolution from Workflows → Agents →
+      </a>
+    </div>
+  </div>
+</DocsLayout>

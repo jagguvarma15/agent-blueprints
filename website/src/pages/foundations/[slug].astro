@@ -1,0 +1,47 @@
+---
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import TableOfContents from '../../components/TableOfContents';
+import { readMarkdown, extractHeadings, extractTitle } from '../../utils/content';
+import { renderMarkdown } from '../../utils/markdown';
+
+const FOUNDATION_PAGES = [
+  { slug: 'terminology', file: 'foundations/terminology.md' },
+  { slug: 'anatomy-of-an-agent', file: 'foundations/anatomy-of-an-agent.md' },
+  { slug: 'choosing-a-pattern', file: 'foundations/choosing-a-pattern.md' },
+];
+
+export function getStaticPaths() {
+  return FOUNDATION_PAGES.map((p) => ({
+    params: { slug: p.slug },
+    props: { slug: p.slug, file: p.file },
+  }));
+}
+
+const { slug, file } = Astro.props;
+const md = readMarkdown(file);
+const html = md ? renderMarkdown(md) : null;
+const title = md ? extractTitle(md) : slug;
+const headings = md ? extractHeadings(md) : [];
+---
+
+<DocsLayout title={title}>
+  <div class="flex gap-8">
+    <div class="flex-1 min-w-0">
+      <div class="flex items-center gap-2 mb-6">
+        <span class="text-xs font-mono text-text-tertiary uppercase tracking-wider">Foundations</span>
+      </div>
+
+      {html ? (
+        <div class="prose-content" set:html={html} />
+      ) : (
+        <div class="py-16 text-center">
+          <p class="text-text-secondary text-sm">Content coming soon.</p>
+        </div>
+      )}
+    </div>
+
+    <div class="w-toc flex-shrink-0 hidden xl:block">
+      <TableOfContents client:load headings={headings} />
+    </div>
+  </div>
+</DocsLayout>

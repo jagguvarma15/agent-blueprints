@@ -1,0 +1,96 @@
+---
+import FullWidthLayout from '../../layouts/FullWidthLayout.astro';
+import PlaygroundCanvas from '../../components/PlaygroundCanvas';
+import { PLAYGROUND_PATTERNS } from '../../data/playground';
+import { WORKFLOWS, AGENT_PATTERNS } from '../../data/patterns';
+
+const base = import.meta.env.BASE_URL || '/agent-blueprints';
+
+// Group patterns for the selector
+const workflowPatterns = PLAYGROUND_PATTERNS.filter((p) => p.category === 'workflow');
+const agentPatterns = PLAYGROUND_PATTERNS.filter((p) => p.category === 'agent');
+---
+
+<FullWidthLayout
+  title="Playground"
+  description="Interactive architecture playground — toggle components on/off to explore what each piece does."
+>
+  <div class="h-[calc(100vh-3.5rem)] flex flex-col">
+
+    <!-- Top bar -->
+    <div class="border-b border-surface-border bg-bg px-6 py-3 flex items-center gap-4 flex-shrink-0">
+      <div class="flex items-center gap-3">
+        <label for="pattern-select" class="text-sm font-medium text-text-secondary font-mono whitespace-nowrap">
+          Pattern:
+        </label>
+        <select
+          id="pattern-select"
+          class="text-sm border border-surface-border rounded-lg px-3 py-1.5 bg-bg text-text font-mono focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/30 transition-colors"
+        >
+          <optgroup label="Workflows">
+            {workflowPatterns.map((p) => (
+              <option value={p.id}>{p.name}</option>
+            ))}
+          </optgroup>
+          <optgroup label="Agent Patterns">
+            {agentPatterns.map((p) => (
+              <option value={p.id}>{p.name}</option>
+            ))}
+          </optgroup>
+        </select>
+      </div>
+
+      <div id="pattern-name-display" class="font-display font-bold text-base tracking-display text-text hidden md:block">
+        Prompt Chaining
+      </div>
+
+      <div class="ml-auto flex items-center gap-3 text-xs text-text-tertiary font-mono">
+        <span class="hidden sm:inline">Double-click nodes to toggle</span>
+        <a href={`${base}/compare/`} class="text-accent hover:text-accent-hover transition-colors">
+          Compare patterns →
+        </a>
+      </div>
+    </div>
+
+    <!-- Canvas area -->
+    <div class="flex-1 overflow-hidden px-4 py-4" id="playground-container">
+      <!-- React component with initial pattern -->
+      {PLAYGROUND_PATTERNS.map((p) => (
+        <div
+          id={`playground-${p.id}`}
+          class={p.id === 'prompt-chaining' ? 'block h-full' : 'hidden h-full'}
+        >
+          <PlaygroundCanvas client:load pattern={p} />
+        </div>
+      ))}
+    </div>
+
+  </div>
+</FullWidthLayout>
+
+<script>
+  const select = document.getElementById('pattern-select') as HTMLSelectElement;
+  const nameDisplay = document.getElementById('pattern-name-display');
+
+  select?.addEventListener('change', () => {
+    const selectedId = select.value;
+
+    // Hide all playgrounds
+    document.querySelectorAll('[id^="playground-"]').forEach((el) => {
+      (el as HTMLElement).classList.add('hidden');
+      (el as HTMLElement).classList.remove('block');
+    });
+
+    // Show selected
+    const target = document.getElementById(`playground-${selectedId}`);
+    if (target) {
+      target.classList.remove('hidden');
+      target.classList.add('block');
+    }
+
+    // Update name display
+    if (nameDisplay) {
+      nameDisplay.textContent = select.options[select.selectedIndex].text;
+    }
+  });
+</script>

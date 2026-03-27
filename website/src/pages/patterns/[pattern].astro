@@ -1,0 +1,105 @@
+---
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import ComplexityBadge from '../../components/ComplexityBadge.astro';
+import TierTabs from '../../components/TierTabs';
+import TableOfContents from '../../components/TableOfContents';
+import { AGENT_PATTERNS, getWorkflowById } from '../../data/patterns';
+import { readMarkdown, extractHeadings } from '../../utils/content';
+import { renderMarkdown } from '../../utils/markdown';
+
+export async function getStaticPaths() {
+  return AGENT_PATTERNS.map((p) => ({
+    params: { pattern: p.slug },
+    props: { pattern: p },
+  }));
+}
+
+const { pattern } = Astro.props;
+const base = import.meta.env.BASE_URL || '/agent-blueprints';
+
+// Read all tier files
+const overviewMd = readMarkdown(`patterns/${pattern.slug}/overview.md`);
+const designMd = readMarkdown(`patterns/${pattern.slug}/design.md`);
+const implMd = readMarkdown(`patterns/${pattern.slug}/implementation.md`);
+const evolutionMd = readMarkdown(`patterns/${pattern.slug}/evolution.md`);
+
+const overviewHtml = overviewMd ? renderMarkdown(overviewMd) : null;
+const designHtml = designMd ? renderMarkdown(designMd) : null;
+const implHtml = implMd ? renderMarkdown(implMd) : null;
+const evolutionHtml = evolutionMd ? renderMarkdown(evolutionMd) : null;
+
+const overviewHeadings = overviewMd ? extractHeadings(overviewMd) : [];
+
+const tabs = [
+  { id: 'overview' as const, label: 'Overview' },
+  { id: 'design' as const, label: 'Design' },
+  { id: 'implementation' as const, label: 'Implementation' },
+  { id: 'evolution' as const, label: 'Evolution' },
+];
+
+// Resolve parent workflows
+const parentWorkflows = (pattern.evolvesFrom ?? [])
+  .map((id) => getWorkflowById(id))
+  .filter(Boolean);
+---
+
+<DocsLayout
+  title={pattern.name}
+  description={pattern.description}
+  currentPattern={pattern.slug}
+  currentCategory="agent"
+>
+  <div class="flex gap-8">
+    <!-- Main content -->
+    <div class="flex-1 min-w-0">
+      <!-- Pattern header -->
+      <div class="mb-8">
+        <div class="flex items-center gap-2 mb-3">
+          <div class="w-2 h-2 rounded-full bg-amber-400"></div>
+          <span class="text-xs font-mono text-text-tertiary uppercase tracking-wider">Agent Pattern</span>
+        </div>
+        <h1 class="font-display font-bold text-4xl tracking-display text-text mb-3">
+          {pattern.name}
+        </h1>
+        <p class="text-lg text-text-secondary mb-4">{pattern.description}</p>
+
+        <div class="flex flex-wrap items-center gap-3">
+          <ComplexityBadge complexity={pattern.complexity} />
+
+          {parentWorkflows.length > 0 && (
+            <span class="flex items-center gap-1.5 text-sm text-text-secondary font-mono">
+              <span class="text-text-tertiary">Evolves from:</span>
+              {parentWorkflows.map((wf, i) => (
+                <>
+                  <a href={`${base}/workflows/${wf!.slug}/`} class="text-accent hover:text-accent-hover transition-colors">
+                    {wf!.name}
+                  </a>
+                  {i < parentWorkflows.length - 1 && <span class="text-text-tertiary">+</span>}
+                </>
+              ))}
+              <a href={`${base}/explorer/`} class="text-text-tertiary hover:text-accent transition-colors text-xs">→</a>
+            </span>
+          )}
+        </div>
+      </div>
+
+      <!-- 4-Tier Tabs -->
+      <TierTabs
+        client:load
+        tabs={tabs}
+        defaultTier="overview"
+        content={{
+          overview: overviewHtml ?? undefined,
+          design: designHtml ?? undefined,
+          implementation: implHtml ?? undefined,
+          evolution: evolutionHtml ?? undefined,
+        }}
+      />
+    </div>
+
+    <!-- Right TOC -->
+    <div class="w-toc flex-shrink-0 hidden xl:block">
+      <TableOfContents client:load headings={overviewHeadings} />
+    </div>
+  </div>
+</DocsLayout>

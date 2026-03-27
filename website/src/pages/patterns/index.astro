@@ -1,0 +1,40 @@
+---
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import PatternCard from '../../components/PatternCard.astro';
+import { AGENT_PATTERNS } from '../../data/patterns';
+
+const base = import.meta.env.BASE_URL || '/agent-blueprints';
+---
+
+<DocsLayout
+  title="Agent Patterns"
+  description="8 agent patterns where the LLM controls the flow."
+>
+  <div class="max-w-prose">
+    <div class="mb-8">
+      <div class="flex items-center gap-2 mb-3">
+        <div class="w-2 h-2 rounded-full bg-amber-400"></div>
+        <span class="text-xs font-mono text-text-tertiary uppercase tracking-wider">Agent Patterns</span>
+      </div>
+      <h1 class="font-display font-bold text-4xl tracking-display text-text mb-3">Agent Patterns</h1>
+      <p class="text-lg text-text-secondary leading-relaxed">
+        Agents are systems where <strong>the LLM controls the flow</strong>.
+        The developer provides tools and constraints; the LLM decides what to do.
+      </p>
+    </div>
+
+    <div class="bg-bg-alt border border-surface-border rounded-xl p-5 mb-10 text-sm text-text-secondary">
+      <p class="mb-2"><strong class="text-text">When to use agents</strong> instead of workflows:</p>
+      <ul class="list-disc pl-4 space-y-1">
+        <li>The required steps are unknown at design time</li>
+        <li>The task needs to react to unexpected observations</li>
+        <li>You need open-ended tool use and dynamic decision-making</li>
+        <li>The workflow conditional logic has become too complex to hardcode</li>
+      </ul>
+    </div>
+
+    <div class="grid sm:grid-cols-2 gap-4">
+      {AGENT_PATTERNS.map((p) => <PatternCard pattern={p} showEvolution />)}
+    </div>
+  </div>
+</DocsLayout>
