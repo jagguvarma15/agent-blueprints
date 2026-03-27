@@ -3,10 +3,9 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
 import ComplexityBadge from '../../components/ComplexityBadge.astro';
 import TierTabs from '../../components/TierTabs';
 import TableOfContents from '../../components/TableOfContents';
-import { WORKFLOWS, getWorkflowById } from '../../data/patterns';
-import { readMarkdown } from '../../utils/content';
+import { WORKFLOWS, AGENT_PATTERNS } from '../../data/patterns';
+import { readMarkdown, extractHeadings } from '../../utils/content';
 import { renderMarkdown } from '../../utils/markdown';
-import { extractHeadings } from '../../utils/content';
 
 export async function getStaticPaths() {
   return WORKFLOWS.map((p) => ({
@@ -36,13 +35,9 @@ const tabs = [
   { id: 'implementation' as const, label: 'Implementation' },
 ];
 
-const evolvesInto = pattern.evolvesInto
-  ? pattern.evolvesInto.map((id) => {
-      const ap = WORKFLOWS.find((w) => w.id === id);
-      // Actually look in agent patterns
-      return null;
-    }).filter(Boolean)
-  : [];
+const evolvesIntoPatterns = (pattern.evolvesInto ?? [])
+  .map((id) => AGENT_PATTERNS.find((ap) => ap.id === id))
+  .filter(Boolean);
 ---
 
 <DocsLayout
@@ -68,15 +63,15 @@ const evolvesInto = pattern.evolvesInto
         <div class="flex flex-wrap items-center gap-2">
           <ComplexityBadge complexity={pattern.complexity} />
           <span class="text-surface-border">·</span>
-          {pattern.evolvesInto && pattern.evolvesInto.length > 0 && (
+          {evolvesIntoPatterns.length > 0 && (
             <span class="text-sm text-text-secondary font-mono">
               Evolves into:{' '}
-              {pattern.evolvesInto.map((id, i) => (
+              {evolvesIntoPatterns.map((ap, i) => (
                 <>
-                  <a href={`${base}/patterns/${id}/`} class="text-accent hover:text-accent-hover transition-colors">
-                    {id}
+                  <a href={`${base}/patterns/${ap!.slug}/`} class="text-accent hover:text-accent-hover transition-colors">
+                    {ap!.name}
                   </a>
-                  {i < (pattern.evolvesInto?.length ?? 0) - 1 && ', '}
+                  {i < evolvesIntoPatterns.length - 1 && ', '}
                 </>
               ))}
             </span>

@@ -5,8 +5,6 @@ import {
   type Node,
   type Edge,
   MarkerType,
-  useNodesState,
-  useEdgesState,
   type NodeMouseHandler,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';

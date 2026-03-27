@@ -9,8 +9,6 @@ import {
   type NodeTypes,
   type NodeChange,
   type EdgeChange,
-  applyNodeChanges,
-  applyEdgeChanges,
   MarkerType,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
@@ -174,7 +172,7 @@ export default function PlaygroundCanvas({ pattern }: PlaygroundCanvasProps) {
       pattern.nodes.map((n) => ({
         id: n.id,
         type: 'playground',
-        position: n.position,
+        position: nodePositions[n.id] ?? n.position,
         data: {
           label: n.label,
           type: n.type,
@@ -186,7 +184,7 @@ export default function PlaygroundCanvas({ pattern }: PlaygroundCanvasProps) {
           onFocus: handleFocus,
         } as CustomNodeData,
       })),
-    [pattern.nodes, disabledNodes, cascadeDisabled, handleToggle, handleFocus],
+    [pattern.nodes, disabledNodes, cascadeDisabled, handleToggle, handleFocus, nodePositions],
   );
 
   const rfEdges: Edge[] = useMemo(
@@ -220,15 +218,13 @@ export default function PlaygroundCanvas({ pattern }: PlaygroundCanvasProps) {
     [pattern.edges, disabledNodes, cascadeDisabled],
   );
 
-  const [nodes, , onNodesChange] = useNodesState(rfNodes);
-  const [edges, , onEdgesChange] = useEdgesState(rfEdges);
-
-  // Keep nodes/edges in sync with state changes
-  const currentNodes = useMemo(() => rfNodes, [rfNodes]);
-  const currentEdges = useMemo(() => rfEdges, [rfEdges]);
+  const handleEdgesChange = useCallback((_changes: EdgeChange[]) => {
+    // edges are fully computed — no-op
+  }, []);
 
   const handleReset = () => {
     setDisabledNodes(new Set());
+    setNodePositions({});
     setInfo({ type: 'default' });
   };
 
@@ -237,10 +233,10 @@ export default function PlaygroundCanvas({ pattern }: PlaygroundCanvasProps) {
       {/* Canvas */}
       <div className="flex-1 rounded-xl border border-surface-border overflow-hidden bg-bg-alt relative">
         <ReactFlow
-          nodes={currentNodes}
-          edges={currentEdges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
+          nodes={rfNodes}
+          edges={rfEdges}
+          onNodesChange={handleNodesChange}
+          onEdgesChange={handleEdgesChange}
           nodeTypes={nodeTypes}
           fitView
           fitViewOptions={{ padding: 0.2 }}
