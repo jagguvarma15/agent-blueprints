@@ -1,0 +1,54 @@
+---
+type CalloutType = 'info' | 'warning' | 'tip' | 'pitfall';
+
+interface Props {
+  type?: CalloutType;
+  title?: string;
+}
+
+const { type = 'info', title } = Astro.props;
+
+const config = {
+  info: {
+    icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
+    borderClass: 'border-blue-200 bg-blue-50',
+    iconClass: 'text-blue-500',
+    titleClass: 'text-blue-800',
+    defaultTitle: 'Note',
+  },
+  warning: {
+    icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
+    borderClass: 'border-amber-200 bg-amber-50',
+    iconClass: 'text-amber-500',
+    titleClass: 'text-amber-800',
+    defaultTitle: 'Warning',
+  },
+  tip: {
+    icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+    borderClass: 'border-green-200 bg-green-50',
+    iconClass: 'text-green-600',
+    titleClass: 'text-green-800',
+    defaultTitle: 'Tip',
+  },
+  pitfall: {
+    icon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>`,
+    borderClass: 'border-red-200 bg-red-50',
+    iconClass: 'text-red-500',
+    titleClass: 'text-red-800',
+    defaultTitle: 'Pitfall',
+  },
+};
+
+const c = config[type];
+const displayTitle = title ?? c.defaultTitle;
+---
+
+<div class={`rounded-xl border p-4 mb-6 flex gap-3 ${c.borderClass}`} role="note">
+  <div class={`mt-0.5 flex-shrink-0 ${c.iconClass}`} set:html={c.icon} />
+  <div class="min-w-0">
+    <p class={`font-semibold text-sm mb-1 ${c.titleClass}`}>{displayTitle}</p>
+    <div class="text-sm text-text [&>p]:mb-0 [&>p:last-child]:mb-0">
+      <slot />
+    </div>
+  </div>
+</div>

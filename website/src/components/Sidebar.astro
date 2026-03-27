@@ -1,0 +1,122 @@
+---
+import { WORKFLOWS, AGENT_PATTERNS } from '../data/patterns';
+
+interface Props {
+  currentPattern?: string;
+  currentCategory?: 'workflow' | 'agent';
+}
+
+const { currentPattern, currentCategory } = Astro.props;
+const base = import.meta.env.BASE_URL || '/agent-blueprints';
+const currentPath = Astro.url.pathname;
+
+function isActive(href: string) {
+  return currentPath === href || currentPath === href.replace(/\/$/, '');
+}
+---
+
+<aside class="w-sidebar flex-shrink-0 hidden lg:block">
+  <nav class="sticky top-14 max-h-[calc(100vh-3.5rem)] overflow-y-auto py-8 pr-4">
+
+    <!-- Foundations -->
+    <div class="mb-6">
+      <a
+        href={`${base}/foundations/`}
+        class={`block px-3 py-1.5 text-sm font-semibold font-display tracking-display rounded-md mb-1 transition-colors ${
+          currentPath.includes('/foundations')
+            ? 'text-accent bg-accent-light'
+            : 'text-text-secondary hover:text-text hover:bg-surface'
+        }`}
+      >
+        Foundations
+      </a>
+    </div>
+
+    <!-- Workflows -->
+    <div class="mb-6">
+      <p class="px-3 mb-2 text-2xs font-semibold font-mono uppercase tracking-widest text-text-tertiary">
+        Workflows
+      </p>
+      <ul class="space-y-0.5">
+        {WORKFLOWS.map((p) => {
+          const href = `${base}/workflows/${p.slug}/`;
+          const active = isActive(href);
+          return (
+            <li>
+              <a
+                href={href}
+                class={`flex items-center px-3 py-1.5 text-sm rounded-md transition-all border-l-2 ${
+                  active
+                    ? 'border-accent text-accent bg-accent-light font-medium'
+                    : 'border-transparent text-text-secondary hover:text-text hover:bg-surface hover:border-surface-border'
+                }`}
+              >
+                {p.name}
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+
+    <!-- Agent Patterns -->
+    <div class="mb-6">
+      <p class="px-3 mb-2 text-2xs font-semibold font-mono uppercase tracking-widest text-text-tertiary">
+        Agent Patterns
+      </p>
+      <ul class="space-y-0.5">
+        {AGENT_PATTERNS.map((p) => {
+          const href = `${base}/patterns/${p.slug}/`;
+          const active = isActive(href);
+          return (
+            <li>
+              <a
+                href={href}
+                class={`flex items-center px-3 py-1.5 text-sm rounded-md transition-all border-l-2 ${
+                  active
+                    ? 'border-accent text-accent bg-accent-light font-medium'
+                    : 'border-transparent text-text-secondary hover:text-text hover:bg-surface hover:border-surface-border'
+                }`}
+              >
+                {p.name}
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+
+    <!-- Composition -->
+    <div class="mb-6">
+      <p class="px-3 mb-2 text-2xs font-semibold font-mono uppercase tracking-widest text-text-tertiary">
+        More
+      </p>
+      <ul class="space-y-0.5">
+        <li>
+          <a
+            href={`${base}/explorer/`}
+            class={`flex items-center px-3 py-1.5 text-sm rounded-md transition-all border-l-2 ${
+              currentPath.includes('/explorer')
+                ? 'border-accent text-accent bg-accent-light font-medium'
+                : 'border-transparent text-text-secondary hover:text-text hover:bg-surface hover:border-surface-border'
+            }`}
+          >
+            Evolution Explorer
+          </a>
+        </li>
+        <li>
+          <a
+            href={`${base}/compare/`}
+            class={`flex items-center px-3 py-1.5 text-sm rounded-md transition-all border-l-2 ${
+              currentPath.includes('/compare')
+                ? 'border-accent text-accent bg-accent-light font-medium'
+                : 'border-transparent text-text-secondary hover:text-text hover:bg-surface hover:border-surface-border'
+            }`}
+          >
+            Compare Patterns
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+</aside>
