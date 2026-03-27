@@ -1,0 +1,23 @@
+---
+import type { Complexity } from '../data/patterns';
+
+interface Props {
+  complexity: Complexity;
+  size?: 'sm' | 'md';
+}
+
+const { complexity, size = 'md' } = Astro.props;
+
+const config = {
+  Beginner: { label: 'Beginner', classes: 'bg-beginner-bg text-beginner-text border-beginner-border' },
+  Intermediate: { label: 'Intermediate', classes: 'bg-intermediate-bg text-intermediate-text border-intermediate-border' },
+  Advanced: { label: 'Advanced', classes: 'bg-advanced-bg text-advanced-text border-advanced-border' },
+};
+
+const { label, classes } = config[complexity];
+const sizeClasses = size === 'sm' ? 'text-2xs px-1.5 py-0.5' : 'text-xs px-2 py-0.5';
+---
+
+<span class={`inline-flex items-center font-medium rounded-full border ${classes} ${sizeClasses} font-mono`}>
+  {label}
+</span>

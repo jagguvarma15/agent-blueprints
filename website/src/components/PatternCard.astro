@@ -1,0 +1,59 @@
+---
+import type { PatternMeta } from '../data/patterns';
+import ComplexityBadge from './ComplexityBadge.astro';
+
+interface Props {
+  pattern: PatternMeta;
+  showEvolution?: boolean;
+}
+
+const { pattern, showEvolution = false } = Astro.props;
+const base = import.meta.env.BASE_URL || '/agent-blueprints';
+const href = `${base}/${pattern.category === 'workflow' ? 'workflows' : 'patterns'}/${pattern.slug}/`;
+
+const categoryLabel = pattern.category === 'workflow' ? 'Workflow' : 'Agent';
+const categoryColor = pattern.category === 'workflow'
+  ? 'text-emerald-700 bg-emerald-50 border-emerald-200'
+  : 'text-amber-700 bg-amber-50 border-amber-200';
+---
+
+<a
+  href={href}
+  class="group block bg-bg border border-surface-border rounded-xl p-5 shadow-card hover:shadow-card-hover hover:-translate-y-0.5 transition-all duration-200"
+>
+  <!-- Header row -->
+  <div class="flex items-start justify-between gap-3 mb-3">
+    <div class="flex items-center gap-2 flex-wrap">
+      <span class={`inline-flex text-2xs font-mono font-medium px-1.5 py-0.5 rounded border ${categoryColor}`}>
+        {categoryLabel}
+      </span>
+      <ComplexityBadge complexity={pattern.complexity} size="sm" />
+    </div>
+    <svg
+      class="text-text-tertiary group-hover:text-accent transition-colors mt-0.5 flex-shrink-0"
+      width="14" height="14" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2"
+    >
+      <path d="M5 12h14M12 5l7 7-7 7"/>
+    </svg>
+  </div>
+
+  <!-- Name -->
+  <h3 class="font-display font-bold text-base tracking-display text-text group-hover:text-accent transition-colors mb-1.5">
+    {pattern.name}
+  </h3>
+
+  <!-- Description -->
+  <p class="text-sm text-text-secondary leading-relaxed">
+    {pattern.description}
+  </p>
+
+  <!-- Evolution hint for agent patterns -->
+  {showEvolution && pattern.evolvesFrom && pattern.evolvesFrom.length > 0 && (
+    <div class="mt-3 pt-3 border-t border-surface-border">
+      <span class="text-2xs text-text-tertiary font-mono">
+        Evolves from {pattern.evolvesFrom.join(' + ')}
+      </span>
+    </div>
+  )}
+</a>
