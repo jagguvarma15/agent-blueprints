@@ -1,0 +1,14 @@
+{
+  "id": "plan-and-execute",
+  "name": "Plan & Execute",
+  "category": "agent",
+  "complexity": "Intermediate",
+  "description": "LLM creates a full plan upfront, then executes each step sequentially.",
+  "tiers": ["overview", "design", "implementation", "evolution"],
+  "evolvesFrom": ["orchestrator-worker"],
+  "composableWith": ["react", "multi-agent"],
+  "requires": ["tools"],
+  "tags": ["planning", "sequential", "structured", "trackable"],
+  "costTier": "medium",
+  "latencyTier": "medium-high"
+}

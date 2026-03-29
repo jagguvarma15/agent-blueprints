@@ -1,0 +1,14 @@
+{
+  "id": "routing",
+  "name": "Routing",
+  "category": "agent",
+  "complexity": "Beginner",
+  "description": "Intent classification dispatches inputs to specialized handlers.",
+  "tiers": ["overview", "design", "implementation", "evolution"],
+  "evolvesFrom": ["parallel-calls"],
+  "composableWith": ["react", "rag", "multi-agent"],
+  "requires": [],
+  "tags": ["classification", "dispatch", "specialization", "intent", "multi-skill"],
+  "costTier": "low",
+  "latencyTier": "low"
+}

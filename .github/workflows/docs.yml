@@ -70,3 +70,7 @@ jobs:
             exit 1
           fi
           echo "All pattern documentation complete"
+
+      - name: Validate metadata.json files
+        run: |
+          node meta/validate-metadata.js

@@ -1,0 +1,13 @@
+{
+  "id": "prompt-chaining",
+  "name": "Prompt Chaining",
+  "category": "workflow",
+  "complexity": "Beginner",
+  "description": "Sequential LLM calls with validation gates between steps.",
+  "tiers": ["overview", "design", "implementation"],
+  "evolvesInto": ["react", "tool-use", "memory"],
+  "composableWith": ["parallel-calls", "evaluator-optimizer"],
+  "tags": ["sequential", "deterministic", "predictable", "low-latency"],
+  "costTier": "low",
+  "latencyTier": "medium"
+}

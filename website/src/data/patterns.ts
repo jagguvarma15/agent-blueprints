@@ -1,3 +1,14 @@
+/**
+ * Pattern metadata for the website.
+ *
+ * Each pattern's authoritative machine-readable metadata lives in:
+ *   workflows/{id}/metadata.json
+ *   patterns/{id}/metadata.json
+ *
+ * The data in this file mirrors those JSON files. If you add a new pattern,
+ * update both the JSON file in the repo and the arrays below.
+ */
+
 export type Complexity = 'Beginner' | 'Intermediate' | 'Advanced';
 export type Category = 'workflow' | 'agent';
 

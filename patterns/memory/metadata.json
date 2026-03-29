@@ -1,0 +1,14 @@
+{
+  "id": "memory",
+  "name": "Memory",
+  "category": "agent",
+  "complexity": "Intermediate",
+  "description": "Persistent state across sessions: short-term, long-term, and semantic memory.",
+  "tiers": ["overview", "design", "implementation", "evolution"],
+  "evolvesFrom": ["prompt-chaining"],
+  "composableWith": ["react", "rag", "multi-agent"],
+  "requires": ["storage"],
+  "tags": ["persistence", "personalization", "context", "sessions", "retrieval"],
+  "costTier": "medium",
+  "latencyTier": "medium"
+}

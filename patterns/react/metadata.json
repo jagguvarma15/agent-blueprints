@@ -1,0 +1,14 @@
+{
+  "id": "react",
+  "name": "ReAct",
+  "category": "agent",
+  "complexity": "Intermediate",
+  "description": "Reason-act loop: the LLM reasons, calls a tool, observes, and repeats until done.",
+  "tiers": ["overview", "design", "implementation", "evolution"],
+  "evolvesFrom": ["prompt-chaining"],
+  "composableWith": ["memory", "reflection", "rag"],
+  "requires": ["tools"],
+  "tags": ["reasoning", "tool-use", "loop", "adaptive", "open-ended"],
+  "costTier": "medium",
+  "latencyTier": "variable"
+}
