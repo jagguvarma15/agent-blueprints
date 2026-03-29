@@ -3,6 +3,7 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
 import ComplexityBadge from '../../components/ComplexityBadge.astro';
 import TierTabs from '../../components/TierTabs';
 import TableOfContents from '../../components/TableOfContents';
+import RelatedPatterns from '../../components/RelatedPatterns.astro';
 import { AGENT_PATTERNS, getWorkflowById } from '../../data/patterns';
 import { readMarkdown, extractHeadings } from '../../utils/content';
 import { renderMarkdown } from '../../utils/markdown';
@@ -95,6 +96,9 @@ const parentWorkflows = (pattern.evolvesFrom ?? [])
           evolution: evolutionHtml ?? undefined,
         }}
       />
+
+      <!-- Related patterns -->
+      <RelatedPatterns pattern={pattern} />
     </div>
 
     <!-- Right TOC -->

@@ -1,0 +1,114 @@
+---
+import type { PatternMeta } from '../data/patterns';
+import { ALL_PATTERNS, PATTERN_COMPARISONS, WORKFLOWS } from '../data/patterns';
+import ComplexityBadge from './ComplexityBadge.astro';
+
+interface Props {
+  pattern: PatternMeta;
+}
+
+const { pattern } = Astro.props;
+const base = import.meta.env.BASE_URL || '/agent-blueprints';
+
+// --- Build the three relationship groups ---
+
+// 1. Evolution: "evolves from" (agent patterns) or "evolves into" (workflows)
+const evolutionPatterns: { label: string; patterns: PatternMeta[] } | null = (() => {
+  if (pattern.category === 'agent' && pattern.evolvesFrom?.length) {
+    const parents = pattern.evolvesFrom
+      .map((id) => ALL_PATTERNS.find((p) => p.id === id))
+      .filter(Boolean) as PatternMeta[];
+    return parents.length ? { label: 'Evolves from', patterns: parents } : null;
+  }
+  if (pattern.category === 'workflow' && pattern.evolvesInto?.length) {
+    const children = pattern.evolvesInto
+      .map((id) => ALL_PATTERNS.find((p) => p.id === id))
+      .filter(Boolean) as PatternMeta[];
+    return children.length ? { label: 'Evolves into', patterns: children } : null;
+  }
+  return null;
+})();
+
+// 2. "Often combined with" from the comparison data
+const comparison = PATTERN_COMPARISONS.find((c) => c.id === pattern.id);
+const combinedWith: PatternMeta[] = (comparison?.composableWith ?? [])
+  .map((id) => ALL_PATTERNS.find((p) => p.id === id))
+  .filter(Boolean) as PatternMeta[];
+
+// 3. Same complexity tier (different category) — suggest as a peer/alternative
+const sameTier: PatternMeta[] = ALL_PATTERNS.filter(
+  (p) =>
+    p.id !== pattern.id &&
+    p.complexity === pattern.complexity &&
+    p.category !== pattern.category &&
+    !combinedWith.some((c) => c.id === p.id) &&
+    !(evolutionPatterns?.patterns.some((e) => e.id === p.id)),
+).slice(0, 3);
+
+// Decide which sections to show (only non-empty ones)
+const sections = [
+  evolutionPatterns ? { ...evolutionPatterns } : null,
+  combinedWith.length ? { label: 'Often combined with', patterns: combinedWith } : null,
+  sameTier.length ? { label: 'Same complexity', patterns: sameTier } : null,
+].filter(Boolean) as { label: string; patterns: PatternMeta[] }[];
+
+function patternHref(p: PatternMeta): string {
+  return `${base}/${p.category === 'workflow' ? 'workflows' : 'patterns'}/${p.slug}/`;
+}
+---
+
+{sections.length > 0 && (
+  <aside class="mt-14 pt-8 border-t border-surface-border">
+    <h2 class="font-display font-bold text-lg tracking-display text-text mb-6">
+      Related Patterns
+    </h2>
+
+    <div class="space-y-8">
+      {sections.map((section) => (
+        <div>
+          <p class="text-xs font-mono text-text-tertiary uppercase tracking-widest mb-3">
+            {section.label}
+          </p>
+          <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {section.patterns.map((p) => (
+              <a
+                href={patternHref(p)}
+                class="group flex flex-col gap-2 p-4 bg-bg border border-surface-border rounded-xl hover:shadow-card-hover hover:-translate-y-0.5 transition-all duration-200"
+              >
+                <!-- Category + complexity row -->
+                <div class="flex items-center gap-2">
+                  <span class={`text-2xs font-mono px-1.5 py-0.5 rounded border font-medium ${
+                    p.category === 'workflow'
+                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                      : 'bg-amber-50 text-amber-700 border-amber-200'
+                  }`}>
+                    {p.category === 'workflow' ? 'Workflow' : 'Agent'}
+                  </span>
+                  <ComplexityBadge complexity={p.complexity} size="sm" />
+                </div>
+
+                <!-- Name -->
+                <p class="font-display font-bold text-sm tracking-display text-text group-hover:text-accent transition-colors leading-tight">
+                  {p.name}
+                </p>
+
+                <!-- One-liner -->
+                <p class="text-xs text-text-secondary leading-relaxed line-clamp-2">
+                  {p.description}
+                </p>
+
+                <!-- Arrow -->
+                <div class="flex items-center gap-1 text-xs text-text-tertiary group-hover:text-accent transition-colors mt-auto pt-1">
+                  <span>View pattern</span>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                  </svg>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </aside>
+)}

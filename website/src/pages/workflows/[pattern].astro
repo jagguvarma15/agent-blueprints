@@ -3,6 +3,7 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
 import ComplexityBadge from '../../components/ComplexityBadge.astro';
 import TierTabs from '../../components/TierTabs';
 import TableOfContents from '../../components/TableOfContents';
+import RelatedPatterns from '../../components/RelatedPatterns.astro';
 import { WORKFLOWS, AGENT_PATTERNS } from '../../data/patterns';
 import { readMarkdown, extractHeadings } from '../../utils/content';
 import { renderMarkdown } from '../../utils/markdown';
@@ -26,7 +27,6 @@ const overviewHtml = overviewMd ? renderMarkdown(overviewMd) : null;
 const designHtml = designMd ? renderMarkdown(designMd) : null;
 const implHtml = implMd ? renderMarkdown(implMd) : null;
 
-// Headings for active content (passed to TOC via client)
 const overviewHeadings = overviewMd ? extractHeadings(overviewMd) : [];
 
 const tabs = [
@@ -90,6 +90,9 @@ const evolvesIntoPatterns = (pattern.evolvesInto ?? [])
           implementation: implHtml ?? undefined,
         }}
       />
+
+      <!-- Related patterns -->
+      <RelatedPatterns pattern={pattern} />
     </div>
 
     <!-- Right TOC (desktop) -->
