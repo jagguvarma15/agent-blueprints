@@ -1,0 +1,170 @@
+---
+// No server-side logic needed — this component is pure client-side enhancement.
+// Injected once in Base.astro so it runs on every page.
+---
+
+<style>
+  /* Language label + copy button positioned in the top-right of each code block */
+  .code-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    opacity: 0;
+    transition: opacity 150ms ease;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .code-block-wrapper:hover .code-toolbar,
+  .code-toolbar:focus-within {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .code-lang-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.6rem;
+    font-weight: 500;
+    color: #9CA3AF;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 0.2rem 0.4rem;
+    background: #FFFFFF;
+    border: 1px solid #E7E5E4;
+    border-radius: 0.25rem;
+    line-height: 1;
+    user-select: none;
+  }
+
+  .code-copy-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.6rem;
+    font-weight: 500;
+    color: #6B7280;
+    letter-spacing: 0.02em;
+    padding: 0.2rem 0.5rem 0.2rem 0.375rem;
+    background: #FFFFFF;
+    border: 1px solid #E7E5E4;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    line-height: 1;
+    transition: color 150ms ease, border-color 150ms ease, background 150ms ease;
+  }
+
+  .code-copy-btn:hover {
+    color: #4F46E5;
+    border-color: rgba(79, 70, 229, 0.35);
+  }
+
+  .code-copy-btn:focus-visible {
+    outline: 2px solid #4F46E5;
+    outline-offset: 2px;
+  }
+
+  .code-copy-btn.copied {
+    color: #0D9488;
+    border-color: #0D9488;
+    background: #f0fdf4;
+  }
+
+  .code-copy-btn svg {
+    flex-shrink: 0;
+  }
+</style>
+
+<script>
+  const COPY_ICON = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <rect x="9" y="9" width="13" height="13" rx="2"/>
+    <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+  </svg>`;
+
+  const CHECK_ICON = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <polyline points="20 6 9 17 4 12"/>
+  </svg>`;
+
+  function getLang(pre: Element): string {
+    const code = pre.querySelector('code');
+    if (!code) return '';
+    const match = code.className.match(/language-(\S+)/);
+    if (!match) return '';
+    const lang = match[1];
+    // Map common aliases to display names
+    const labels: Record<string, string> = {
+      js: 'JS', javascript: 'JS', ts: 'TS', typescript: 'TS',
+      py: 'Python', python: 'Python', sh: 'Shell', bash: 'Bash',
+      zsh: 'Shell', json: 'JSON', yaml: 'YAML', yml: 'YAML',
+      md: 'Markdown', html: 'HTML', css: 'CSS', sql: 'SQL',
+      text: '', plaintext: '', txt: '',
+    };
+    return labels[lang] ?? lang;
+  }
+
+  function addCopyButtons() {
+    document.querySelectorAll<HTMLElement>('.prose-content pre').forEach((pre) => {
+      const wrapper = pre.parentElement;
+      if (!wrapper || wrapper.querySelector('.code-toolbar')) return;
+
+      // Ensure the wrapper has the class for hover targeting
+      wrapper.classList.add('code-block-wrapper');
+
+      const toolbar = document.createElement('div');
+      toolbar.className = 'code-toolbar';
+      toolbar.setAttribute('aria-hidden', 'false');
+
+      // Language label
+      const lang = getLang(pre);
+      if (lang) {
+        const label = document.createElement('span');
+        label.className = 'code-lang-label';
+        label.textContent = lang;
+        toolbar.appendChild(label);
+      }
+
+      // Copy button
+      const btn = document.createElement('button');
+      btn.className = 'code-copy-btn';
+      btn.setAttribute('aria-label', 'Copy code to clipboard');
+      btn.innerHTML = `${COPY_ICON}<span>Copy</span>`;
+
+      btn.addEventListener('click', async () => {
+        const codeEl = pre.querySelector('code');
+        const text = (codeEl?.textContent ?? pre.textContent ?? '').trim();
+        try {
+          await navigator.clipboard.writeText(text);
+          btn.innerHTML = `${CHECK_ICON}<span>Copied!</span>`;
+          btn.classList.add('copied');
+        } catch {
+          btn.querySelector('span')!.textContent = 'Failed';
+        }
+        setTimeout(() => {
+          btn.innerHTML = `${COPY_ICON}<span>Copy</span>`;
+          btn.classList.remove('copied');
+        }, 1600);
+      });
+
+      toolbar.appendChild(btn);
+      wrapper.appendChild(toolbar);
+    });
+  }
+
+  // Run on initial load
+  addCopyButtons();
+
+  // Re-run when TierTabs switches content (React renders new HTML)
+  const observer = new MutationObserver((mutations) => {
+    const relevant = mutations.some((m) =>
+      Array.from(m.addedNodes).some(
+        (n) => n instanceof HTMLElement && (n.querySelector('pre') || n.tagName === 'PRE'),
+      ),
+    );
+    if (relevant) addCopyButtons();
+  });
+
+  observer.observe(document.body, { childList: true, subtree: true });
+</script>

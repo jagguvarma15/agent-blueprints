@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import CodeCopyButtons from '../components/CodeCopyButtons.astro';
 
 interface Props {
   title: string;
@@ -43,6 +44,9 @@ const base = import.meta.env.BASE_URL || '/agent-blueprints';
   </head>
   <body class="bg-bg text-text font-body">
     <slot />
+
+    <!-- Copy-to-clipboard for all code blocks -->
+    <CodeCopyButtons />
 
     <!-- Mermaid initialization -->
     <script>
