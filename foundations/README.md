@@ -70,3 +70,4 @@ Before shipping to production, also read:
 - **[Anatomy of an Agent](./anatomy-of-an-agent.md)** — The components every agent has and what distinguishes agents from workflows
 - **[Choosing a Pattern](./choosing-a-pattern.md)** — Decision flowchart and guidance for selecting the right pattern
 - **[Anti-Patterns](./anti-patterns.md)** — What not to build, why people build it anyway, and the correct alternative
+- **[Testing Strategies](./testing-strategies.md)** — Unit tests, mock LLMs, integration tests, evaluation, and regression testing for LLM systems

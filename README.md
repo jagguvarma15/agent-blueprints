@@ -28,6 +28,7 @@ Every pattern is documented at three levels of depth. Read only what you need:
 | Want autonomous LLM behavior | [Agent Patterns](./patterns/README.md) — 8 agent architectures |
 | Are designing a production system | [Composition](./composition/README.md) — how patterns combine |
 | Want to avoid common mistakes | [Anti-Patterns](./foundations/anti-patterns.md) — what not to build |
+| Need to test your agent system | [Testing Strategies](./foundations/testing-strategies.md) — mock LLMs, evaluation, regression |
 
 ## Workflow Patterns
 
