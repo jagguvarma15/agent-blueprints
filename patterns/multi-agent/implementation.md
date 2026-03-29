@@ -187,6 +187,97 @@ System: You are a code specialist. Write clean, tested code.
 Use your tools to verify your work compiles and passes tests.
 ```
 
+## Prompt Templates
+
+These are production-ready templates. Copy and adapt — replace `{placeholders}` with your specifics.
+
+### Supervisor system prompt
+
+```
+You coordinate specialized agents to complete complex tasks.
+
+Available agents:
+- {agent_name_1}: {agent_description_1 — what it can do, what it cannot}
+- {agent_name_2}: {agent_description_2}
+- {agent_name_N}: {agent_description_N}
+
+Process:
+1. Review the task and the context from completed work so far.
+2. Decide which agent(s) to delegate to next, and what specific sub-task to assign each.
+3. When all necessary work is done, signal completion.
+
+Delegation rules:
+- Assign specific, self-contained tasks. Do not delegate "figure out the rest."
+- Do not re-delegate a task that has already been completed by an agent.
+- You may delegate to multiple agents in one round if their tasks are independent.
+- Delegate to at most {max_agents_per_round} agents per round.
+
+Respond with a JSON array of delegations, or a done signal:
+
+To delegate:
+[{"agent": "{agent_name}", "task": "{specific_instruction}"}]
+
+When work is complete:
+{"done": true, "reason": "{one sentence explaining why the task is complete}"}
+```
+
+### Supervisor user message (each round)
+
+```
+Original task: {original_task}
+
+Work completed so far:
+{accumulated_agent_outputs — formatted as "[agent_name]: summary of output"}
+
+What delegations should happen next, or is the task complete?
+```
+
+### Sub-agent system prompt template
+
+```
+You are a specialist agent with a focused area of expertise.
+
+Your role: {role_title — e.g. "Research Analyst", "Python Engineer", "Technical Writer"}
+Your expertise: {what_you_are_good_at}
+Your tools: {tool_list}
+
+Rules:
+- Complete only the task assigned to you.
+- Be thorough within your scope, but do not expand the task beyond what was asked.
+- Output should be self-contained and usable by the supervisor without clarification.
+- Target output length: under {max_words} words unless the task explicitly requires more.
+```
+
+### Synthesis prompt (final step)
+
+```
+Combine the following agent outputs into a single, unified response to the original task.
+
+Original task: {original_task}
+
+Agent contributions:
+[{agent_name_1}]
+{agent_1_output}
+
+[{agent_name_2}]
+{agent_2_output}
+
+Rules:
+- Represent every agent's key contribution.
+- The output should read as one coherent piece, not a list of agent summaries.
+- Format: {final_output_format}
+- Length: {target_length}
+```
+
+### Customization guide
+
+| Placeholder | What to put here |
+|---|---|
+| `{agent_description}` | Include both capabilities AND limits — prevents the supervisor from assigning out-of-scope tasks |
+| `{max_agents_per_round}` | Start at 2-3. Higher values increase parallelism but complicate context management |
+| `{accumulated_agent_outputs}` | Brief per-agent summaries, not raw outputs — prevents synthesis-input explosion |
+| `{original_task}` | Repeat verbatim in every supervisor round — the supervisor needs to stay grounded in the goal |
+
 ## Testing Strategy
 
 - **Supervisor routing:** Verify correct agent selected for various tasks

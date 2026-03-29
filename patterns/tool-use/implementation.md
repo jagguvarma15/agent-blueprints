@@ -118,6 +118,68 @@ Tool Use is stateless per call — state is maintained by the caller (the agent 
 }
 ```
 
+## Prompt Templates
+
+These are production-ready templates. Copy and adapt — replace `{placeholders}` with your specifics.
+
+### System prompt
+
+```
+You are {agent_role — e.g. "a data assistant", "a customer support agent"}.
+
+You have access to tools. Use them when you need external data or to take actions.
+Only call a tool when you genuinely need its output to answer the user.
+Do not call tools to confirm information you already know.
+
+After using a tool, incorporate the result into your response naturally.
+When you have enough information, respond directly without calling any more tools.
+```
+
+### Tool schema template
+
+```json
+{
+  "type": "function",
+  "function": {
+    "name": "{verb_noun — e.g. search_web, read_file, send_email}",
+    "description": "{what_it_does}. Use when {when_to_use_it}. Do not use when {when_not_to_use_it}.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "{param_name}": {
+          "type": "{string|integer|boolean|array}",
+          "description": "{what_this_parameter_is_and_what_values_are_valid}"
+        }
+      },
+      "required": ["{required_param_names}"]
+    }
+  }
+}
+```
+
+### Tool result injection (added to message history after tool call)
+
+```
+Tool result for {tool_name}:
+{tool_output — truncated to {max_chars} characters if longer}
+```
+
+### Forced-finish injection (when max_rounds is approaching)
+
+```
+You have made {n} tool calls. Please synthesize what you have found so far and
+provide your final response now, even if incomplete. Note any gaps in your answer.
+```
+
+### Customization guide
+
+| Placeholder | What to put here |
+|---|---|
+| `{agent_role}` | A job title that frames how the LLM should reason about tool use |
+| `"description"` in schema | The most important field. Include: what it does, when to use it, and when NOT to use it |
+| `{tool_output}` | Truncate to the most relevant portion — raw output from a database or search API can be enormous |
+| `{when_not_to_use_it}` | Explicitly listing exclusions in the description prevents misuse |
+
 ## Testing Strategy
 
 - **Schema validation tests:** Valid args pass, invalid args produce clear errors

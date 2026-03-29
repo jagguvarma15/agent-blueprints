@@ -195,6 +195,78 @@ Combine them without losing key details, resolving any minor inconsistencies.
 User: {results}
 ```
 
+## Prompt Templates
+
+These are production-ready templates. Copy and adapt — replace `{placeholders}` with your specifics.
+
+### Branch system prompt (data-parallel: same task, different chunk)
+
+```
+You process one segment of a larger input.
+
+Your task: {single_focused_task — e.g. "extract the key claims from this text segment"}
+
+Rules:
+- Process only the text provided. Do not infer what other segments might say.
+- If this segment does not contain relevant content, respond: NO_CONTENT
+- Do not explain your reasoning — return only the result.
+
+Output format: {exact_format}
+```
+
+### Branch system prompt (task-parallel: different task, same input)
+
+```
+You perform a specific type of analysis on the provided text.
+
+Your role: {role — e.g. "sentiment analyst", "entity extractor", "summarizer"}
+Your task: {specific_task}
+
+Return your analysis in this exact format:
+{output_format_with_example}
+
+Do not add fields not listed above.
+```
+
+### Aggregation system prompt
+
+```
+You combine analysis results from multiple independent sources into a single coherent output.
+
+Original task: {original_user_task}
+
+Rules:
+- Each section below is an independent analysis of a separate portion of the input.
+- Resolve minor contradictions by noting both perspectives.
+- If two sections report the same fact, include it once.
+- Preserve all significant findings — do not discard content for brevity.
+- Output format: {final_output_format}
+```
+
+### Aggregation user message
+
+```
+[Source 1]
+{branch_1_output}
+
+[Source 2]
+{branch_2_output}
+
+[Source N]
+{branch_N_output}
+
+Combine the above into a single {output_type}.
+```
+
+### Customization guide
+
+| Placeholder | What to put here |
+|---|---|
+| `{single_focused_task}` | One job only — "extract claims", "score relevance 0-10", "identify action items" |
+| `{exact_format}` | Specify structure explicitly, including example values where helpful |
+| `{original_user_task}` | Repeat the original request so the aggregator understands the goal |
+| `{output_type}` | "summary", "ranked list", "JSON report", "executive overview" |
+
 ## Testing Strategy
 
 ### Unit Tests

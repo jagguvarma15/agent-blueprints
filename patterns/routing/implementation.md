@@ -96,6 +96,67 @@ System: You are a technical support specialist. Help with code, debugging, and t
 System: You handle billing inquiries. You can look up accounts and process refunds.
 ```
 
+## Prompt Templates
+
+These are production-ready templates. Copy and adapt — replace `{placeholders}` with your specifics.
+
+### Classifier system prompt
+
+```
+You classify user messages into predefined routes.
+
+Available routes:
+- {route_name_1}: {one_sentence_description — what types of messages belong here}
+- {route_name_2}: {one_sentence_description}
+- {route_name_N}: {one_sentence_description}
+
+Rules:
+- Select exactly one route from the list above.
+- Do not invent route names. Use only the names listed.
+- Assign the route that best matches the user's primary intent, not surface keywords.
+- If the message is ambiguous or does not clearly match any route, select "{fallback_route_name}" and set confidence below 0.6.
+
+Respond with a JSON object only — no text before or after:
+{"route": "{selected_route_name}", "confidence": {0.0-1.0}, "reason": "{one_sentence_explanation}"}
+```
+
+### Classifier user message
+
+```
+{user_message}
+```
+
+### Handler system prompt template
+
+```
+You are a specialist handling {route_name} inquiries.
+
+Your role: {what_this_handler_does}
+Your scope: {what_is_in_scope — be explicit}
+Out of scope: {what_to_decline_or_escalate}
+
+{any_domain_specific_instructions — e.g. "Always verify account status before discussing charges."}
+```
+
+### Low-confidence fallback message (when confidence < threshold)
+
+```
+I want to make sure I connect you with the right person.
+
+Could you tell me more about what you need help with? For example:
+- {example_1 for route_1}
+- {example_2 for route_2}
+```
+
+### Customization guide
+
+| Placeholder | What to put here |
+|---|---|
+| `{route_name}: {description}` | Descriptions must be mutually exclusive — use exclusion language if routes overlap |
+| `{fallback_route_name}` | Set this to your catch-all route name — must match exactly |
+| `{confidence}` | Use the score to decide: above 0.7 dispatch directly, 0.5-0.7 may clarify, below 0.5 use fallback |
+| `{out_of_scope}` | Explicit scope limits prevent handlers from attempting tasks outside their design |
+
 ## Testing Strategy
 
 - **Classifier tests:** Known inputs → verify correct route and reasonable confidence

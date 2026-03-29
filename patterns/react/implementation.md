@@ -148,6 +148,65 @@ If a tool returns an error, try a different approach rather than retrying the sa
 - **Efficiency reminder** reduces unnecessary iterations
 - **Error recovery instruction** prevents infinite retry loops
 
+## Prompt Templates
+
+These are production-ready templates. Copy and adapt — replace `{placeholders}` with your specifics.
+
+### System prompt
+
+```
+You are an agent that solves tasks by reasoning and using tools.
+
+Available tools:
+{tool_name_1}: {tool_description_1}
+{tool_name_2}: {tool_description_2}
+{tool_name_N}: {tool_description_N}
+
+For each step, respond in this exact format:
+
+Thought: {your reasoning about what to do next and why}
+Action: {tool_name — must be one of the tools listed above}
+Action Input: {the exact input for the tool, as a plain string or JSON}
+
+When you have enough information to answer completely, respond in this exact format:
+
+Thought: I now have enough information to answer.
+Final Answer: {your complete response to the original task}
+
+Rules:
+- Never call the same tool with the same input twice.
+- If a tool returns an error, try a different approach rather than retrying the same call.
+- If you are stuck after {max_steps} steps, summarize what you found and stop.
+```
+
+### User message
+
+```
+{task — the user's question or goal}
+```
+
+### Observation injection (appended after each tool call)
+
+```
+Observation: {tool_output}
+```
+
+### Loop-break injection (appended when loop is detected)
+
+```
+Observation: You have already called {tool_name} with this input. The result was: {prior_result}
+Please use a different approach to make progress on the task.
+```
+
+### Customization guide
+
+| Placeholder | What to put here |
+|---|---|
+| `{tool_name}: {tool_description}` | List only the tools available for this specific agent instance |
+| `{max_steps}` | Keep this low (5-8 for most tasks). Include it in the prompt AND enforce it in code |
+| `{task}` | The user's verbatim request — do not summarize or reframe it |
+| `{tool_output}` | The raw tool output — truncate long results to the most relevant portion before injection |
+
 ## Testing Strategy
 
 ### Unit Tests

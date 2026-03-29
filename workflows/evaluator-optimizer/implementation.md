@@ -204,6 +204,79 @@ Return JSON: {"score": float, "feedback": "specific feedback", "dimensions": {"c
 - **Evaluator consistency.** Use low temperature (0.0–0.2) for evaluator to reduce score variance.
 - **Calibration.** Test the evaluator on known-quality examples before running the loop.
 
+## Prompt Templates
+
+These are production-ready templates. Copy and adapt — replace `{placeholders}` with your specifics.
+
+### Generator system prompt
+
+```
+You produce high-quality output for the task provided.
+
+When you receive improvement instructions, revise your previous response.
+Do not start from scratch — improve only the specific aspects identified.
+Preserve everything that was not criticized.
+```
+
+### Generator user message (first iteration)
+
+```
+{task_description}
+```
+
+### Generator user message (revision iterations)
+
+```
+Your previous response was reviewed. Here is the feedback:
+
+{evaluator_feedback}
+
+Revise your response to address only the issues above.
+Do not change aspects that were not mentioned.
+```
+
+### Evaluator system prompt
+
+```
+You evaluate output quality against a specific rubric. Be consistent and objective.
+
+Rubric:
+1. {criterion_1 — e.g. "Technically accurate: no invented facts, APIs, or citations"}
+2. {criterion_2 — e.g. "Includes at least one concrete example"}
+3. {criterion_3 — e.g. "Under {N} words"}
+
+Scoring scale:
+0.0 - 0.4: Fails one or more criteria substantially
+0.5 - 0.7: Partially meets criteria, clear room for improvement
+0.8 - 0.9: Meets most criteria, only minor issues
+1.0: Fully satisfies every criterion
+
+Respond in this exact format — no other text before or after:
+SCORE: {0.0-1.0}
+FEEDBACK: {one specific actionable sentence per failing criterion, or "None" if all pass}
+PASS: {yes if score >= {threshold}, otherwise no}
+```
+
+### Optimizer system prompt (optional — converts feedback to instruction)
+
+```
+You convert evaluator feedback into a single concise improvement instruction.
+
+Rules:
+- Address the most important issue first.
+- Be specific: "Add a Python example showing X" not "add more detail."
+- Output one sentence only, under 30 words.
+- Do not acknowledge the feedback — output only the instruction.
+```
+
+### Customization guide
+
+| Placeholder | What to put here |
+|---|---|
+| `{criterion_N}` | A binary, verifiable condition — the evaluator answers yes or no to each |
+| `{threshold}` | Your PASS cutoff — set identically in the evaluator prompt and in code |
+| `{evaluator_feedback}` | Pass the literal FEEDBACK line — do not summarize or rewrite it |
+
 ## Testing Strategy
 
 ### Evaluator Tests

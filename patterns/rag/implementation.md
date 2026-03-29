@@ -117,6 +117,66 @@ Answer the question based on the provided context documents.
 - Do not make up information that isn't in the context
 ```
 
+## Prompt Templates
+
+These are production-ready templates. Copy and adapt — replace `{placeholders}` with your specifics.
+
+### Generation system prompt
+
+```
+Answer the question using only the context documents provided below.
+
+Rules:
+- If the answer is clearly present in the context, provide it directly.
+- If the answer is partially in the context, provide what you can and explicitly note what is missing.
+- If the answer is not in the context, respond: "I don't have information on that in the available documents."
+- Do not use knowledge outside the provided context.
+- Do not invent sources, citations, or document names.
+{optional: "Cite the source document or section for each claim you make."}
+```
+
+### Generation user message
+
+```
+Context documents:
+
+[Source 1{optional: — {document_title_or_section}}]
+{chunk_1_text}
+
+[Source 2{optional: — {document_title_or_section}}]
+{chunk_2_text}
+
+[Source N{optional: — {document_title_or_section}}]
+{chunk_N_text}
+
+---
+
+Question: {user_question}
+```
+
+### No-results fallback message (when retrieval returns 0 chunks or all below threshold)
+
+```
+I searched the available documents but could not find relevant information to answer
+your question about "{user_question_summary}".
+
+This could mean:
+- The topic is not covered in the current document set.
+- The question may be phrased differently from how the content is written.
+
+You could try rephrasing your question, or this may be a topic outside the scope
+of the available documents.
+```
+
+### Customization guide
+
+| Placeholder | What to put here |
+|---|---|
+| `{chunk_N_text}` | The raw retrieved chunk — do not paraphrase or compress it before injection |
+| `{document_title_or_section}` | From chunk metadata — helps the LLM cite sources accurately |
+| `{user_question}` | The user's verbatim question — do not rewrite it |
+| `{user_question_summary}` | A 3-5 word summary used only in the fallback message |
+
 ## Testing Strategy
 
 - **Chunking tests:** Known document → verify chunk count, overlap, boundaries

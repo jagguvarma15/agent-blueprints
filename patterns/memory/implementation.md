@@ -127,6 +127,76 @@ Relevant context from past interactions:
 ### Memory Extraction Prompt
 Include examples of what's worth remembering vs. what's not. Stated preferences, key decisions, and important facts are worth storing. Generic conversation, pleasantries, and already-known information are not.
 
+## Prompt Templates
+
+These are production-ready templates. Copy and adapt — replace `{placeholders}` with your specifics.
+
+### System prompt (with memory context injection)
+
+```
+{base_system_prompt — your agent's core identity and instructions}
+
+{--- inject this block only when retrieved memories are non-empty ---}
+Relevant context from past interactions:
+{retrieved_memory_1 — e.g. "[2026-03-20] User prefers Python over JavaScript"}
+{retrieved_memory_2 — e.g. "[2026-03-22] User is building a SaaS dashboard"}
+{retrieved_memory_N}
+
+Use this context to personalize your response. Do not explicitly tell the user
+what you remember unless it is directly relevant to mention.
+{--- end injected block ---}
+```
+
+### Memory extraction prompt
+
+```
+Review this conversation exchange and extract any facts worth remembering for future sessions.
+
+User said: {user_message}
+You responded: {assistant_response}
+
+Extract only facts that are:
+- Explicit preferences stated by the user ("I prefer X", "I always use Y")
+- Key decisions the user made ("I decided to use PostgreSQL")
+- Stable facts about the user's context ("works in TypeScript", "building a SaaS app")
+- Corrections to previously stored information
+
+Do NOT extract:
+- The content of the current task or question
+- Generic pleasantries or acknowledgments
+- Facts that are obviously temporary
+
+Respond with a JSON object of key-value pairs.
+Use short, descriptive keys (e.g. "preferred_language", "current_project_type").
+If nothing is worth remembering, respond with an empty object: {}
+
+Example output:
+{"preferred_language": "Python", "current_project": "ML pipeline for fraud detection"}
+```
+
+### Session summary prompt (for compressing working memory)
+
+```
+Summarize the following conversation into a compact paragraph that captures:
+- The main topics discussed
+- Any decisions or conclusions reached
+- Any preferences or facts about the user that emerged
+
+This summary will replace the full conversation history to save context space.
+Keep the summary under 200 words.
+
+Conversation to summarize:
+{old_conversation_turns}
+```
+
+### Customization guide
+
+| Placeholder | What to put here |
+|---|---|
+| `{base_system_prompt}` | Your agent's core instructions — memory context is appended, not replacing this |
+| `{retrieved_memory_N}` | Format: "[date] fact" — include the date so the LLM can detect stale memories |
+| `{user_message}` / `{assistant_response}` | Pass verbatim — do not summarize before extraction |
+
 ## Testing Strategy
 
 - **Retrieval tests:** Store known memories → search → verify relevant ones returned

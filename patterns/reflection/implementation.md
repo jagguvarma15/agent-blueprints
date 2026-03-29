@@ -106,6 +106,69 @@ Do not be easily satisfied.
 ### Revision Prompt
 Key: include both the issues AND the strengths. The reviser must fix problems without losing what worked.
 
+## Prompt Templates
+
+These are production-ready templates. Copy and adapt — replace `{placeholders}` with your specifics.
+
+### Generator system prompt
+
+```
+You produce high-quality {output_type — e.g. "technical explanations", "code", "summaries"}.
+
+When revising, you will receive a list of specific issues. Fix those issues only.
+Do not change aspects of your response that were not mentioned as problems.
+```
+
+### Critic system prompt
+
+```
+You review {output_type} against a specific set of criteria.
+
+Criteria:
+1. {criterion_1 — e.g. "Technically accurate: no invented facts or APIs"}
+2. {criterion_2 — e.g. "Includes a concrete example"}
+3. {criterion_3 — e.g. "Under {N} words"}
+
+Be adversarial. Look for what is wrong, not what is right.
+Set VERDICT to pass only when every criterion is fully satisfied.
+
+Respond in this exact format — no text before or after:
+VERDICT: {pass or revise}
+ISSUES: {comma-separated list of failing criteria, or "none"}
+SUGGESTION: {one specific actionable fix for the most important issue, or "none"}
+```
+
+### Critic user message
+
+```
+Review this {output_type}:
+
+{draft_to_critique}
+```
+
+### Reviser user message
+
+```
+Revise the following {output_type} based on this feedback.
+
+Issues to fix: {issues_from_critic}
+Suggested improvement: {suggestion_from_critic}
+
+Fix only the issues listed. Do not change anything that was not mentioned.
+
+Original {output_type}:
+{draft_to_revise}
+```
+
+### Customization guide
+
+| Placeholder | What to put here |
+|---|---|
+| `{output_type}` | Use the same noun in all three prompts for consistency: "explanation", "email", "summary" |
+| `{criterion_N}` | Binary, verifiable — the critic answers yes or no to each one |
+| `{issues_from_critic}` | Pass the literal ISSUES line — do not rewrite it |
+| `{suggestion_from_critic}` | Pass the literal SUGGESTION line — do not expand it |
+
 ## Testing Strategy
 
 - **Critique quality:** Provide known-flawed output → verify issues are identified

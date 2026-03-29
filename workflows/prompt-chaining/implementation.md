@@ -192,6 +192,65 @@ Return as a list of relationship descriptions.
 User: {input}
 ```
 
+## Prompt Templates
+
+These are production-ready templates. Copy and adapt — replace `{placeholders}` with your specifics.
+
+### Step system prompt (focused single-task step)
+
+```
+You are performing one step of a multi-step pipeline.
+
+Your task: {one_sentence_description_of_this_step_only}
+
+Rules:
+- Do exactly this task and nothing else.
+- Do not add commentary, preamble, or sign-off.
+- If the input is empty or clearly invalid, respond with exactly: ERROR: {reason}
+
+Output format: {exact_format — e.g. "a JSON object with keys X, Y, Z" or "plain text, under 150 words"}
+```
+
+### Step user message
+
+```
+{output_of_previous_step}
+```
+
+### Validation gate prompt (when using an LLM gate instead of code)
+
+```
+Does the following text satisfy these criteria?
+
+Criteria:
+{criterion_1}
+{criterion_2}
+
+Text to check:
+{step_output}
+
+Respond with exactly one word: PASS or FAIL.
+If FAIL, add a second line beginning with "REASON:" and explain the specific failure.
+```
+
+### Retry injection (appended to step prompt when gate fails)
+
+```
+Your previous response failed validation.
+Reason: {gate_failure_reason}
+
+Please try again, addressing the specific issue above.
+```
+
+### Customization guide
+
+| Placeholder | What to put here |
+|---|---|
+| `{one_sentence_description}` | The single, specific job this step does — "Extract all named entities", "Translate to formal register", "Summarize in under 100 words" |
+| `{exact_format}` | Be explicit: "JSON object", "numbered list", "a single integer", "markdown table with columns X, Y, Z" |
+| `{criterion_N}` | Binary, checkable criteria: "Contains at least one example", "Under 200 words", "Valid JSON" |
+| `{gate_failure_reason}` | Pass the literal reason string from the gate — do not paraphrase |
+
 ## Testing Strategy
 
 ### Unit Tests
