@@ -60,8 +60,13 @@ If you're learning from scratch, read in this order:
 4. **[Workflows](../workflows/README.md)** — Learn the foundational patterns
 5. **[Agent Patterns](../patterns/README.md)** — See how workflows evolve into agents
 
+Before shipping to production, also read:
+
+- **[Anti-Patterns](./anti-patterns.md)** — The 12 most common design mistakes and how to avoid them
+
 ## In This Section
 
 - **[Terminology](./terminology.md)** — Precise definitions of agent, workflow, tool, and other overloaded terms
 - **[Anatomy of an Agent](./anatomy-of-an-agent.md)** — The components every agent has and what distinguishes agents from workflows
 - **[Choosing a Pattern](./choosing-a-pattern.md)** — Decision flowchart and guidance for selecting the right pattern
+- **[Anti-Patterns](./anti-patterns.md)** — What not to build, why people build it anyway, and the correct alternative
