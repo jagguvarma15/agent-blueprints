@@ -23,8 +23,8 @@ const { title, description, currentPattern, currentCategory } = Astro.props;
         <!-- Left sidebar -->
         <Sidebar currentPattern={currentPattern} currentCategory={currentCategory} />
 
-        <!-- Main content -->
-        <main class="flex-1 min-w-0 animate-fade-up">
+        <!-- Main content — data-pagefind-body scopes search indexing to this area -->
+        <main class="flex-1 min-w-0 animate-fade-up" data-pagefind-body>
           <slot />
         </main>
       </div>

@@ -14,7 +14,7 @@ const { title, description } = Astro.props;
 <Base title={title} description={description}>
   <div class="min-h-screen flex flex-col">
     <Navbar />
-    <main class="flex-1 animate-fade-up">
+    <main class="flex-1 animate-fade-up" data-pagefind-body>
       <slot />
     </main>
     <Footer />

@@ -1,4 +1,6 @@
 ---
+import SearchModal from './SearchModal';
+
 const base = import.meta.env.BASE_URL || '/agent-blueprints';
 const currentPath = Astro.url.pathname;
 
@@ -48,13 +50,31 @@ const navLinks = [
       ))}
     </div>
 
-    <!-- Right: GitHub -->
-    <div class="flex items-center gap-3">
+    <!-- Right: Search + GitHub + Mobile -->
+    <div class="flex items-center gap-2">
+
+      <!-- Search trigger -->
+      <button
+        id="search-btn"
+        class="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-surface-border bg-surface text-text-secondary hover:text-text hover:border-accent/40 transition-colors text-sm"
+        aria-label="Search documentation"
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/>
+          <path d="M21 21l-4.35-4.35"/>
+        </svg>
+        <span class="hidden sm:inline text-xs">Search</span>
+        <kbd class="hidden lg:flex items-center gap-0.5 text-2xs bg-bg border border-surface-border rounded px-1 py-0.5 font-mono text-text-tertiary ml-1">
+          <span class="text-xs">⌘</span>K
+        </kbd>
+      </button>
+
+      <!-- GitHub -->
       <a
         href="https://github.com/jagguvarma15/agent-blueprints"
         target="_blank"
         rel="noopener noreferrer"
-        class="text-text-secondary hover:text-text transition-colors"
+        class="text-text-secondary hover:text-text transition-colors p-1.5"
         aria-label="View on GitHub"
       >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -101,6 +121,10 @@ const navLinks = [
   </div>
 </nav>
 
+<!-- Search modal — React island, renders into body -->
+<div id="search-modal-root"></div>
+<SearchModal client:load base={base} />
+
 <script>
   const btn = document.getElementById('mobile-menu-btn');
   const menu = document.getElementById('mobile-menu');
@@ -113,6 +137,13 @@ const navLinks = [
     openIcon?.classList.toggle('hidden', !isOpen);
     closeIcon?.classList.toggle('hidden', isOpen);
     btn.setAttribute('aria-expanded', String(!isOpen));
+  });
+
+  // Search button triggers Cmd+K equivalent
+  document.getElementById('search-btn')?.addEventListener('click', () => {
+    window.dispatchEvent(new KeyboardEvent('keydown', {
+      key: 'k', metaKey: true, bubbles: true
+    }));
   });
 
   // Add shadow on scroll
