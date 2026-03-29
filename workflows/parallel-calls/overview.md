@@ -33,6 +33,33 @@ graph TD
 3. **Fan-in** — Collect all results. Handle partial failures (some calls may fail while others succeed).
 4. **Aggregate** — Combine results into the final output. The aggregation step may itself be an LLM call (summarize, synthesize) or code-based (concatenate, merge, vote).
 
+## Minimal Example
+
+Evaluate four candidate resumes concurrently, then aggregate into a ranked recommendation — all in parallel.
+
+```python
+from workflows.parallel_calls.code.python.parallel_calls import ParallelCalls
+
+runner = ParallelCalls(llm=your_llm, max_workers=4)
+
+result = runner.run(
+    chunks=resume_texts,          # one string per candidate resume
+    branch_prompt=(
+        "Score this resume for a senior Python engineer role (0–10) "
+        "with a one-paragraph justification:\n\n{input}"
+    ),
+    aggregate_prompt=(
+        "Rank these candidates from best to worst and recommend the top 2:\n\n{input}"
+    ),
+)
+
+# result.outputs     → individual scores, ordered by input index
+# result.aggregated  → final ranked recommendation
+# result.errors      → any branches that failed
+```
+
+> Full implementation: [`code/python/parallel_calls.py`](code/python/parallel_calls.py)
+
 ## Input / Output
 
 - **Input:** Data or task that can be divided into independent parts

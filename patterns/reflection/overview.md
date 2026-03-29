@@ -37,6 +37,36 @@ graph TD
 
 The key difference from Evaluator-Optimizer: in reflection, the critique is *self-generated* and often richer — the LLM reasons about its own output's strengths and weaknesses, rather than just producing a score.
 
+## Minimal Example
+
+Write a beginner-friendly technical explanation, then self-critique and revise until all criteria are met.
+
+```python
+from patterns.reflection.code.python.reflection import ReflectionAgent
+
+agent = ReflectionAgent(
+    llm=your_llm,
+    criteria="""
+    - Technically accurate — no invented APIs or incorrect statements
+    - Includes a concrete, runnable code example
+    - No unexplained jargon
+    - Under 250 words
+    """,
+    max_iterations=3,
+)
+
+result = agent.run("Write a beginner-friendly explanation of database indexing")
+# result.passed              → True if all criteria were met before max_iterations
+# result.iterations[i].draft    → the generated draft at iteration i
+# result.iterations[i].critique → self-generated critique (issues + suggestion)
+# result.iterations[i].passed   → whether the critic approved this version
+# result.final_output        → the self-improved final version
+```
+
+*Why use Reflection instead of a single prompt?* A single prompt asks the LLM to simultaneously write and judge its output — two conflicting objectives. Separating generation from critique with distinct prompts consistently produces higher-quality results.
+
+> Full implementation: [`code/python/reflection.py`](code/python/reflection.py)
+
 ## Input / Output
 
 - **Input:** A task requiring high-quality output

@@ -40,6 +40,46 @@ graph TD
 
 The key insight: the LLM interleaves *thinking* with *acting*. It doesn't just plan all steps upfront — it adapts based on what it discovers.
 
+## Minimal Example
+
+Answer a compound question using search and a calculator — the agent decides which tools to call and when to stop.
+
+```python
+from patterns.react.code.python.react_agent import ReActAgent, Tool
+
+agent = ReActAgent(
+    llm=your_llm,
+    tools=[
+        Tool("search",     "Search the web for current information", lambda q: search_api(q)),
+        Tool("calculator", "Evaluate a math expression",             lambda expr: str(eval(expr))),
+    ],
+    max_steps=8,
+)
+
+result = agent.run(
+    "What is the compound interest on $5,000 at the current US federal funds rate for 10 years?"
+)
+# result.answer            → final answer once the agent calls "Final Answer:"
+# result.steps             → full Thought / Action / Observation trace
+# result.stopped_by_guard  → True if max_steps was hit before a final answer
+```
+
+*Example trace:*
+```
+Thought: I need the current federal funds rate first.
+Action: search | Input: "current US federal funds rate 2024"
+Observation: The federal funds rate is 5.25–5.50% as of late 2024.
+
+Thought: Now I'll calculate compound interest.
+Action: calculator | Input: 5000 * (1 + 0.0525) ** 10
+Observation: 8292.87
+
+Thought: I now know the final answer.
+Final Answer: At 5.25%, $5,000 grows to approximately $8,293 over 10 years.
+```
+
+> Full implementation: [`code/python/react_agent.py`](code/python/react_agent.py)
+
 ## Input / Output
 
 - **Input:** A user task/question + a set of available tools (with schemas)

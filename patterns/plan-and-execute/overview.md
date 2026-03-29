@@ -41,6 +41,41 @@ graph TD
 5. **Replan** — If a step fails or reveals that the plan is wrong, return to the planner with updated context. The planner generates a revised plan.
 6. **Synthesize** — Once all steps are complete, merge the results into a final output.
 
+## Minimal Example
+
+Scaffold a new Python project — the plan is fixed upfront, then each step executes in order.
+
+```python
+from patterns.plan_and_execute.code.python.plan_and_execute import PlanAndExecute
+
+agent = PlanAndExecute(
+    planner=your_llm,
+    executor=your_llm,
+    tools={"run_command": lambda cmd: subprocess.check_output(cmd, shell=True, text=True)},
+    replan_on_failure=True,    # revise remaining steps if one fails
+)
+
+result = agent.run(
+    "Set up a Python REST API project: "
+    "create directory structure, install dependencies, write a Dockerfile, and generate a README"
+)
+# result.plan           → the full ordered plan created before any execution started
+# result.plan[i].status → "done" | "failed" for each step
+# result.replanned      → True if a failure triggered replanning of remaining steps
+# result.final_output   → output of the last completed step
+```
+
+*The plan created upfront might look like:*
+```
+Step 1: Create project directory structure (tool: run_command)
+Step 2: Initialize a virtual environment and install FastAPI, uvicorn (tool: run_command)
+Step 3: Write a minimal main.py with a health-check endpoint
+Step 4: Write a Dockerfile for the project
+Step 5: Generate a README.md documenting setup and usage
+```
+
+> Full implementation: [`code/python/plan_and_execute.py`](code/python/plan_and_execute.py)
+
 ## Input / Output
 
 - **Input:** A complex task that benefits from upfront strategic planning

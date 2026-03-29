@@ -44,6 +44,38 @@ graph TD
 4. **Augment** the LLM prompt with the retrieved context
 5. **Generate** a response grounded in the retrieved documents
 
+## Minimal Example
+
+Answer HR policy questions from a company handbook — retrieval ensures answers are grounded in actual policy, not LLM training data.
+
+```python
+from patterns.rag.code.python.rag import RAGPipeline
+
+pipeline = RAGPipeline(
+    llm=your_llm,
+    embedder=your_embedder,
+    top_k=3,
+    chunk_size=500,
+)
+
+# Ingestion — run once when documents are added or updated
+n_chunks = pipeline.ingest(
+    documents=company_handbook_pages,
+    metadata=[{"source": "handbook", "section": s} for s in section_names],
+)
+print(f"Indexed {n_chunks} chunks")
+
+# Query — at request time
+result = pipeline.query("What is the process for requesting parental leave?")
+# result.answer       → answer grounded in retrieved context
+# result.chunks_used  → the specific handbook sections retrieved
+# result.query        → original question (for logging / evaluation)
+```
+
+*Without RAG*, the LLM would answer from training data — which may be outdated or simply wrong for your company's specific policy. *With RAG*, the answer is always sourced from your current documents.
+
+> Full implementation: [`code/python/rag.py`](code/python/rag.py)
+
 ## Input / Output
 
 - **Input:** User query + document store (pre-indexed)

@@ -37,6 +37,40 @@ graph TD
 
 Each LLM call has a narrow, well-defined job. This makes prompts simpler, outputs more reliable, and debugging straightforward — you know exactly which step produced a given output.
 
+## Minimal Example
+
+Extract key requirements from a spec, prioritize by complexity, then format as an engineer checklist — three focused LLM calls in sequence.
+
+```python
+from workflows.prompt_chaining.code.python.prompt_chaining import PromptChain, ChainStep
+
+chain = PromptChain(
+    llm=your_llm,
+    steps=[
+        ChainStep(
+            name="extract",
+            prompt_template="Extract the key technical requirements from:\n\n{input}",
+            validate=lambda out: len(out) > 20,   # Gate: reject empty/trivial output
+        ),
+        ChainStep(
+            name="prioritize",
+            prompt_template="Rank these requirements by implementation complexity:\n\n{input}",
+        ),
+        ChainStep(
+            name="format",
+            prompt_template="Format this as a numbered checklist for engineers:\n\n{input}",
+        ),
+    ],
+)
+
+result = chain.run(raw_spec_document)
+# result.success    → True/False
+# result.failed_at  → name of the step that failed its gate, or None
+# result.output     → final formatted checklist
+```
+
+> Full implementation: [`code/python/prompt_chaining.py`](code/python/prompt_chaining.py)
+
 ## Input / Output
 
 - **Input:** Any data that needs multi-step LLM processing

@@ -42,6 +42,46 @@ graph TD
 6. **Iterate** — The supervisor may delegate additional tasks, refine previous results, or request corrections from workers.
 7. **Synthesize** — Once all needed work is done, the supervisor combines results into a final output.
 
+## Minimal Example
+
+Produce a technical deep-dive — the supervisor delegates research, writing, and review to three specialized agents.
+
+```python
+from patterns.multi_agent.code.python.multi_agent import MultiAgentSystem, SubAgent
+
+# Each sub-agent can itself be a ReActAgent, RAGPipeline, etc.
+system = MultiAgentSystem(
+    supervisor=your_llm,
+    agents=[
+        SubAgent(
+            name="researcher",
+            description="Finds papers, benchmarks, and technical details",
+            run=lambda task, ctx: research_agent.run(task).answer,
+        ),
+        SubAgent(
+            name="engineer",
+            description="Writes technical content with code examples",
+            run=lambda task, ctx: engineer_agent.run(task).answer,
+        ),
+        SubAgent(
+            name="editor",
+            description="Polishes, restructures, and ensures consistency",
+            run=lambda task, ctx: editor_agent.run(task).answer,
+        ),
+    ],
+    max_rounds=4,
+)
+
+result = system.run(
+    "Produce a technical deep-dive on LLM inference optimization for a developer audience"
+)
+# result.delegations    → which agents were called and in what order (decided by supervisor)
+# result.agent_outputs  → each agent's contribution
+# result.final_output   → synthesized deliverable
+```
+
+> Full implementation: [`code/python/multi_agent.py`](code/python/multi_agent.py)
+
 ## Input / Output
 
 - **Input:** A complex task requiring multiple specialized capabilities

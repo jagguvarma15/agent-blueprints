@@ -33,6 +33,35 @@ graph TD
 
 The generator and evaluator can be the same LLM with different prompts, or different models entirely (e.g., a cheaper model generates, a more capable model evaluates).
 
+## Minimal Example
+
+Generate a technical explanation, evaluate it against a rubric, and iterate until it meets the quality bar.
+
+```python
+from workflows.evaluator_optimizer.code.python.evaluator_optimizer import EvaluatorOptimizer
+
+eo = EvaluatorOptimizer(
+    generator=your_llm,
+    evaluator=your_llm,   # can be a different, more capable model
+    criteria="""
+    - Technically accurate (no hallucinated APIs or concepts)
+    - Includes a concrete, runnable code example
+    - Under 300 words
+    - Suitable for an intermediate Python developer
+    """,
+    threshold=0.85,       # stop iterating once score >= 0.85
+    max_iterations=3,
+)
+
+result = eo.run("Explain Python's asyncio event loop with a practical example")
+# result.passed              → True if threshold was met within max_iterations
+# result.iterations[i].score → quality score at each iteration (0.0–1.0)
+# result.iterations[i].feedback → what the evaluator said to improve
+# result.final_output        → best version produced
+```
+
+> Full implementation: [`code/python/evaluator_optimizer.py`](code/python/evaluator_optimizer.py)
+
 ## Input / Output
 
 - **Input:** A task requiring high-quality output

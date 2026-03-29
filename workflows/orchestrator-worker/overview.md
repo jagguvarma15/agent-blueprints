@@ -35,6 +35,42 @@ graph TD
 
 The key difference from [Parallel Calls](../parallel-calls/overview.md) is that the *orchestrator decides the decomposition at runtime* using LLM reasoning, rather than the developer defining it in code.
 
+## Minimal Example
+
+Produce a market analysis report — the orchestrator decides which specialists to call and what to ask each one.
+
+```python
+from workflows.orchestrator_worker.code.python.orchestrator_worker import OrchestratorWorker, Worker
+
+system = OrchestratorWorker(
+    orchestrator_llm=your_llm,
+    workers=[
+        Worker(
+            name="researcher",
+            description="Gathers factual data, statistics, and sources",
+            system_prompt="You are a research analyst. Be factual and cite sources.",
+        ),
+        Worker(
+            name="analyst",
+            description="Interprets data and identifies trends",
+            system_prompt="You are a market analyst. Focus on actionable insights.",
+        ),
+        Worker(
+            name="writer",
+            description="Writes clear, structured reports from provided content",
+            system_prompt="You are a business writer. Be concise and professional.",
+        ),
+    ],
+)
+
+result = system.run("Produce a market analysis report for enterprise AI tooling in 2025")
+# result.sub_tasks      → what the orchestrator decided to delegate (varies per run)
+# result.worker_results → each worker's contribution
+# result.final_output   → synthesized report
+```
+
+> Full implementation: [`code/python/orchestrator_worker.py`](code/python/orchestrator_worker.py)
+
 ## Input / Output
 
 - **Input:** A complex task too large or multifaceted for a single LLM call

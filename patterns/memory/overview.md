@@ -38,6 +38,34 @@ graph TD
 5. **Store to long-term memory** — Important information, decisions, or facts are extracted and stored persistently.
 6. **Compress if needed** — When the session history exceeds the context window, a summarizer compresses older messages into a summary.
 
+## Minimal Example
+
+A coding assistant that remembers language preferences and project context across sessions.
+
+```python
+from patterns.memory.code.python.memory_agent import MemoryAgent
+
+agent = MemoryAgent(
+    llm=your_llm,
+    system="You are a personal coding assistant that adapts to each developer's preferences.",
+)
+
+# Session 1 — user provides context
+agent.chat("I mostly work in TypeScript and I'm building a SaaS dashboard.")
+agent.chat("I prefer React Query for data fetching and Zod for validation.")
+
+print(agent.memory_snapshot)
+# {'user_language': 'TypeScript', 'project_type': 'SaaS dashboard',
+#  'prefers_react_query': 'true', 'prefers_zod': 'true'}
+
+# Session 2 (new MemoryAgent instance, same LongTermStore) — memory is recalled
+response = agent.chat("How should I handle form validation in my project?")
+# Agent recalls TypeScript + Zod preference without being told again
+# and tailors the response accordingly
+```
+
+> Full implementation: [`code/python/memory_agent.py`](code/python/memory_agent.py)
+
 ## Input / Output
 
 - **Input:** User message + retrieved context from both memory types

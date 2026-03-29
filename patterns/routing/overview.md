@@ -38,6 +38,44 @@ graph TD
 
 Routing can be hierarchical: a top-level router directs to category-level routers, which direct to specific handlers. This creates a tree of increasingly specialized processing.
 
+## Minimal Example
+
+A customer support bot that classifies incoming messages and routes each to the right specialist.
+
+```python
+from patterns.routing.code.python.routing import Router, Route
+
+router = Router(
+    classifier=your_llm,
+    fallback_route="general",
+    confidence_threshold=0.6,
+)
+
+router.add_route(Route(
+    name="billing",
+    description="Invoice, payment, subscription, and pricing questions",
+    system_prompt="You are a billing specialist. Be precise about charges and refunds.",
+))
+router.add_route(Route(
+    name="technical",
+    description="Bug reports, API errors, and technical troubleshooting",
+    system_prompt="You are a support engineer. Ask for logs and reproduction steps.",
+))
+router.add_route(Route(
+    name="general",
+    description="Product questions, onboarding, and everything else",
+    system_prompt="You are a friendly support agent. Be clear and helpful.",
+))
+
+result = router.route("I was charged twice on my invoice this month")
+# result.route_name    → "billing"
+# result.confidence    → 0.94
+# result.response      → billing specialist's response
+# result.used_fallback → False
+```
+
+> Full implementation: [`code/python/routing.py`](code/python/routing.py)
+
 ## Input / Output
 
 - **Input:** User message or request

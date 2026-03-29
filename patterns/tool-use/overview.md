@@ -42,6 +42,54 @@ graph TD
 
 Tool use can be single-shot (one tool call, then respond) or multi-turn (multiple tool calls in sequence, as in the [ReAct](../react/overview.md) pattern).
 
+## Minimal Example
+
+Find inactive users and send them a re-engagement email — the LLM decides which tools to call and with what arguments.
+
+```python
+from patterns.tool_use.code.python.tool_use import ToolUseAgent, Tool
+
+agent = ToolUseAgent(
+    llm=your_llm,
+    system="You are a data assistant with access to the user database and email system.",
+    tools=[
+        Tool(
+            name="query_db",
+            description="Run a read-only SQL query against the user database",
+            parameters={
+                "type": "object",
+                "properties": {"sql": {"type": "string", "description": "SQL query to run"}},
+                "required": ["sql"],
+            },
+            fn=lambda sql: db.execute(sql),
+        ),
+        Tool(
+            name="send_email",
+            description="Send an email to a user",
+            parameters={
+                "type": "object",
+                "properties": {
+                    "to": {"type": "string"},
+                    "subject": {"type": "string"},
+                    "body": {"type": "string"},
+                },
+                "required": ["to", "subject", "body"],
+            },
+            fn=lambda to, subject, body: email_client.send(to, subject, body),
+        ),
+    ],
+)
+
+result = agent.run(
+    "Find all users who haven't logged in for 30+ days and send each a re-engagement email."
+)
+# result.tool_calls_made  → number of tool invocations (one query + N emails)
+# result.turns            → full conversation and tool call history
+# result.final_response   → the agent's summary of what it did
+```
+
+> Full implementation: [`code/python/tool_use.py`](code/python/tool_use.py)
+
 ## Input / Output
 
 - **Input:** User message + tool schemas describing available functions
