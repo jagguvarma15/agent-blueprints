@@ -47,18 +47,18 @@ jobs:
         run: |
           echo "Checking pattern documentation structure..."
           errors=0
-          # Check workflows have all 3 tiers
+          # Check workflows have all required docs
           for dir in workflows/prompt-chaining workflows/parallel-calls workflows/orchestrator-worker workflows/evaluator-optimizer; do
-            for file in overview.md design.md implementation.md; do
+            for file in overview.md design.md implementation.md observability.md cost-and-latency.md; do
               if [ ! -s "$dir/$file" ]; then
                 echo "MISSING or EMPTY: $dir/$file"
                 errors=$((errors + 1))
               fi
             done
           done
-          # Check patterns have all 3 tiers + evolution
+          # Check patterns have all required docs
           for dir in patterns/react patterns/plan-and-execute patterns/tool-use patterns/memory patterns/rag patterns/reflection patterns/routing patterns/multi-agent; do
-            for file in overview.md design.md implementation.md evolution.md; do
+            for file in overview.md design.md implementation.md evolution.md observability.md cost-and-latency.md; do
               if [ ! -s "$dir/$file" ]; then
                 echo "MISSING or EMPTY: $dir/$file"
                 errors=$((errors + 1))
