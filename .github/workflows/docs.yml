@@ -74,3 +74,7 @@ jobs:
       - name: Validate metadata.json files
         run: |
           node meta/validate-metadata.js
+
+      - name: Lint markdown (style guide enforcement)
+        run: |
+          npx --yes markdownlint-cli2 "**/*.md" "#legacy/**" "#node_modules/**" "#website/**"

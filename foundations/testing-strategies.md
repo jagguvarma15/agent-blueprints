@@ -42,7 +42,7 @@ deterministic. They are often skipped in LLM projects but cover a significant su
 - Token counting and truncation logic
 - Retry and error handling paths
 
-**Example: testing a ReAct response parser**
+### Example: testing a ReAct response parser
 
 ```python
 def test_parse_action():
@@ -65,7 +65,7 @@ def test_parse_malformed_response():
     assert result.parse_failed is True
 ```
 
-**Example: testing a routing classifier dispatcher**
+### Example: testing a routing classifier dispatcher
 
 ```python
 def test_route_dispatch_billing():
@@ -122,7 +122,7 @@ class ConditionalLLM:
 - Does the orchestrator handle a JSON parse failure gracefully?
 - Is the message history built in the right order?
 
-**Example: testing a prompt chain with a scripted LLM**
+### Example: testing a prompt chain with a scripted LLM
 
 ```python
 def test_chain_runs_all_steps():
@@ -142,7 +142,7 @@ def test_chain_halts_on_gate_failure():
     assert len(result.step_outputs) == 0  # gate rejected before storing
 ```
 
-**Example: testing ReAct terminates with a guard**
+### Example: testing ReAct terminates with a guard
 
 ```python
 def test_react_stops_at_max_steps():

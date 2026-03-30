@@ -1,0 +1,22 @@
+default: true
+
+# Cosmetic / high-noise rules that don't reflect style guide requirements
+MD013: false   # line-length — prose docs have long lines by design
+MD022: false   # blanks-around-headings — existing docs intentionally omit these
+MD024: false   # no-duplicate-heading — patterns share section names across files
+MD031: false   # blanks-around-fences — cosmetic
+MD032: false   # blanks-around-lists — too strict for prose-style lists
+MD033: false   # no-inline-html — not used but not a correctness issue
+MD041: false   # first-line-heading — not every file starts with H1
+MD060: false   # table-column-style — docs use compact alignment intentionally
+
+# Rules that enforce style guide requirements
+MD001: true    # heading-increment — levels must increment one at a time
+MD003:         # heading-style — require ATX (## style), not setext
+  style: atx
+MD004:         # ul-style — unordered lists must use dashes
+  style: dash
+MD036: true    # no-emphasis-as-heading — use real headings, not **bold labels**
+
+# Not yet enforced — 200+ existing code blocks lack language tags (tracked separately)
+MD040: false   # fenced-code-language

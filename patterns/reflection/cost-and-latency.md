@@ -60,8 +60,8 @@ P95 estimate (3 iterations, verbose generate): ~7 - 12s
   A task that consistently needs 3 iterations costs ~50% more than one that needs 2.
 - Draft length. The critique receives the full draft as input. A 600-token draft makes
   the critique call ~600 tokens more expensive than a 50-token draft.
-- Revise input context. If the revise call includes the original task + full prior draft
-  + full critique, the context grows rapidly. Only the improvement instruction needs
+- Revise input context. If the revise call includes the original task, full prior draft,
+  and full critique, the context grows rapidly. Only the improvement instruction needs
   to be passed.
 - Verbose critique output. An open-ended critique prompt produces longer critiques
   (reasoning, examples, suggestions). This costs more output tokens and adds more
