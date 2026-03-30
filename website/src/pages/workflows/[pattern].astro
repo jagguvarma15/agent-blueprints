@@ -22,10 +22,14 @@ const base = import.meta.env.BASE_URL || '/agent-blueprints';
 const overviewMd = readMarkdown(`workflows/${pattern.slug}/overview.md`);
 const designMd = readMarkdown(`workflows/${pattern.slug}/design.md`);
 const implMd = readMarkdown(`workflows/${pattern.slug}/implementation.md`);
+const observabilityMd = readMarkdown(`workflows/${pattern.slug}/observability.md`);
+const costLatencyMd = readMarkdown(`workflows/${pattern.slug}/cost-and-latency.md`);
 
 const overviewHtml = overviewMd ? renderMarkdown(overviewMd) : null;
 const designHtml = designMd ? renderMarkdown(designMd) : null;
 const implHtml = implMd ? renderMarkdown(implMd) : null;
+const observabilityHtml = observabilityMd ? renderMarkdown(observabilityMd) : null;
+const costLatencyHtml = costLatencyMd ? renderMarkdown(costLatencyMd) : null;
 
 const overviewHeadings = overviewMd ? extractHeadings(overviewMd) : [];
 
@@ -33,6 +37,8 @@ const tabs = [
   { id: 'overview' as const, label: 'Overview' },
   { id: 'design' as const, label: 'Design' },
   { id: 'implementation' as const, label: 'Implementation' },
+  { id: 'observability' as const, label: 'Observability' },
+  { id: 'cost-latency' as const, label: 'Cost & Latency' },
 ];
 
 const evolvesIntoPatterns = (pattern.evolvesInto ?? [])
@@ -88,6 +94,8 @@ const evolvesIntoPatterns = (pattern.evolvesInto ?? [])
           overview: overviewHtml ?? undefined,
           design: designHtml ?? undefined,
           implementation: implHtml ?? undefined,
+          observability: observabilityHtml ?? undefined,
+          'cost-latency': costLatencyHtml ?? undefined,
         }}
       />
 
