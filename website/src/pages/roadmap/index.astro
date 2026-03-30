@@ -1,0 +1,26 @@
+---
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import TableOfContents from '../../components/TableOfContents';
+import { readMarkdown, extractHeadings, extractTitle } from '../../utils/content';
+import { renderMarkdown } from '../../utils/markdown';
+
+const md = readMarkdown('meta/roadmap.md');
+const html = md ? renderMarkdown(md) : null;
+const title = md ? extractTitle(md) : 'Roadmap';
+const headings = md ? extractHeadings(md) : [];
+---
+
+<DocsLayout title={title} description="What has been built, what is in progress, and what is planned for future phases.">
+  <div class="flex gap-8">
+    <div class="flex-1 min-w-0">
+      {html ? (
+        <div class="prose-content" set:html={html} />
+      ) : (
+        <p class="text-text-secondary">Content not found.</p>
+      )}
+    </div>
+    <div class="w-toc flex-shrink-0 hidden xl:block">
+      <TableOfContents client:load headings={headings} />
+    </div>
+  </div>
+</DocsLayout>

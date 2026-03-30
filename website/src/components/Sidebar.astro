@@ -116,6 +116,30 @@ function isActive(href: string) {
             Compare Patterns
           </a>
         </li>
+        <li>
+          <a
+            href={`${base}/roadmap/`}
+            class={`flex items-center px-3 py-1.5 text-sm rounded-md transition-all border-l-2 ${
+              currentPath.includes('/roadmap')
+                ? 'border-accent text-accent bg-accent-light font-medium'
+                : 'border-transparent text-text-secondary hover:text-text hover:bg-surface hover:border-surface-border'
+            }`}
+          >
+            Roadmap
+          </a>
+        </li>
+        <li>
+          <a
+            href={`${base}/changelog/`}
+            class={`flex items-center px-3 py-1.5 text-sm rounded-md transition-all border-l-2 ${
+              currentPath.includes('/changelog')
+                ? 'border-accent text-accent bg-accent-light font-medium'
+                : 'border-transparent text-text-secondary hover:text-text hover:bg-surface hover:border-surface-border'
+            }`}
+          >
+            Changelog
+          </a>
+        </li>
       </ul>
     </div>
   </nav>
