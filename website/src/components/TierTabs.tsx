@@ -36,7 +36,7 @@ export default function TierTabs({ tabs, defaultTier = 'overview', content }: Ti
     indicator.style.width = `${activeTab.offsetWidth}px`;
   }, [active]);
 
-  // Sync URL
+  // Sync URL and notify TableOfContents
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const url = new URL(window.location.href);
@@ -46,6 +46,7 @@ export default function TierTabs({ tabs, defaultTier = 'overview', content }: Ti
       url.searchParams.set('tier', active);
     }
     window.history.replaceState(null, '', url.toString());
+    window.dispatchEvent(new CustomEvent('tier-change', { detail: { tier: active } }));
   }, [active, defaultTier]);
 
   // Initialize indicator position on mount

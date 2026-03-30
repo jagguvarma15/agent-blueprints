@@ -7,14 +7,39 @@ interface Heading {
 }
 
 interface TableOfContentsProps {
-  headings: Heading[];
+  /** Single-tier pages (e.g. foundations): pass headings directly */
+  headings?: Heading[];
+  /** Multi-tier pages: pass all tier headings keyed by tier id */
+  allHeadings?: Partial<Record<string, Heading[]>>;
+  defaultTier?: string;
 }
 
-export default function TableOfContents({ headings }: TableOfContentsProps) {
+export default function TableOfContents({ headings, allHeadings, defaultTier = 'overview' }: TableOfContentsProps) {
+  const [activeTier, setActiveTier] = useState<string>(() => {
+    if (allHeadings && typeof window !== 'undefined') {
+      return new URLSearchParams(window.location.search).get('tier') ?? defaultTier;
+    }
+    return defaultTier;
+  });
   const [activeId, setActiveId] = useState<string>('');
 
+  const activeHeadings = allHeadings
+    ? (allHeadings[activeTier] ?? allHeadings[defaultTier] ?? [])
+    : (headings ?? []);
+
+  // Listen for tab switches from TierTabs
   useEffect(() => {
-    if (headings.length === 0) return;
+    if (!allHeadings) return;
+    const handler = (e: Event) => {
+      setActiveTier((e as CustomEvent<{ tier: string }>).detail.tier);
+      setActiveId('');
+    };
+    window.addEventListener('tier-change', handler);
+    return () => window.removeEventListener('tier-change', handler);
+  }, [allHeadings]);
+
+  useEffect(() => {
+    if (activeHeadings.length === 0) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -28,15 +53,15 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
       { rootMargin: '-80px 0px -60% 0px', threshold: 0 },
     );
 
-    headings.forEach(({ id }) => {
+    activeHeadings.forEach(({ id }) => {
       const el = document.getElementById(id);
       if (el) observer.observe(el);
     });
 
     return () => observer.disconnect();
-  }, [headings]);
+  }, [activeHeadings]);
 
-  if (headings.length === 0) return null;
+  if (activeHeadings.length === 0) return null;
 
   return (
     <nav aria-label="Table of contents" className="sticky top-14 py-8 max-h-[calc(100vh-3.5rem)] overflow-y-auto">
@@ -44,7 +69,7 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
         On this page
       </p>
       <ul className="space-y-0.5">
-        {headings.map((h) => (
+        {activeHeadings.map((h) => (
           <li key={h.id}>
             <a
               href={`#${h.id}`}

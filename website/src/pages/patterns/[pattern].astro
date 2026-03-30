@@ -33,7 +33,14 @@ const evolutionHtml = evolutionMd ? renderMarkdown(evolutionMd) : null;
 const observabilityHtml = observabilityMd ? renderMarkdown(observabilityMd) : null;
 const costLatencyHtml = costLatencyMd ? renderMarkdown(costLatencyMd) : null;
 
-const overviewHeadings = overviewMd ? extractHeadings(overviewMd) : [];
+const allHeadings = {
+  overview: overviewMd ? extractHeadings(overviewMd) : [],
+  design: designMd ? extractHeadings(designMd) : [],
+  implementation: implMd ? extractHeadings(implMd) : [],
+  evolution: evolutionMd ? extractHeadings(evolutionMd) : [],
+  observability: observabilityMd ? extractHeadings(observabilityMd) : [],
+  'cost-latency': costLatencyMd ? extractHeadings(costLatencyMd) : [],
+};
 
 const tabs = [
   { id: 'overview' as const, label: 'Overview' },
@@ -111,7 +118,7 @@ const parentWorkflows = (pattern.evolvesFrom ?? [])
 
     <!-- Right TOC -->
     <div class="w-toc flex-shrink-0 hidden xl:block">
-      <TableOfContents client:load headings={overviewHeadings} />
+      <TableOfContents client:load allHeadings={allHeadings} defaultTier="overview" />
     </div>
   </div>
 </DocsLayout>
