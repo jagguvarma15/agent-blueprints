@@ -1,96 +1,70 @@
 name: Bug Report
-description: Report a bug in an agent blueprint
+description: Report an error in documentation, a broken link, a website issue, or incorrect code in a reference implementation
 labels:
   - bug
 body:
   - type: dropdown
-    id: blueprint
+    id: area
     attributes:
-      label: Affected Blueprint
-      description: Which blueprint is exhibiting the bug?
+      label: Affected Area
+      description: What part of the repo contains the bug?
       options:
-        - "01 - Chain of Thought"
-        - "02 - Tool Use"
-        - "03 - Multi-Agent Orchestration"
-        - "04 - Memory and Context"
-        - "05 - RAG Pipeline"
-        - "06 - Control Flow"
-        - "07 - Human in the Loop"
-        - "08 - Parallelization"
-        - "09 - Routing"
-        - "10 - Evaluator Optimizer"
+        - Documentation (incorrect or misleading content)
+        - Broken link or cross-reference
+        - Website (layout, navigation, rendering)
+        - Reference implementation (code under patterns/*/code/)
+        - CI / validation
     validations:
       required: true
 
   - type: dropdown
-    id: language
+    id: pattern
     attributes:
-      label: Language / Implementation
-      description: Which language implementation is affected?
+      label: Affected Pattern (if applicable)
+      description: Which pattern does this affect? Select "N/A" if it is not pattern-specific.
       options:
-        - Python
-        - TypeScript
-        - Both
+        - N/A
+        - Foundations
+        - Composition
+        - Prompt Chaining
+        - Parallel Calls
+        - Orchestrator-Worker
+        - Evaluator-Optimizer
+        - ReAct
+        - Plan & Execute
+        - Tool Use
+        - Memory
+        - RAG
+        - Reflection
+        - Routing
+        - Multi-Agent
     validations:
       required: true
 
   - type: textarea
-    id: environment
+    id: description
     attributes:
-      label: Environment Information
-      description: >
-        Please include your OS, runtime version, and relevant package versions.
+      label: Description
+      description: Describe the bug clearly. For documentation errors, quote the incorrect text and explain what is wrong. For broken links, include the page and link text. For code errors, include the file path and the incorrect behaviour.
       placeholder: |
-        OS: macOS 14.5 / Ubuntu 22.04 / Windows 11
-        Python: 3.11.9  (or Node.js: 20.14.0)
-        anthropic SDK: 0.x.x  (or @anthropic-ai/sdk: 0.x.x)
-        uv: 0.x.x  (or pnpm: 9.x.x)
+        In patterns/react/design.md, the section "Error Handling" states that ...
+        but the actual behaviour described contradicts the implementation in code/python/react_agent.py because ...
     validations:
       required: true
 
   - type: textarea
-    id: error-message
+    id: expected
     attributes:
-      label: Error Message or Stack Trace
-      description: Paste the full error output here.
-      placeholder: |
-        Traceback (most recent call last):
-          File "src/agent.py", line 42, in ...
-        anthropic.APIError: ...
-      render: shell
+      label: Expected Behaviour
+      description: What should the documentation say, the link resolve to, or the code do?
     validations:
       required: true
 
-  - type: textarea
-    id: steps-to-reproduce
+  - type: input
+    id: location
     attributes:
-      label: Steps to Reproduce
-      description: >
-        Provide the minimal, numbered steps needed to reliably reproduce the
-        bug from a fresh checkout.
-      placeholder: |
-        1. Clone the repository and navigate to `blueprints/XX-.../python/`
-        2. Run `uv sync`
-        3. Set the `ANTHROPIC_API_KEY` environment variable
-        4. Run `uv run python src/agent.py`
-        5. Observe the error
+      label: File or URL
+      description: Path to the file (e.g. `patterns/react/design.md`) or URL of the affected page.
+      placeholder: "patterns/react/design.md"
     validations:
-      required: true
-
-  - type: textarea
-    id: expected-behavior
-    attributes:
-      label: Expected Behavior
-      description: What did you expect to happen?
-      placeholder: The agent should successfully call the tool and return a response.
-    validations:
-      required: true
-
-  - type: textarea
-    id: actual-behavior
-    attributes:
-      label: Actual Behavior
-      description: What actually happened instead?
-      placeholder: The agent raises an exception immediately after the first API call.
-    validations:
-      required: true
+      required: false

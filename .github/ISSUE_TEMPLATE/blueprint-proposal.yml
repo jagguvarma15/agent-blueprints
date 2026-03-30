@@ -1,112 +1,101 @@
-name: Blueprint Proposal
-description: Propose a new agent blueprint to be added to the collection
+name: New Pattern Proposal
+description: Propose a new workflow or agent pattern to be added to the documentation
 labels:
-  - blueprint-proposal
+  - new-pattern
 body:
   - type: input
-    id: title
+    id: name
     attributes:
-      label: Blueprint Title
-      description: A short, descriptive name for the proposed blueprint (e.g. "Stateful Conversation Agent").
-      placeholder: "My Agent Blueprint"
+      label: Pattern Name
+      description: A short, precise name for the pattern (e.g. "Human-in-the-Loop").
+      placeholder: "Pattern Name"
     validations:
       required: true
 
   - type: dropdown
-    id: pattern-type
+    id: category
     attributes:
-      label: Pattern Type
-      description: Which primary agent design pattern does this blueprint demonstrate?
+      label: Category
+      description: Is this a workflow pattern (developer controls flow) or an agent pattern (LLM controls flow)?
       options:
-        - Orchestration
-        - Multi-agent
-        - Memory
-        - Tools
-        - RAG
-        - Control flow
+        - Workflow
+        - Agent
     validations:
       required: true
 
   - type: dropdown
     id: complexity
     attributes:
-      label: Complexity Level
-      description: What is the intended skill level for someone consuming this blueprint?
+      label: Complexity
+      description: Relative complexity compared to existing patterns.
       options:
-        - Beginner
-        - Intermediate
-        - Advanced
+        - Simple
+        - Medium
+        - Complex
+    validations:
+      required: true
+
+  - type: dropdown
+    id: evolves-from
+    attributes:
+      label: Evolves From (agent patterns only)
+      description: Which existing workflow or agent pattern does this evolve from?
+      options:
+        - N/A (workflow pattern)
+        - Prompt Chaining
+        - Parallel Calls
+        - Orchestrator-Worker
+        - Evaluator-Optimizer
+        - ReAct
+        - Plan & Execute
+        - Tool Use
+        - Memory
+        - RAG
+        - Reflection
+        - Routing
+        - Multi-Agent
     validations:
       required: true
 
   - type: textarea
-    id: use-case
+    id: problem
     attributes:
-      label: Use Case Description
-      description: >
-        Describe the real-world problem or scenario this blueprint addresses.
-        What does the agent do, and why is this pattern useful?
+      label: Problem It Solves
+      description: What situation or requirement makes this pattern necessary? When does a simpler pattern break down?
       placeholder: |
-        This blueprint demonstrates how to...
-
-        It is useful when...
+        This pattern addresses the case where ...
+        Existing patterns fall short because ...
     validations:
       required: true
 
   - type: textarea
-    id: python-implementation
+    id: architecture
     attributes:
-      label: Proposed Python Implementation
-      description: >
-        Outline the Python implementation approach. Include key files,
-        dependencies (e.g. `anthropic`, `uv`, third-party libraries), and a
-        high-level description of how the agent logic is structured.
+      label: Architecture Summary
+      description: Describe the key components and data flow. A rough Mermaid diagram is welcome but not required.
       placeholder: |
-        Key files:
-        - src/agent.py — main agent loop
-        - src/tools.py — tool definitions
-        - tests/test_agent.py — pytest tests
-
-        Dependencies: anthropic, ...
-
-        Implementation notes: ...
-      render: markdown
+        1. The LLM produces a draft
+        2. A human reviewer approves or rejects it
+        3. On rejection, the LLM revises with the reviewer's feedback
     validations:
-      required: false
+      required: true
 
   - type: textarea
-    id: typescript-implementation
+    id: tradeoffs
     attributes:
-      label: Proposed TypeScript Implementation
-      description: >
-        Outline the TypeScript implementation approach. Include key files,
-        dependencies (e.g. `@anthropic-ai/sdk`, pnpm packages), and a
-        high-level description of how the agent logic is structured.
-      placeholder: |
-        Key files:
-        - src/agent.ts — main agent loop
-        - src/tools.ts — tool definitions
-        - tests/agent.test.ts — vitest tests
-
-        Dependencies: @anthropic-ai/sdk, ...
-
-        Implementation notes: ...
-      render: markdown
+      label: Key Tradeoffs
+      description: What are the main strengths and limitations compared to related patterns?
     validations:
       required: false
 
   - type: textarea
     id: references
     attributes:
-      label: Existing Implementations or References
-      description: >
-        List any existing open-source projects, papers, blog posts, or other
-        agent-blueprints blueprints that inspired or are related to this
-        proposal.
+      label: References
+      description: Papers, blog posts, or existing implementations that describe this pattern.
       placeholder: |
-        - https://github.com/...
         - https://arxiv.org/abs/...
-        - Blueprint 03 (multi-agent orchestration) for the subagent pattern
+        - https://github.com/...
     validations:
       required: false
 
@@ -114,9 +103,8 @@ body:
     id: contribution
     attributes:
       label: Contribution Intent
-      description: Let us know if you plan to open a PR for this blueprint.
       options:
-        - label: I am willing to implement the Python version of this blueprint.
+        - label: I am willing to write the documentation for this pattern (overview, design, implementation).
           required: false
-        - label: I am willing to implement the TypeScript version of this blueprint.
+        - label: I am willing to write the reference implementation.
           required: false
