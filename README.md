@@ -115,7 +115,7 @@ agent-blueprints/
 ├── patterns/            # 8 agent patterns (3 tiers + evolution bridge each)
 ├── composition/         # How patterns combine into production systems
 ├── meta/                # Contributing, style guide, roadmap
-└── legacy/              # Archived code implementations from Phase 1
+└── code/                # Reference implementations (per-pattern under patterns/*/code/ and workflows/*/code/)
 ```
 
 ## Design Principles
