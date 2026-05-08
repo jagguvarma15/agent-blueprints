@@ -18,6 +18,24 @@ Every pattern is documented at three levels of depth. Read only what you need:
 
 ---
 
+## The three-repo ecosystem
+
+This repo is one of three that work together as a single pipeline:
+
+```
+agent-blueprints     →     agent-deployments    →     agent-scaffold
+(architecture)             (specs)                    (generator)
+"how to think"             "what to build"            "build it for me"
+patterns + tradeoffs       9 production-shaped        reads spec, asks LLM,
+framework-agnostic         markdown blueprints        writes runnable project
+```
+
+- **[agent-blueprints](https://github.com/jagguvarma15/agent-blueprints)** *(this repo)* — framework-agnostic patterns, tradeoffs, and design guidance. Start here if you want to design before you build.
+- **[agent-deployments](https://github.com/jagguvarma15/agent-deployments)** — opinionated, production-shaped markdown specs for nine concrete agents (Python + TypeScript tracks).
+- **[agent-scaffold](https://github.com/jagguvarma15/agent-scaffold)** — a CLI that consumes a deployment spec, asks Claude to emit a complete project, and writes the files atomically to disk.
+
+---
+
 ## Start Here
 
 | If You... | Read This |
