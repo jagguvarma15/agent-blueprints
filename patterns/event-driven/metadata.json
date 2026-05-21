@@ -1,0 +1,14 @@
+{
+  "id": "event-driven",
+  "name": "Event-Driven",
+  "category": "agent",
+  "complexity": "Advanced",
+  "description": "Agents triggered by queue or stream events rather than HTTP requests.",
+  "tiers": ["overview", "design", "implementation"],
+  "evolvesFrom": ["tool-use"],
+  "composableWith": ["multi-agent", "routing", "memory"],
+  "requires": ["tools", "event-source", "idempotency-store"],
+  "tags": ["streaming", "queue", "async", "idempotency", "backpressure", "dlq"],
+  "costTier": "medium",
+  "latencyTier": "medium"
+}
