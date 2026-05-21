@@ -6,7 +6,10 @@ Use this guide to select the right pattern for your use case. Start with the dec
 
 ```mermaid
 graph TD
-    Start([What does your system need to do?]) --> Q1{Does the LLM need to<br/>take actions or use tools?}
+    Start([What does your system need to do?]) --> Q0{Is the trigger an<br/>external event<br/>not a user request?}
+
+    Q0 -->|"Yes — queue/stream event"| EventDriven([Event-Driven])
+    Q0 -->|"No — user request"| Q1{Does the LLM need to<br/>take actions or use tools?}
 
     Q1 -->|"No — text in, text out"| Q2{Multiple processing steps?}
     Q2 -->|"No"| Single([Single LLM Call<br/>No pattern needed])
@@ -41,6 +44,7 @@ graph TD
     style RAG fill:#81c784
     style PlanExec fill:#66bb6a
     style MultiAgent fill:#4caf50
+    style EventDriven fill:#4caf50
 ```
 
 Green intensity indicates increasing complexity. Start as light as possible.
@@ -61,6 +65,7 @@ Green intensity indicates increasing complexity. Start as light as possible.
 | [Reflection](../patterns/reflection/overview.md) | Agent | Output quality must exceed single-pass | Latency is more important than quality |
 | [Routing](../patterns/routing/overview.md) | Agent | Different inputs need different handling paths | All inputs follow the same process |
 | [Multi-Agent](../patterns/multi-agent/overview.md) | Agent | Task requires multiple specialized capabilities | Single agent can handle the scope |
+| [Event-Driven](../patterns/event-driven/overview.md) | Agent | Trigger is an external event (cancellation, status change, scheduled job) | User is waiting synchronously for a response |
 
 ## Decision Criteria
 
