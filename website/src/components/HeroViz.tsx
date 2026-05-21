@@ -26,6 +26,7 @@ const AG_NODES = [
   { id: 'pe', label: 'Plan &\nExecute', x: 510, y: 220 },
   { id: 'ref', label: 'Reflection', x: 610, y: 220 },
   { id: 'ma', label: 'Multi\nAgent', x: 700, y: 220 },
+  { id: 'ed', label: 'Event\nDriven', x: 790, y: 220 },
 ];
 
 const EVOLVE_EDGES = [
@@ -33,6 +34,7 @@ const EVOLVE_EDGES = [
   { s: 'par', t: 'rag' }, { s: 'par', t: 'rot' },
   { s: 'ow', t: 'pe' }, { s: 'ow', t: 'ma' },
   { s: 'rot', t: 'ma' }, { s: 'eo', t: 'ref' },
+  { s: 'tu', t: 'ed' },
 ];
 
 function buildNodes(animPhase: number): Node[] {

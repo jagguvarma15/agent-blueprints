@@ -42,14 +42,18 @@ const allHeadings = {
   'cost-latency': costLatencyMd ? extractHeadings(costLatencyMd) : [],
 };
 
-const tabs = [
-  { id: 'overview' as const, label: 'Overview' },
-  { id: 'design' as const, label: 'Design' },
-  { id: 'implementation' as const, label: 'Implementation' },
-  { id: 'evolution' as const, label: 'Evolution' },
-  { id: 'observability' as const, label: 'Observability' },
-  { id: 'cost-latency' as const, label: 'Cost & Latency' },
+// Only show tabs for tiers that have content. Patterns shipped without
+// optional tiers (e.g. event-driven, which defers evolution / observability /
+// cost-and-latency to follow-up PRs) should not surface empty placeholders.
+const ALL_TABS = [
+  { id: 'overview' as const, label: 'Overview', html: overviewHtml },
+  { id: 'design' as const, label: 'Design', html: designHtml },
+  { id: 'implementation' as const, label: 'Implementation', html: implHtml },
+  { id: 'evolution' as const, label: 'Evolution', html: evolutionHtml },
+  { id: 'observability' as const, label: 'Observability', html: observabilityHtml },
+  { id: 'cost-latency' as const, label: 'Cost & Latency', html: costLatencyHtml },
 ];
+const tabs = ALL_TABS.filter((t) => t.html).map(({ id, label }) => ({ id, label }));
 
 // Resolve parent workflows
 const parentWorkflows = (pattern.evolvesFrom ?? [])

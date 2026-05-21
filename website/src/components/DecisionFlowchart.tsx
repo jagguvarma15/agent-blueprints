@@ -16,6 +16,13 @@ interface Recommendation {
 
 const DECISIONS: Decision[] = [
   {
+    id: 'q0',
+    question:
+      'Is the trigger an external event (cancellation, status change, scheduled job) rather than a user request?',
+    yes: 'r-event-driven',
+    no: 'q1',
+  },
+  {
     id: 'q1',
     question: 'Does the task require multiple distinct LLM steps?',
     yes: 'q2',
@@ -133,12 +140,19 @@ const RECOMMENDATIONS: Record<string, Recommendation> = {
     description: 'The foundational agent pattern: think, act, observe. Handles open-ended tool-use tasks.',
     href: 'react',
   },
+  'r-event-driven': {
+    id: 'r-event-driven',
+    patterns: ['Event-Driven'],
+    description:
+      'Use an Event-Driven agent: subscribe to a queue or stream, deduplicate by event id, enrich state via tools, decide, act idempotently, ACK. Plan for retries and a DLQ.',
+    href: 'event-driven',
+  },
 };
 
 type NodeId = string;
 
 export default function DecisionFlowchart({ base }: { base: string }) {
-  const [path, setPath] = useState<NodeId[]>(['q1']);
+  const [path, setPath] = useState<NodeId[]>(['q0']);
   const [answers, setAnswers] = useState<Record<string, boolean>>({});
 
   const currentId = path[path.length - 1];
@@ -155,7 +169,7 @@ export default function DecisionFlowchart({ base }: { base: string }) {
   }
 
   function restart() {
-    setPath(['q1']);
+    setPath(['q0']);
     setAnswers({});
   }
 
