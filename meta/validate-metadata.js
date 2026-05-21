@@ -33,6 +33,7 @@ const PATTERN_DIRS = [
   'patterns/reflection',
   'patterns/routing',
   'patterns/multi-agent',
+  'patterns/event-driven',
 ];
 
 let errors = 0;

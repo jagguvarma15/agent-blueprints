@@ -45,6 +45,7 @@ framework-agnostic         markdown blueprints        writes runnable project
 | Want structured LLM pipelines | [Workflows](./workflows/README.md) — 4 pre-agent patterns |
 | Want autonomous LLM behavior | [Agent Patterns](./patterns/README.md) — 8 agent architectures |
 | Are designing a production system | [Composition](./composition/README.md) — how patterns combine |
+| Are building a reactive system on a queue or stream | [Event-Driven Agents](./patterns/event-driven/overview.md) — async triggers, idempotency, DLQ |
 | Want to avoid common mistakes | [Anti-Patterns](./foundations/anti-patterns.md) — what not to build |
 | Need to test your agent system | [Testing Strategies](./foundations/testing-strategies.md) — mock LLMs, evaluation, regression |
 
@@ -73,6 +74,7 @@ Agents are systems where **the LLM controls the flow**. The developer provides t
 | **Reflection** | Self-critique and refinement | Evaluator-Optimizer | [overview](./patterns/reflection/overview.md) | [design](./patterns/reflection/design.md) | [impl](./patterns/reflection/implementation.md) |
 | **Routing** | Intent classification + dispatch | Parallel Calls | [overview](./patterns/routing/overview.md) | [design](./patterns/routing/design.md) | [impl](./patterns/routing/implementation.md) |
 | **Multi-Agent** | Supervisor-worker delegation | Orchestrator-Worker + Routing | [overview](./patterns/multi-agent/overview.md) | [design](./patterns/multi-agent/design.md) | [impl](./patterns/multi-agent/implementation.md) |
+| **Event-Driven** | Agents triggered by stream/queue events | Tool Use | [overview](./patterns/event-driven/overview.md) | [design](./patterns/event-driven/design.md) | [impl](./patterns/event-driven/implementation.md) |
 
 ## How Workflows Become Agents
 
@@ -89,6 +91,7 @@ graph LR
     OW -->|"+ agent workers"| MA[Multi-Agent]
     Route -->|"+ agent workers"| MA
     EO[Evaluator-Optimizer] -->|"+ self-critique"| Ref[Reflection]
+    TU -->|"+ event source"| ED[Event-Driven]
 
     style PC fill:#e8f5e9
     style PAR fill:#e8f5e9
@@ -102,6 +105,7 @@ graph LR
     style PE fill:#fff3e0
     style MA fill:#fff3e0
     style Ref fill:#fff3e0
+    style ED fill:#fff3e0
 ```
 
 Each agent pattern includes an [evolution.md](./patterns/react/evolution.md) document that traces this bridge in detail.
