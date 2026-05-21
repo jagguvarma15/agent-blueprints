@@ -22,10 +22,12 @@ ConsumerConfig:
   dlq_stream: string
 
 AgentResult:
-  decision: string
+  decision: string                       // populated on success
   actions_taken: list of {tool, args, result}
   emitted_events: list of Event
   error: string or null                  // null on success
+  is_transient: boolean                  // only meaningful when error is set
+  attempts: integer                      // 1 on first-try success
 
 IdempotencyStore:
   claim(event_id, ttl) -> "claimed" | "in_progress" | "done"
@@ -87,12 +89,10 @@ async function handle(msg_id, event, config, agent_fn, idem, dlq):
     is_transient=is_transient_error,
   )
 
-  if result.error and not result.is_transient:
-    await push_dlq(dlq, event, result.error, retry_count=result.attempts)
-    await source.ack(config.stream, config.group, msg_id)
-    return
-
-  if result.error:  // transient, ran out of attempts
+  // Permanent error → DLQ on first failure.
+  // Transient error → DLQ only after max_attempts.
+  // Either way, ACK so we don't re-deliver indefinitely.
+  if result.error:
     await push_dlq(dlq, event, result.error, retry_count=result.attempts)
     await source.ack(config.stream, config.group, msg_id)
     return
@@ -138,17 +138,17 @@ async function mark_done(event_id):
 import random
 
 async function with_retries(fn, max_attempts, is_transient, base_delay=1.0):
-  errors = []
   for attempt in 1..max_attempts:
     try:
-      return AgentResult(value=await fn(), error=null, attempts=attempt)
+      result = await fn()                                // returns AgentResult on success
+      result.attempts = attempt
+      return result
     except Exception as e:
-      errors.append({attempt: attempt, error: str(e)})
       if not is_transient(e):
-        return AgentResult(value=null, error=str(e), is_transient=false, attempts=attempt)
+        return AgentResult(error=str(e), is_transient=false, attempts=attempt)
       if attempt == max_attempts:
-        return AgentResult(value=null, error=str(e), is_transient=true, attempts=attempt)
-      delay = base_delay * (4 ** (attempt - 1))   // 1s, 4s, 16s, 64s
+        return AgentResult(error=str(e), is_transient=true, attempts=attempt)
+      delay = base_delay * (4 ** (attempt - 1))          // 1s, 4s, 16s, 64s
       jitter = delay * 0.2 * (random.random() * 2 - 1)
       await sleep(delay + jitter)
 ```

@@ -24,14 +24,16 @@ graph TD
 
     style Source fill:#f3e5f5
     style Group fill:#fff8e1
-    style C1 fill:#fff3e0
-    style C2 fill:#fff3e0
-    style C3 fill:#fff3e0
-    style Idem fill:#e8f5e9
+    style C1 fill:#fff8e1
+    style C2 fill:#fff8e1
+    style C3 fill:#fff8e1
+    style Idem fill:#f3e5f5
     style Agent fill:#fff3e0
+    style Tools fill:#e8f5e9
+    style External fill:#f3e5f5
     style Outcome fill:#e3f2fd
     style Emit fill:#e3f2fd
-    style DLQ fill:#ffebee
+    style DLQ fill:#ffcdd2
 ```
 
 ### Event Source

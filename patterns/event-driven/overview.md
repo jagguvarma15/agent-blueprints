@@ -23,12 +23,14 @@ graph TD
     style Source fill:#f3e5f5
     style Consumer fill:#fff8e1
     style Agent fill:#fff3e0
-    style Tools fill:#fff3e0
-    style Actions fill:#fff3e0
+    style Tools fill:#e8f5e9
+    style Actions fill:#e8f5e9
     style Outcome fill:#e3f2fd
     style Emit fill:#e3f2fd
-    style DLQ fill:#ffebee
-    style Idem fill:#e8f5e9
+    style DLQ fill:#ffcdd2
+    style Idem fill:#fce4ec
+    style Ack1 fill:#e3f2fd
+    style Ack2 fill:#e3f2fd
 ```
 
 *Figure: An event arrives via a queue or stream. A consumer dequeues, checks idempotency, runs the agent loop (enrich → decide → act), persists the outcome, optionally emits a follow-up event, then ACKs. Poison events route to a dead-letter queue after N retries.*
