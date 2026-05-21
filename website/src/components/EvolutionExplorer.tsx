@@ -299,6 +299,7 @@ function getEvolutionNote(workflowId: string, patternId: string): string {
     'orchestrator-worker-multi-agent': 'Workers become autonomous agents with their own tools & memory',
     'routing-multi-agent': 'Routed handlers become full agents instead of single LLM calls',
     'evaluator-optimizer-reflection': 'Evaluator becomes the LLM itself via self-critique prompting',
+    'tool-use-event-driven': 'Queue/stream intake + idempotency + DLQ replace the HTTP-request trigger',
   };
   return notes[`${workflowId}-${patternId}`] || '—';
 }

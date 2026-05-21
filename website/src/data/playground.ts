@@ -1095,6 +1095,111 @@ export const PLAYGROUND_PATTERNS: PlaygroundPattern[] = [
       { id: 'e11', source: 'synthesizer', target: 'output', label: 'deliverable', animated: true },
     ],
   },
+
+  {
+    id: 'event-driven',
+    name: 'Event-Driven',
+    category: 'agent',
+    description:
+      'An agent triggered by a queue or stream event rather than an HTTP request. The consumer dedupes by event id, enriches state via tools, decides, acts idempotently, persists the outcome, and ACKs. Failed events retry; poison events route to a dead-letter queue.',
+    whenToUse:
+      'Use when the trigger is an external event (cancellation, status change, scheduled job) and the response does not need to reach a human in the same turn. Requires idempotent action-taking tools.',
+    nodes: [
+      {
+        id: 'source',
+        label: 'Event Source',
+        type: 'input',
+        description: 'A queue or stream (Kafka, SQS, Redis Streams, NATS) that buffers events for the consumer.',
+        removable: false,
+        onDisableEffect: 'No event source means there is nothing to consume — the agent has no trigger.',
+        position: { x: 80, y: 240 },
+      },
+      {
+        id: 'consumer',
+        label: 'Consumer',
+        type: 'processor',
+        description:
+          'Subscribes to the source as part of a consumer group. Pulls events at its own rate; the source rebalances partitions across consumers in the group.',
+        removable: false,
+        onDisableEffect: 'Without a consumer, events accumulate in the source and the agent never runs.',
+        position: { x: 260, y: 240 },
+      },
+      {
+        id: 'idempotency',
+        label: 'Idempotency Store',
+        type: 'storage',
+        description:
+          'Keyed by event_id with a TTL larger than the source\'s retention window. The consumer claims the event here before invoking the agent and marks it done after success.',
+        removable: true,
+        onDisableEffect:
+          'At-least-once delivery means duplicates re-execute. Tools may be invoked twice for the same event, causing double-charges, double-notifications, etc.',
+        position: { x: 440, y: 80 },
+      },
+      {
+        id: 'agent',
+        label: 'Agent',
+        type: 'llm',
+        description:
+          'The same reasoning loop as Tool Use, but invoked by the consumer instead of an HTTP handler. Reads enrichment tools, decides, and calls action tools.',
+        removable: false,
+        onDisableEffect: 'Without the agent, the consumer has no decision logic — it can only ACK or DLQ.',
+        position: { x: 440, y: 240 },
+      },
+      {
+        id: 'tools',
+        label: 'Tools (idempotent)',
+        type: 'tool',
+        description:
+          'Read-tools fetch current state; write-tools take action. Write-tools must be idempotent (e.g. carry an idempotency key to the downstream API) so retries do not double-apply side effects.',
+        removable: true,
+        onDisableEffect:
+          'No tools means the agent cannot enrich state or act on the world — the event becomes an observation with no effect.',
+        position: { x: 620, y: 240 },
+      },
+      {
+        id: 'outcome',
+        label: 'Outcome Store',
+        type: 'storage',
+        description:
+          'Durable record of what the agent decided and did for each event_id. Source of truth for audit, replay, and downstream consumers.',
+        removable: true,
+        onDisableEffect:
+          'Without an outcome store, you cannot reconstruct the agent\'s history, audit decisions, or replay events to rebuild state.',
+        position: { x: 800, y: 80 },
+      },
+      {
+        id: 'ack',
+        label: 'ACK',
+        type: 'output',
+        description: 'Acknowledges the event to the source after the outcome is persisted. The source will not redeliver this event.',
+        removable: false,
+        onDisableEffect:
+          'Without an ACK, the source will redeliver the event after the pending timeout — the agent runs it again indefinitely.',
+        position: { x: 800, y: 240 },
+      },
+      {
+        id: 'dlq',
+        label: 'Dead-Letter Queue',
+        type: 'storage',
+        description:
+          'Where poison events go after max_retries. Holds the original event, error history, and retry count. DLQ depth should page someone.',
+        removable: true,
+        onDisableEffect:
+          'Without a DLQ, permanently failing events block the partition forever — every other event with the same partition key is stuck behind the poison.',
+        position: { x: 620, y: 420 },
+      },
+    ],
+    edges: [
+      { id: 'e1', source: 'source', target: 'consumer', label: 'event', animated: true },
+      { id: 'e2', source: 'consumer', target: 'idempotency', label: 'claim by event_id', animated: true },
+      { id: 'e3', source: 'consumer', target: 'agent', label: 'dispatch (if new)', animated: true },
+      { id: 'e4', source: 'agent', target: 'tools', label: 'enrich + act', animated: true },
+      { id: 'e5', source: 'tools', target: 'agent', label: 'state / results', animated: false },
+      { id: 'e6', source: 'agent', target: 'outcome', label: 'persist decision', animated: true },
+      { id: 'e7', source: 'agent', target: 'ack', label: 'success', animated: true },
+      { id: 'e8', source: 'agent', target: 'dlq', label: 'after N retries', animated: false },
+    ],
+  },
 ];
 
 export function getPlaygroundPattern(id: string): PlaygroundPattern | undefined {
