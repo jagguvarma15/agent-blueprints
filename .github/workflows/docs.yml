@@ -17,35 +17,45 @@ jobs:
 
       - name: Check for broken internal links
         run: |
-          echo "Checking for broken internal markdown links..."
-          # Collect findings in a temp file so the inner subshell's writes
-          # propagate to the outer scope. Prior implementation incremented
-          # $errors inside a piped while-loop, which runs in a subshell,
-          # so the counter was always 0 even when BROKEN messages printed.
-          findings=$(mktemp)
-          trap 'rm -f "$findings"' EXIT
-          while IFS= read -r file; do
-            dir=$(dirname "$file")
-            while IFS= read -r link; do
-              # Skip external URLs and anchors
-              if [[ "$link" =~ ^https?:// ]] || [[ "$link" =~ ^# ]]; then
-                continue
-              fi
-              # Remove anchor from link
-              path="${link%%#*}"
-              if [ -n "$path" ]; then
-                target="$dir/$path"
-                if [ ! -f "$target" ] && [ ! -d "$target" ]; then
-                  echo "BROKEN: $file -> $link" | tee -a "$findings"
-                fi
-              fi
-            done < <(grep -oP '\[.*?\]\(\K[^)]+' "$file" 2>/dev/null)
-          done < <(find . -name '*.md' -not -path './legacy/*' -not -path './node_modules/*' -not -path './website/*')
-          if [ -s "$findings" ]; then
-            echo "Found $(wc -l < "$findings") broken link(s)"
-            exit 1
-          fi
-          echo "All internal links valid"
+          python3 - <<'PY'
+          import os, re, sys
+
+          # Skip third-party trees and the local docs site (its node_modules
+          # carries 600+ third-party READMEs whose links aren't this repo's concern).
+          SKIP_DIRS = {'./legacy', './node_modules', './website'}
+
+          broken = []
+          for root, dirs, files in os.walk('.'):
+              dirs[:] = [d for d in dirs if os.path.join(root, d) not in SKIP_DIRS]
+              for name in files:
+                  if not name.endswith('.md'):
+                      continue
+                  path = os.path.join(root, name)
+                  with open(path, encoding='utf-8', errors='replace') as f:
+                      text = f.read()
+                  # Strip fenced code blocks and inline code so function calls
+                  # like `registry[name](args)` aren't treated as markdown links.
+                  text = re.sub(r'```.*?```', '', text, flags=re.S)
+                  text = re.sub(r'`[^`\n]*`', '', text)
+                  base = os.path.dirname(path)
+                  for m in re.finditer(r'\[[^\]]*\]\(([^)]+)\)', text):
+                      link = m.group(1).strip()
+                      if link.startswith(('http://', 'https://', '#', 'mailto:')):
+                          continue
+                      target = link.split('#', 1)[0]
+                      if not target:
+                          continue
+                      abs_p = os.path.normpath(os.path.join(base, target))
+                      if not (os.path.isfile(abs_p) or os.path.isdir(abs_p)):
+                          broken.append(f'{path} -> {link}')
+
+          if broken:
+              print(f'Found {len(broken)} broken link(s):')
+              for b in broken:
+                  print(f'  BROKEN: {b}')
+              sys.exit(1)
+          print('All internal links valid')
+          PY
 
       - name: Check pattern structure completeness
         run: |
