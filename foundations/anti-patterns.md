@@ -255,7 +255,21 @@ evidence that the additional iterations provide value.
 
 ---
 
-## 12. Using the Generator as Its Own Evaluator (Same Prompt)
+## 12. Polling When Events Are Available
+
+**Symptom:** A cron job runs every 60 seconds, queries `SELECT * FROM reservations WHERE status_changed_at > last_run`, and feeds the results to an agent. End-to-end latency is "up to 60 seconds." Database load is constant whether anything changed or not. Adding a second consumer means writing a second cron with its own watermark column.
+
+**Why people do it:** Polling is simple. You already have a database; you already have cron; an HTTP-driven agent is already running. Adding a queue feels like infrastructure for infrastructure's sake.
+
+**The problem:** Polling adds a fixed latency floor regardless of load, costs query overhead even when there's no work, and scales poorly to multiple consumers — each consumer must independently track its watermark and dedupe results. Most importantly, the upstream system already knows when the state changed; the poller is reconstructing that signal after the fact, badly. When the producing system can emit an event (DB CDC, application-level publish, transactional outbox), reconstructing the signal via polling discards information that was already available.
+
+**Use instead:** [Event-Driven Agents](../patterns/event-driven/overview.md). Emit an event from the source-of-truth state change (transactional outbox keeps it atomic with the DB write). Subscribe agents to the stream. Latency drops from `poll_interval / 2` to milliseconds; multiple consumers attach without coordination; the event log becomes replay-able. Polling is the right answer only when (a) you can't modify the producer, and (b) events arrive at <1/minute so the latency penalty is irrelevant.
+
+**Rule of thumb:** If the producer can emit, subscribe. Poll only legacy systems you can't change.
+
+---
+
+## 13. Using the Generator as Its Own Evaluator (Same Prompt)
 
 **Symptom:** You implement a "self-check" step where the same prompt that generated the
 answer is asked "is this answer correct?" It almost always says yes. Output quality does not
@@ -293,4 +307,5 @@ the feedback signal useful.
 | Overlapping route descriptions | Routing | Mutually exclusive descriptions |
 | Looping everything | Reflection / Eval-Optimizer | Targeted use only |
 | Loops without guards | Any looping pattern | Hard upper bounds on all loops |
+| Polling when events available | Polling cron | Event-Driven subscription |
 | Generator evaluates itself | Self-check | Distinct evaluation prompt or model |
