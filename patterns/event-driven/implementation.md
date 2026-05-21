@@ -256,7 +256,9 @@ If you currently have a cron job polling a database for changed rows:
 
 ## Going Further
 
-- **[evolution.md](./evolution.md)** *(follow-up PR)* — How Event-Driven evolves from Tool Use.
-- **[cost-and-latency.md](./cost-and-latency.md)** *(follow-up PR)* — Per-event cost breakdown; latency budgets for sync vs async response.
-- **[observability.md](./observability.md)** *(follow-up PR)* — Full dashboard spec; trace propagation across the agent + tool stack.
-- **`code/`** *(follow-up PR)* — Production Python and TypeScript implementations for Redis Streams + SQS.
+Deferred to follow-up PRs:
+
+- `evolution.md` — How Event-Driven evolves from Tool Use.
+- `cost-and-latency.md` — Per-event cost breakdown; latency budgets for sync vs async response.
+- `observability.md` — Full dashboard spec; trace propagation across the agent + tool stack.
+- `code/` — Production Python and TypeScript implementations for Redis Streams + SQS.
