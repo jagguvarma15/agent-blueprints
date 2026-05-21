@@ -137,6 +137,15 @@ export const AGENT_PATTERNS: PatternMeta[] = [
     category: 'agent',
     evolvesFrom: ['orchestrator-worker', 'routing'],
   },
+  {
+    id: 'event-driven',
+    name: 'Event-Driven',
+    slug: 'event-driven',
+    description: 'Agents triggered by queue or stream events rather than HTTP requests.',
+    complexity: 'Advanced',
+    category: 'agent',
+    evolvesFrom: ['tool-use'],
+  },
 ];
 
 export const ALL_PATTERNS: PatternMeta[] = [...WORKFLOWS, ...AGENT_PATTERNS];
@@ -303,5 +312,16 @@ export const PATTERN_COMPARISONS: PatternComparison[] = [
     bestFor: 'Enterprise systems with parallel specialization',
     requires: ['tools', 'orchestration'],
     composableWith: ['react', 'routing', 'memory'],
+  },
+  {
+    id: 'event-driven',
+    name: 'Event-Driven',
+    category: 'agent',
+    complexity: 'Advanced',
+    latency: 'Medium',
+    cost: 'Medium',
+    bestFor: 'Async reactive systems on a queue or stream',
+    requires: ['tools', 'event-source', 'idempotency-store'],
+    composableWith: ['multi-agent', 'routing', 'memory'],
   },
 ];
