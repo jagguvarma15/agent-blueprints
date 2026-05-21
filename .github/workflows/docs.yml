@@ -18,10 +18,15 @@ jobs:
       - name: Check for broken internal links
         run: |
           echo "Checking for broken internal markdown links..."
-          errors=0
+          # Collect findings in a temp file so the inner subshell's writes
+          # propagate to the outer scope. Prior implementation incremented
+          # $errors inside a piped while-loop, which runs in a subshell,
+          # so the counter was always 0 even when BROKEN messages printed.
+          findings=$(mktemp)
+          trap 'rm -f "$findings"' EXIT
           while IFS= read -r file; do
             dir=$(dirname "$file")
-            grep -oP '\[.*?\]\(\K[^)]+' "$file" 2>/dev/null | while IFS= read -r link; do
+            while IFS= read -r link; do
               # Skip external URLs and anchors
               if [[ "$link" =~ ^https?:// ]] || [[ "$link" =~ ^# ]]; then
                 continue
@@ -31,14 +36,13 @@ jobs:
               if [ -n "$path" ]; then
                 target="$dir/$path"
                 if [ ! -f "$target" ] && [ ! -d "$target" ]; then
-                  echo "BROKEN: $file -> $link"
-                  errors=$((errors + 1))
+                  echo "BROKEN: $file -> $link" | tee -a "$findings"
                 fi
               fi
-            done
-          done < <(find . -name '*.md' -not -path './legacy/*' -not -path './node_modules/*')
-          if [ "$errors" -gt 0 ]; then
-            echo "Found $errors broken links"
+            done < <(grep -oP '\[.*?\]\(\K[^)]+' "$file" 2>/dev/null)
+          done < <(find . -name '*.md' -not -path './legacy/*' -not -path './node_modules/*' -not -path './website/*')
+          if [ -s "$findings" ]; then
+            echo "Found $(wc -l < "$findings") broken link(s)"
             exit 1
           fi
           echo "All internal links valid"

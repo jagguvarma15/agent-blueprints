@@ -16,7 +16,7 @@ MD003:         # heading-style — require ATX (## style), not setext
   style: atx
 MD004:         # ul-style — unordered lists must use dashes
   style: dash
-MD036: true    # no-emphasis-as-heading — use real headings, not **bold labels**
+MD036: false   # no-emphasis-as-heading — bold labels are an accepted sub-section convention (see meta/style-guide.md "Sub-Section Labels")
 
 # Not yet enforced — 200+ existing code blocks lack language tags (tracked separately)
 MD040: false   # fenced-code-language
