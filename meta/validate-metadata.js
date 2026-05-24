@@ -35,6 +35,7 @@ const PATTERN_DIRS = [
   'patterns/multi-agent',
   'patterns/event-driven',
   'patterns/saga',
+  'patterns/human-in-the-loop',
 ];
 
 let errors = 0;
