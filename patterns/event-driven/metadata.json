@@ -4,7 +4,7 @@
   "category": "agent",
   "complexity": "Advanced",
   "description": "Agents triggered by queue or stream events rather than HTTP requests.",
-  "tiers": ["overview", "design", "implementation"],
+  "tiers": ["overview", "design", "implementation", "evolution"],
   "evolvesFrom": ["tool-use"],
   "composableWith": ["multi-agent", "routing", "memory"],
   "requires": ["tools", "event-source", "idempotency-store"],
