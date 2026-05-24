@@ -1,0 +1,14 @@
+{
+  "id": "saga",
+  "name": "Saga",
+  "category": "agent",
+  "complexity": "Advanced",
+  "description": "Long-running, multi-step business processes that need compensation when an intermediate step fails.",
+  "tiers": ["overview", "design", "implementation", "evolution"],
+  "evolvesFrom": ["tool-use", "prompt-chaining"],
+  "composableWith": ["event-driven", "multi-agent"],
+  "requires": ["storage", "idempotency", "compensation-handlers"],
+  "tags": ["long-running", "compensation", "eventual-consistency", "saga-log", "orchestration", "choreography"],
+  "costTier": "medium",
+  "latencyTier": "high"
+}
