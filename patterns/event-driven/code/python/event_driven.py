@@ -175,6 +175,12 @@ if __name__ == "__main__":
             self._dlq: list[dict] = []
 
         async def read(self, count: int, block_ms: int) -> list[tuple[str, dict]]:
+            # Mimic Redis Streams `XREADGROUP COUNT N BLOCK ms`: wait up to
+            # block_ms for new entries when the queue is empty, then return
+            # whatever is available.
+            if not self._queue:
+                await asyncio.sleep(block_ms / 1000)
+                return []
             batch, self._queue = self._queue[:count], self._queue[count:]
             return batch
 
@@ -222,11 +228,13 @@ if __name__ == "__main__":
         ]
         source = InMemorySource(events)
         store = InMemoryStore()
-        consumer = EventDrivenConsumer(source, store, RebookingAgent(), handler_name="rebooker")
+        consumer = EventDrivenConsumer(
+            source, store, RebookingAgent(), handler_name="rebooker", block_ms=50
+        )
 
         # Stop after the queue drains.
         async def stopper():
-            await asyncio.sleep(0.1)
+            await asyncio.sleep(0.2)
             consumer.stop()
 
         await asyncio.gather(consumer.run_until_stopped(), stopper())
