@@ -121,7 +121,7 @@ result = saga.run(payload={"original_reservation_id": "res_42", "customer_id": "
 
 - **Evolves from:** [Prompt Chaining](../../workflows/prompt-chaining/overview.md) + [Tool Use](../tool-use/overview.md) — see [evolution.md](./evolution.md)
 - **Hosted on:** [Event-Driven](../event-driven/overview.md) — sagas commonly run as consumers triggered by an inbound event; each step result becomes an event
-- **Combines with:** [Human-in-the-Loop](../human-in-the-loop/overview.md) (planned) for compensator-failure escalation; [Multi-Agent (Flat)](../multi-agent/overview.md) when individual steps delegate to specialized agents
+- **Combines with:** Human-in-the-Loop (planned: `patterns/human-in-the-loop/`) for compensator-failure escalation; [Multi-Agent (Flat)](../multi-agent/overview.md) when individual steps delegate to specialized agents
 - **Contrast with:** Distributed transactions — sagas trade ACID atomicity for availability + eventual consistency
 
 ## Deeper Dive

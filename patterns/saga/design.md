@@ -97,7 +97,7 @@ steps:
     irreversibility: "high"
 ```
 
-This metadata is what feeds the [Human-in-the-Loop](../human-in-the-loop/overview.md) approval gates when the saga is about to commit an expensive irreversible step.
+This metadata is what feeds Human-in-the-Loop (planned: `patterns/human-in-the-loop/`) approval gates when the saga is about to commit an expensive irreversible step.
 
 ## Saga Log Shape
 
@@ -160,6 +160,6 @@ If your steps all live in one DB and the DB supports transactions, **use a trans
 ## Composition
 
 - **+ [Event-Driven](../event-driven/overview.md)** — The saga is hosted as a consumer of an inbound trigger event; each step `do` may publish a step-completed event downstream consumers react to.
-- **+ Human-in-the-Loop** (planned) — Compensators that fail escalate to a human queue. High-irreversibility steps can require approval before `do` runs.
+- **+ Human-in-the-Loop** (planned: `patterns/human-in-the-loop/`) — Compensators that fail escalate to a human queue. High-irreversibility steps can require approval before `do` runs.
 - **+ [Multi-Agent (Flat)](../multi-agent/overview.md)** — Individual steps can delegate to specialized agents; the coordinator stays simple.
 - **+ Idempotency** (cross-cutting `agent-deployments/docs/cross-cutting/idempotency.md`) — every `do` and every `undo` must be idempotent so retries are safe.

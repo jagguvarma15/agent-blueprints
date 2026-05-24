@@ -34,6 +34,7 @@ const PATTERN_DIRS = [
   'patterns/routing',
   'patterns/multi-agent',
   'patterns/event-driven',
+  'patterns/saga',
 ];
 
 let errors = 0;
