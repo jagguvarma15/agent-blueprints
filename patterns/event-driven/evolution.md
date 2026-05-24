@@ -74,7 +74,7 @@ if not seen:
 result = agent.run(payload)
 ```
 
-See the [Idempotency](../../../agent-deployments/docs/cross-cutting/idempotency.md) cross-cutting doc for two-phase claim/release (safer than single-phase SETNX when handlers can crash mid-work).
+See the Idempotency cross-cutting doc (`agent-deployments/docs/cross-cutting/idempotency.md`) for two-phase claim/release (safer than single-phase SETNX when handlers can crash mid-work).
 
 ### Step 3: Add retry + DLQ
 
@@ -92,7 +92,7 @@ except PermanentError:
     await stream.xack(STREAM, group, event_id)
 ```
 
-Combine with [resilience.md § Retries](../../../agent-deployments/docs/cross-cutting/resilience.md#retries) for the retry layer.
+Combine with `agent-deployments/docs/cross-cutting/resilience.md` § Retries for the retry layer.
 
 ### Step 4: Wire backpressure + observability
 

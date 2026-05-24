@@ -18,7 +18,7 @@ What to instrument, what to log, and how to diagnose failures in event-driven ag
 | `event_driven.handler.in_flight` | Concurrent handlers per consumer | Approaching the semaphore cap (>80% of bulkhead limit) |
 | `event_driven.event_type.rate` | Events per second per `event_type` | Drop to 0 may mean producer broke; spike may need scaling |
 
-Page on velocity + novelty (lag growing, DLQ surfacing a new `failure_reason`); notify on absolute thresholds. See [agent-deployments/cross-cutting/dlq-operations.md](../../../agent-deployments/docs/cross-cutting/dlq-operations.md) for tiered DLQ alert policy.
+Page on velocity + novelty (lag growing, DLQ surfacing a new `failure_reason`); notify on absolute thresholds. See `agent-deployments/docs/cross-cutting/dlq-operations.md` for tiered DLQ alert policy.
 
 ---
 
@@ -129,14 +129,14 @@ INFO  event_driven.handle.dedupe   event_id=evt_01HVY...  reason=already_complet
 - **Symptom**: `consumer.lag` rising monotonically; producer-side throughput unchanged; handlers are slow.
 - **Log pattern**: `handler.duration_ms` P95 is up 3–5× from the rolling mean.
 - **Diagnosis**: A downstream dependency slowed (third-party API, DB, LLM). The handler is waiting on something external.
-- **Fix**: Add a per-call timeout if you don't have one. Check the downstream's metrics directly. Add a circuit breaker per dependency (see [resilience.md § Circuit breakers](../../../agent-deployments/docs/cross-cutting/resilience.md#circuit-breakers)) so a slow downstream fails fast instead of pinning workers.
+- **Fix**: Add a per-call timeout if you don't have one. Check the downstream's metrics directly. Add a circuit breaker per dependency (see `agent-deployments/docs/cross-cutting/resilience.md` § Circuit breakers) so a slow downstream fails fast instead of pinning workers.
 
 ### DLQ growing with a new `failure_reason`
 
 - **Symptom**: `dlq.depth` ticking up; alert fires for `unknown error_class never seen before`.
 - **Log pattern**: DLQ envelopes share a `last_error_class` that didn't exist in prior runs.
 - **Diagnosis**: A recent deploy introduced a code path that throws an uncaught exception, OR a downstream changed its response shape and the consumer's parser broke, OR a new event_type appeared that the consumer doesn't know how to handle.
-- **Fix**: `git log` for the recent deploy. Inspect a few DLQ entries via the [DLQ replay CLI](../../../agent-deployments/docs/cross-cutting/dlq-operations.md#replay-cli). Either roll back, patch + redeploy, then replay; or add the new failure mode to the consumer's handled-exceptions list.
+- **Fix**: `git log` for the recent deploy. Inspect a few DLQ entries via the DLQ replay CLI (see `agent-deployments/docs/cross-cutting/dlq-operations.md` § Replay CLI). Either roll back, patch + redeploy, then replay; or add the new failure mode to the consumer's handled-exceptions list.
 
 ### Idempotency hit rate spikes
 
@@ -150,7 +150,7 @@ INFO  event_driven.handle.dedupe   event_id=evt_01HVY...  reason=already_complet
 - **Symptom**: `handler.in_flight` is consistently at or near the semaphore limit; `consumer.lag` rising.
 - **Log pattern**: New events arrive faster than handlers complete; no errors, just slow.
 - **Diagnosis**: Concurrency budget too small for the current ingress, OR handlers genuinely slowed and need a bigger budget temporarily.
-- **Fix**: Scale consumer pods (horizontal) or raise the semaphore limit (vertical, with care — more in-flight means more memory). If you're already at max, the upstream needs throttling — see [backpressure.md](../../../agent-deployments/docs/cross-cutting/backpressure.md) for shed/cap strategies.
+- **Fix**: Scale consumer pods (horizontal) or raise the semaphore limit (vertical, with care — more in-flight means more memory). If you're already at max, the upstream needs throttling — see `agent-deployments/docs/cross-cutting/backpressure.md` for shed/cap strategies.
 
 ### Events stuck pending after a consumer crash
 

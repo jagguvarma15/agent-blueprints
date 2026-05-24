@@ -67,16 +67,16 @@ mark completion. Pending events idle for ~30s by default before `XCLAIM` re-deli
 - **Handler complexity.** The pattern overhead is fixed; the handler can be anything
   from a single Haiku classification ($0.0002/call) to a 5-turn Opus ReAct loop
   ($0.10+/call). Pick the model per handler — see
-  [model-routing.md](../../../agent-deployments/docs/cross-cutting/model-routing.md).
+  `agent-deployments/docs/cross-cutting/model-routing.md`.
 - **Failure-retry storms.** If a downstream is degraded, every event retries N times
   before going to DLQ. Each retry re-spends the handler's LLM cost. A circuit breaker
-  per downstream (see [resilience.md](../../../agent-deployments/docs/cross-cutting/resilience.md))
-  caps this.
+  per downstream (see `agent-deployments/docs/cross-cutting/resilience.md`) caps this.
 - **Idempotency cache miss after expiry.** If TTL expires before re-delivery, a
   duplicate event is re-processed at full cost. Set TTL > broker's max redelivery
   window.
 - **Replay storms after an incident.** A few thousand DLQ events replayed at once
-  multiply handler cost. See the [DLQ runbook](../../../agent-deployments/docs/cross-cutting/dlq-operations.md#runbook-outline)
+  multiply handler cost. See the DLQ runbook
+  (`agent-deployments/docs/cross-cutting/dlq-operations.md` § Runbook outline)
   for batched-replay-with-monitoring.
 
 ---
@@ -100,8 +100,7 @@ mark completion. Pending events idle for ~30s by default before `XCLAIM` re-deli
 
 **Right-size the handler model.** A classification step doesn't need Opus. Per-role
 `model_hint` picks the cheapest model that meets quality. See
-[model-routing.md](../../../agent-deployments/docs/cross-cutting/model-routing.md)
-per-role table.
+`agent-deployments/docs/cross-cutting/model-routing.md` per-role table.
 
 **Cache the system prompt.** Event handlers typically reuse the same system prompt
 across thousands of events per hour. Prompt-cache the stable prefix (1,024+ tokens)
@@ -110,12 +109,12 @@ materially flip the cost comparison Opus-with-cache vs Sonnet-no-cache.
 
 **Cap retries at low N (3).** Each retry doubles the cost for that event class.
 Letting permanent failures hit DLQ fast is cheaper than retrying for hours. Combine
-with [resilience.md § Retries](../../../agent-deployments/docs/cross-cutting/resilience.md#retries).
+with `agent-deployments/docs/cross-cutting/resilience.md` § Retries.
 
 **Per-tenant budget guards.** A runaway producer or a poison-pill retry loop can
 blow the LLM bill before it surfaces on dashboards. See
-[cost-tracking.md](../../../agent-deployments/docs/cross-cutting/cost-tracking.md)
-for the per-tenant per-day USD ceiling.
+`agent-deployments/docs/cross-cutting/cost-tracking.md` for the per-tenant per-day
+USD ceiling.
 
 ---
 
@@ -123,7 +122,7 @@ for the per-tenant per-day USD ceiling.
 
 **Scale consumers based on lag, not CPU.** KEDA / HPA on `consumer.lag` keeps tail
 latency bounded as ingress varies. See
-[backpressure.md § Adaptive scaling](../../../agent-deployments/docs/cross-cutting/backpressure.md).
+`agent-deployments/docs/cross-cutting/backpressure.md` § Adaptive scaling.
 
 **Tune `XREADGROUP BLOCK`.** Block time too high (10s+) wastes latency at low load;
 too low (< 100ms) burns CPU polling. 1-5s is typical.
