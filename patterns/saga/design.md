@@ -139,7 +139,7 @@ Rules:
 | Compensator `undo` raises retryable error | Backoff + retry the compensator; do NOT proceed to the next compensator yet |
 | Compensator `undo` raises permanent error | Log `compensation_failed`; mark saga `partially_compensated`; **page** — manual recovery required |
 | Coordinator crashes mid-saga | On restart, load saga log; if last event is `completed`, continue next step; if last is `started`, retry the started step (idempotent) |
-| Two coordinators acquire the same saga (split-brain) | Use a coordinator lease (see [Distributed locking](../../../agent-deployments/docs/cross-cutting/distributed-locking.md) cross-cutting doc) so only one coordinator runs a given saga at a time |
+| Two coordinators acquire the same saga (split-brain) | Use a coordinator lease (see `agent-deployments/docs/cross-cutting/distributed-locking.md`) so only one coordinator runs a given saga at a time |
 
 The **partially_compensated** state is the one that absolutely demands operator attention — silent inconsistency in the customer-visible world. Page on every transition into it.
 
