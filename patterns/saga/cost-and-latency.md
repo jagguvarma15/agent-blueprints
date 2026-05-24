@@ -79,7 +79,7 @@ through all 4 steps, then backward through the first 3 compensators.
   steps should be pure tool calls.
 - **Compensation rate.** Every saga that compensates roughly doubles its cost (or
   more, with forward recovery). Drive the failing-step rate down via better retry
-  + circuit-breaker handling at the underlying step (see
+  and circuit-breaker handling at the underlying step (see
   `agent-deployments/docs/cross-cutting/resilience.md`).
 - **Forward-recovery compensators.** Sending a cancellation SMS or issuing a refund
   costs real money. Where possible, **reorder the saga** so irreversible steps
