@@ -28,13 +28,18 @@ from typing import Any, Callable, Literal, Protocol
 
 @dataclass
 class Approval:
-    """A request for a human decision before an action commits."""
+    """A request for a human decision before an action commits.
+
+    ``ttl_seconds`` defaults to ``None`` so the gate's configured
+    ``timeout_seconds`` applies. Set it per-approval only when a specific
+    proposal needs a tighter or looser deadline than the gate's default.
+    """
 
     proposal_id: str
     action: str
     context: dict
     approver_pool: str
-    ttl_seconds: int = 900
+    ttl_seconds: int | None = None
     on_timeout: Literal["auto_approve", "auto_deny", "escalate"] = "escalate"
 
 
@@ -135,24 +140,34 @@ class WebQueueSurface:
 class _DecisionInbox:
     """Thread-safe holding pen for decisions submitted out-of-band by surfaces.
 
-    Production replacement: a Postgres row + a Redis pub/sub channel keyed on
-    proposal_id, or whatever the LangGraph checkpointer + webhook flow uses.
+    First-decision-wins idempotency: once a decision has been ``put`` (and
+    later ``take``‑n by the gate), any subsequent ``put`` for the same
+    proposal_id returns ``False`` so duplicate webhook deliveries don't
+    second-guess the original decision.
+
+    Production replacement: a Postgres row keyed on proposal_id with an
+    ``UPDATE ... WHERE state = 'pending'`` write, or a Redis SETNX-style
+    claim, behind a real webhook handler.
     """
 
     def __init__(self) -> None:
         self._decisions: dict[str, tuple[dict, int]] = {}
+        self._consumed: set[str] = set()
         self._lock = threading.Lock()
 
     def put(self, proposal_id: str, payload: dict, escalation_level: int) -> bool:
         with self._lock:
-            if proposal_id in self._decisions:
-                return False           # idempotent: first decision wins
+            if proposal_id in self._decisions or proposal_id in self._consumed:
+                return False           # first decision wins (idempotent)
             self._decisions[proposal_id] = (payload, escalation_level)
             return True
 
     def take(self, proposal_id: str) -> tuple[dict, int] | None:
         with self._lock:
-            return self._decisions.pop(proposal_id, None)
+            slot = self._decisions.pop(proposal_id, None)
+            if slot is not None:
+                self._consumed.add(proposal_id)
+            return slot
 
 
 # ── Approval gate ─────────────────────────────────────────────────────────────
@@ -187,7 +202,7 @@ class ApprovalGate:
         started_at = time.monotonic()
         escalation_level = 0
         active_surface = self.surface
-        ttl = approval.ttl_seconds or self.timeout_seconds
+        ttl = approval.ttl_seconds if approval.ttl_seconds is not None else self.timeout_seconds
         active_surface.deliver(approval, escalation_level)
 
         while True:
@@ -303,7 +318,6 @@ if __name__ == "__main__":
         action="rebook_reservation",
         context={"customer": "cust_9", "tier": "standard", "value_usd": 60},
         approver_pool="restaurant_staff",
-        ttl_seconds=0,            # use the gate's default
         on_timeout="auto_deny",
     ))
     print("\n=== Scenario 2: Slack delivered, no response, TTL → auto_deny ===")
