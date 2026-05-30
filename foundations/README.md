@@ -64,6 +64,10 @@ Before shipping to production, also read:
 
 - **[Anti-Patterns](./anti-patterns.md)** — The 12 most common design mistakes and how to avoid them
 
+For background and positioning:
+
+- **[System Design Heritage](./system-design-heritage.md)** — How blueprints map to classical distributed-systems patterns, and which patterns are scoped to `agent-deployments`
+
 ## In This Section
 
 - **[Terminology](./terminology.md)** — Precise definitions of agent, workflow, tool, and other overloaded terms
@@ -71,3 +75,4 @@ Before shipping to production, also read:
 - **[Choosing a Pattern](./choosing-a-pattern.md)** — Decision flowchart and guidance for selecting the right pattern
 - **[Anti-Patterns](./anti-patterns.md)** — What not to build, why people build it anyway, and the correct alternative
 - **[Testing Strategies](./testing-strategies.md)** — Unit tests, mock LLMs, integration tests, evaluation, and regression testing for LLM systems
+- **[System Design Heritage](./system-design-heritage.md)** — Lineage map from classical system-design patterns to the blueprints here, and the reliability gap scoped to `agent-deployments`
