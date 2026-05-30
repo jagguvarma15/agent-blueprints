@@ -2,6 +2,8 @@
 
 A saga is a long-running, multi-step process where each step's side effect must succeed together with the others — or be undone together when one fails partway through. Each forward step is paired with a **compensating action** that reverses it. When the saga can't complete, the runtime walks the executed steps in reverse and invokes each compensator.
 
+> **Note on the running example.** This page uses **restaurant rebooking** as the worked example throughout — it makes the four-step / four-compensator shape concrete. The pattern itself is domain-neutral; the same structure applies to refunds + restocking, multi-leg trip booking, order fulfillment, payouts + ledger updates, and any other multi-step business process that must succeed or unwind as a whole.
+
 **Evolves from:** [Prompt Chaining](../../workflows/prompt-chaining/overview.md) + [Tool Use](../tool-use/overview.md) — adds explicit compensators per step and a state machine that knows how to unwind.
 
 ## Architecture
