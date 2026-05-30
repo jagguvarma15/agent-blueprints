@@ -64,9 +64,9 @@ Roughly fifteen of the fifty map onto agent work:
   Pub-Sub and Message Queue, both subsumed by the Event-Driven pattern).
 - **Inherited as structural ideas** (named in the heritage map above): Pipeline,
   Scatter-Gather, MapReduce, Event Sourcing, CQRS, Cache-Aside, API Gateway, Strategy.
-- **Scoped to `agent-deployments` as production concerns**: Circuit Breaker, Retry
-  with Exponential Backoff, Idempotency, Dead Letter Queue, Distributed Tracing, Rate
-  Limiting, Timeout, Bulkhead, Graceful Degradation, Canary Deployment, Sidecar.
+- **Documented in `agent-deployments` as cross-cutting production concerns**:
+  Circuit Breaker, Retry with Exponential Backoff, Bulkhead, Timeout, Idempotency,
+  Dead Letter Queue, Distributed Tracing, Rate Limiting, Graceful Degradation.
 
 The remaining thirty-something patterns (sharding, write-ahead logs, CDN, reverse
 proxy, service mesh, BFF, vector clocks, quorum, consistent hashing, two-phase commit,
@@ -74,32 +74,42 @@ connection pooling, and so on) sit at infrastructure layers below where agent pa
 operate. They show up in the substrate the deployment-side specs assume — not as
 blueprints in their own right.
 
-## Gaps scoped to agent-deployments
+## Reliability concerns: see `agent-deployments`
 
-Four reliability patterns surface in nearly every pattern in this repo as advice that's
-implicit, scattered, or under-specified. They belong in `agent-deployments` rather than
-here because they're operational concerns shared by every cognitive pattern — not new
-cognitive patterns themselves:
+Four reliability concerns surface across nearly every pattern in this repo. They live
+in the sister `agent-deployments` repo under `docs/cross-cutting/` because they're
+operational concerns shared by every cognitive pattern — not new cognitive patterns
+themselves. The deployment-side docs cover Python + TypeScript implementations,
+combination order, anti-patterns, and tests.
 
 1. **Circuit Breaker** — Stop calling a failing tool or sub-agent; return a fallback;
    probe periodically for recovery. Relevant to Tool Use, Multi-Agent, RAG (when the
    retrieval store is degraded), and Event-Driven (when a downstream consumer is
-   wedged).
+   wedged). See
+   [`cross-cutting/resilience.md#circuit-breakers`](https://github.com/jagguvarma15/agent-deployments/blob/main/docs/cross-cutting/resilience.md#circuit-breakers).
 
 2. **Retry with Exponential Backoff** — Retry transient LLM-call and tool-call
    failures with growing delays plus jitter; cap by attempt count and total budget.
-   Foundational under almost every other pattern; currently implicit.
+   Foundational under almost every other pattern. See
+   [`cross-cutting/resilience.md#retries`](https://github.com/jagguvarma15/agent-deployments/blob/main/docs/cross-cutting/resilience.md#retries)
+   (the same file also covers Timeouts and Bulkheads and the order in which to
+   compose them: bulkhead → timeout → retry → circuit breaker).
 
-3. **Idempotency** — Design tool calls and agent actions so replays are safe. Mentioned
-   in passing in Event-Driven and Saga (which depend on it), but the rules — key
-   shape, dedup window, replay semantics — belong in one canonical place.
+3. **Idempotency** — Design tool calls and agent actions so replays are safe. Saga
+   compensation, Event-Driven consumers, and HITL approval replay all depend on
+   this. See
+   [`cross-cutting/idempotency.md`](https://github.com/jagguvarma15/agent-deployments/blob/main/docs/cross-cutting/idempotency.md)
+   (two-phase claim/release, single-phase SETNX, unique-constraint dedup,
+   outbound idempotency keys).
 
-4. **Distributed Tracing** — One trace spanning the user request, every LLM call, every
-   tool call, every sub-agent, and every async event. The per-pattern `observability.md`
-   files give pattern-specific guidance; a unified tracing pattern lives at the
-   deployment layer.
-
-When `agent-deployments` adds these, this page should link back to them.
+4. **Distributed Tracing** — One trace spanning the user request, every LLM call,
+   every tool call, every sub-agent, and every async event. LLM-layer tracing lives
+   in
+   [`cross-cutting/observability.md`](https://github.com/jagguvarma15/agent-deployments/blob/main/docs/cross-cutting/observability.md)
+   (Langfuse); cross-service tracing lives in
+   [`stack/opentelemetry.md`](https://github.com/jagguvarma15/agent-deployments/blob/main/docs/stack/opentelemetry.md).
+   The per-pattern `observability.md` files in this repo give pattern-specific
+   guidance that sits on top.
 
 ## Related reading
 
