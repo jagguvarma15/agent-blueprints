@@ -126,7 +126,6 @@ Step 5: Generate a README.md documenting setup and usage
 - Steps depend on what each one discovers (true exploratory work) — [ReAct](../react/overview.md) is more flexible.
 - You can't validate the plan before execution — a bad plan executed in full is expensive.
 
-
 ## Next steps
 
 - Production version: see [Blueprints → Deployments](../../composition/blueprints-to-deployments.md) for the deployment agents that use this pattern.

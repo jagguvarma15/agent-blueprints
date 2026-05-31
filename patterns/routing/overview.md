@@ -126,7 +126,6 @@ result = router.route("I was charged twice on my invoice this month")
 - Routes overlap significantly (multi-label is the natural shape) — flat routing forces incorrect exclusivity.
 - The classifier's accuracy is unmeasured and untuned — misrouting silently produces wrong handler outputs.
 
-
 ## Next steps
 
 - Production version: see [Blueprints → Deployments](../../composition/blueprints-to-deployments.md) for the deployment agents that use this pattern.

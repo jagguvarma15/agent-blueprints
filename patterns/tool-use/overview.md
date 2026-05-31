@@ -138,7 +138,6 @@ result = agent.run(
 - The tools you'd expose are destructive without good guardrails — defer to a [HITL](../human-in-the-loop/overview.md) pattern.
 - You only have one tool that's always called — direct function-calling without the registry abstraction is simpler.
 
-
 ## Next steps
 
 - Production version: see [Blueprints → Deployments](../../composition/blueprints-to-deployments.md) for the deployment agents that use this pattern.

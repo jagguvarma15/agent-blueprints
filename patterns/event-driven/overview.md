@@ -129,7 +129,6 @@ async def consume():
 - The event source doesn't guarantee at-least-once delivery — you'll need idempotency without a clear contract.
 - You don't yet handle replays — silent double-processing is hard to detect in production.
 
-
 ## Next steps
 
 - Production version: see [Blueprints → Deployments](../../composition/blueprints-to-deployments.md) for the deployment agents that use this pattern.

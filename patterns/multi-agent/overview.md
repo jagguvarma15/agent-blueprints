@@ -132,7 +132,6 @@ result = system.run(
 - You haven't yet built and stabilized the single-agent version — multi-agent is harder to debug and tune.
 - Worker agents would share most tools and prompts — they're not actually specialized; the topology adds nothing.
 
-
 ## Next steps
 
 - Production version: see [Blueprints → Deployments](../../composition/blueprints-to-deployments.md) for the deployment agents that use this pattern.

@@ -52,6 +52,8 @@ Green intensity indicates increasing complexity. Start as light as possible.
 ## Quick Reference Table
 
 > For a framework-specific view of these patterns (LangGraph, Claude Agent SDK, CrewAI, AutoGen, LlamaIndex, MCP), see [Frameworks & Integrations](./frameworks-and-integrations.md).
+>
+> Each pattern's overview has a fuller "When NOT to use this pattern" section. This table is the at-a-glance view.
 
 | Pattern | Type | Use When | Don't Use When |
 |---------|------|----------|----------------|

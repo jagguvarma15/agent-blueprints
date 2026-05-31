@@ -120,7 +120,6 @@ result = system.run("Produce a market analysis report for enterprise AI tooling 
 - The decomposition is fixed and known — use [prompt chaining](../prompt-chaining/overview.md) instead.
 - Workers always run sequentially with no real parallelism — orchestration isn't buying you anything.
 
-
 ## Next steps
 
 - Production version: see [Blueprints → Deployments](../../composition/blueprints-to-deployments.md) for the deployment agents that use this pattern.

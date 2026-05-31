@@ -119,7 +119,6 @@ result = chain.run(raw_spec_document)
 - The task is a single transformation — skip the chain and use a single LLM call.
 - Steps run independently and don't pass data — use [parallel calls](../parallel-calls/overview.md) instead.
 
-
 ## Next steps
 
 - Production version: see [Blueprints → Deployments](../../composition/blueprints-to-deployments.md) for the deployment agents that use this pattern.

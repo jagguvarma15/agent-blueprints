@@ -140,7 +140,6 @@ result = saga.run(payload={"original_reservation_id": "res_42", "customer_id": "
 - Steps are reversible by the system's normal undo (no new side effects required) — simpler patterns work.
 - You don't have an answer for the partially-compensated state — sagas without operator escalation become silent inconsistency.
 
-
 ## Next steps
 
 - Production version: see [Blueprints → Deployments](../../composition/blueprints-to-deployments.md) for the deployment agents that use this pattern.

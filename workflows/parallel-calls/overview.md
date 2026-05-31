@@ -109,7 +109,6 @@ result = runner.run(
 - The aggregation step is more expensive than the parallel work — single-pass is usually better.
 - You can't actually run branches concurrently (sequential fan-out) — the pattern adds complexity without latency gain.
 
-
 ## Next steps
 
 - Production version: see [Blueprints → Deployments](../../composition/blueprints-to-deployments.md) for the deployment agents that use this pattern.
