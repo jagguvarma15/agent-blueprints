@@ -51,6 +51,8 @@ Green intensity indicates increasing complexity. Start as light as possible.
 
 ## Quick Reference Table
 
+> For a framework-specific view of these patterns (LangGraph, Claude Agent SDK, CrewAI, AutoGen, LlamaIndex, MCP), see [Frameworks & Integrations](./frameworks-and-integrations.md).
+
 | Pattern | Type | Use When | Don't Use When |
 |---------|------|----------|----------------|
 | [Prompt Chaining](../workflows/prompt-chaining/overview.md) | Workflow | Fixed multi-step text processing | Steps depend on dynamic decisions |
