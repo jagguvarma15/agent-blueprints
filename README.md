@@ -20,21 +20,30 @@ Every pattern is documented at three levels of depth. Read only what you need:
 
 ## The three-repo ecosystem
 
-This repo is one of three that work together as a single pipeline:
+This repo is the first stop in a three-repo pipeline that takes you from pattern to running agent:
 
-```
-agent-blueprints     →     agent-deployments    →     agent-scaffold
-(architecture)             (specs)                    (generator)
-"how to think"             "what to build"            "build it for me"
-patterns + tradeoffs       9 production-shaped        reads spec, asks LLM,
-framework-agnostic         markdown blueprints        writes runnable project
+```mermaid
+flowchart LR
+  P["Pattern<br/>agent-blueprints"] --> S["Spec<br/>agent-deployments"]
+  S --> G["Generator<br/>agent-scaffold"]
+  G --> R["Running agent"]
+
+  style P fill:#e8f5e9
+  style S fill:#fff3e0
+  style G fill:#fce4ec
+  style R fill:#e3f2fd
 ```
 
 - **[agent-blueprints](https://github.com/jagguvarma15/agent-blueprints)** *(this repo)* — framework-agnostic *cognitive* patterns, tradeoffs, and design guidance. Start here if you want to design before you build.
-- **[agent-deployments](https://github.com/jagguvarma15/agent-deployments)** — opinionated, production-shaped markdown specs for nine concrete agents (Python + TypeScript tracks), plus the *reliability/ops* layer (circuit breakers, retry, idempotency, distributed tracing) that every agent inherits.
+- **[agent-deployments](https://github.com/jagguvarma15/agent-deployments)** — opinionated, production-shaped markdown specs for ten concrete agents (Python + TypeScript tracks), plus the *reliability/ops* layer (auth, rate limiting, retries, idempotency, distributed tracing, observability) that every agent inherits.
 - **[agent-scaffold](https://github.com/jagguvarma15/agent-scaffold)** — a CLI that consumes a deployment spec, asks Claude to emit a complete project, and writes the files atomically to disk.
 
 > **Boundary:** cognitive patterns (how the agent thinks) live here; operational patterns (how the agent survives production) live in `agent-deployments`. See [System Design Heritage](./foundations/system-design-heritage.md) for the full mapping.
+
+### From pattern to running agent
+
+- **[Blueprints → Deployments](./composition/blueprints-to-deployments.md)** — which deployment recipes use which patterns, and what every recipe inherits from the operational layer.
+- **[Blueprint → Spec → Scaffold](./composition/blueprint-to-spec-to-scaffold.md)** — end-to-end walkthrough on one concrete agent (Research Assistant).
 
 ---
 
@@ -47,6 +56,8 @@ framework-agnostic         markdown blueprints        writes runnable project
 | Want structured LLM pipelines | [Workflows](./workflows/README.md) — 4 pre-agent patterns |
 | Want autonomous LLM behavior | [Agent Patterns](./patterns/README.md) — 8 agent architectures |
 | Are designing a production system | [Composition](./composition/README.md) — how patterns combine |
+| Want a production-shaped agent | [Blueprints → Deployments](./composition/blueprints-to-deployments.md) — which patterns power which deployments |
+| Want to generate a starter project | [Blueprint → Spec → Scaffold](./composition/blueprint-to-spec-to-scaffold.md) — end-to-end walkthrough |
 | Are building a reactive system on a queue or stream | [Event-Driven Agents](./patterns/event-driven/overview.md) — async triggers, idempotency, DLQ |
 | Want to avoid common mistakes | [Anti-Patterns](./foundations/anti-patterns.md) — what not to build |
 | Need to test your agent system | [Testing Strategies](./foundations/testing-strategies.md) — mock LLMs, evaluation, regression |

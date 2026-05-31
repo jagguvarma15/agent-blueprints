@@ -105,3 +105,9 @@ result = eo.run("Explain Python's asyncio event loop with a practical example")
 
 - **[Design](./design.md)** — Evaluation criteria design, scoring strategies, convergence detection, generator-evaluator prompt pairing
 - **[Implementation](./implementation.md)** — Pseudocode, iteration management, best-so-far tracking, testing the loop
+
+## Next steps
+
+- Production version: see [Blueprints → Deployments](../../composition/blueprints-to-deployments.md) for the deployment agents that use this pattern.
+- Generate a starter project: see [Blueprint → Spec → Scaffold](../../composition/blueprint-to-spec-to-scaffold.md).
+- Combine with other patterns: see the [Composition guide](../../composition/README.md).

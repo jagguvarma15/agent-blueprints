@@ -110,3 +110,9 @@ result = agent.run("Write a beginner-friendly explanation of database indexing")
 - **[Design](./design.md)** — Critique prompt design, revision strategies, convergence detection, quality criteria
 - **[Implementation](./implementation.md)** — Pseudocode, reflection prompts, iteration management, testing
 - **[Evolution](./evolution.md)** — How reflection evolves from evaluator-optimizer
+
+## Next steps
+
+- Production version: see [Blueprints → Deployments](../../composition/blueprints-to-deployments.md) for the deployment agents that use this pattern.
+- Generate a starter project: see [Blueprint → Spec → Scaffold](../../composition/blueprint-to-spec-to-scaffold.md).
+- Combine with other patterns: see the [Composition guide](../../composition/README.md).

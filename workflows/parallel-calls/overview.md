@@ -102,3 +102,9 @@ result = runner.run(
 
 - **[Design](./design.md)** — Splitting strategies, aggregation patterns, partial failure handling
 - **[Implementation](./implementation.md)** — Pseudocode, concurrency management, testing with stubs
+
+## Next steps
+
+- Production version: see [Blueprints → Deployments](../../composition/blueprints-to-deployments.md) for the deployment agents that use this pattern.
+- Generate a starter project: see [Blueprint → Spec → Scaffold](../../composition/blueprint-to-spec-to-scaffold.md).
+- Combine with other patterns: see the [Composition guide](../../composition/README.md).

@@ -122,3 +122,9 @@ Final Answer: At 5.25%, $5,000 grows to approximately $8,293 over 10 years.
 - **[Design](./design.md)** — Loop mechanics, message history management, tool dispatch, termination strategies
 - **[Implementation](./implementation.md)** — Pseudocode, interfaces, prompt templates, testing approach
 - **[Evolution](./evolution.md)** — How ReAct emerges from prompt chaining
+
+## Next steps
+
+- Production version: see [Blueprints → Deployments](../../composition/blueprints-to-deployments.md) for the deployment agents that use this pattern.
+- Generate a starter project: see [Blueprint → Spec → Scaffold](../../composition/blueprint-to-spec-to-scaffold.md).
+- Combine with other patterns: see the [Composition guide](../../composition/README.md).

@@ -119,3 +119,9 @@ result = pipeline.query("What is the process for requesting parental leave?")
 - **[Design](./design.md)** — Chunking strategies, embedding selection, retrieval tuning, relevance filtering, re-ranking
 - **[Implementation](./implementation.md)** — Pseudocode, ingestion pipeline, query pipeline, testing with fixtures
 - **[Evolution](./evolution.md)** — How RAG evolves from parallel calls
+
+## Next steps
+
+- Production version: see [Blueprints → Deployments](../../composition/blueprints-to-deployments.md) for the deployment agents that use this pattern.
+- Generate a starter project: see [Blueprint → Spec → Scaffold](../../composition/blueprint-to-spec-to-scaffold.md).
+- Combine with other patterns: see the [Composition guide](../../composition/README.md).

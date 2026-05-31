@@ -119,3 +119,9 @@ result = router.route("I was charged twice on my invoice this month")
 - **[Design](./design.md)** — Classifier design, route registry, confidence thresholds, hierarchical routing
 - **[Implementation](./implementation.md)** — Pseudocode, classification prompts, handler registration, testing
 - **[Evolution](./evolution.md)** — How routing evolves from parallel calls
+
+## Next steps
+
+- Production version: see [Blueprints → Deployments](../../composition/blueprints-to-deployments.md) for the deployment agents that use this pattern.
+- Generate a starter project: see [Blueprint → Spec → Scaffold](../../composition/blueprint-to-spec-to-scaffold.md).
+- Combine with other patterns: see the [Composition guide](../../composition/README.md).

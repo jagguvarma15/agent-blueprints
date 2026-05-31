@@ -113,3 +113,9 @@ result = system.run("Produce a market analysis report for enterprise AI tooling 
 
 - **[Design](./design.md)** — Decomposition strategies, worker specialization, synthesis patterns, dependency handling
 - **[Implementation](./implementation.md)** — Pseudocode, orchestrator prompt design, worker management, testing
+
+## Next steps
+
+- Production version: see [Blueprints → Deployments](../../composition/blueprints-to-deployments.md) for the deployment agents that use this pattern.
+- Generate a starter project: see [Blueprint → Spec → Scaffold](../../composition/blueprint-to-spec-to-scaffold.md).
+- Combine with other patterns: see the [Composition guide](../../composition/README.md).
