@@ -1,6 +1,7 @@
 import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 import tailwind from '@astrojs/tailwind';
+import sitemap from '@astrojs/sitemap';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -12,6 +13,10 @@ export default defineConfig({
   integrations: [
     react(),
     tailwind({ applyBaseStyles: false }),
+    sitemap({
+      // Exclude non-HTML endpoints (the RSS feed) from the sitemap.
+      filter: (page) => !page.endsWith('.xml') && !page.endsWith('.xml/'),
+    }),
   ],
   output: 'static',
   vite: {

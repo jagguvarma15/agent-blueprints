@@ -308,6 +308,113 @@ graph TD
 
 ---
 
+## 9. High-Stakes Content Moderation Pipeline
+
+**Patterns used:** Routing + Tool Use + Reflection + Human-in-the-Loop
+
+**The problem:** Inbound user-generated content (forum posts, support tickets, comments) needs moderation. Most items are obvious — clearly safe or clearly unsafe — but a meaningful fraction sit in a borderline zone where automated decisions are wrong often enough to cause real harm (account suspension on a misread comment, hateful content slipping through on a misclassification). Latency tolerance is hours, not seconds; cost tolerance is "much less than human review for every item."
+
+**Pattern selection — why these and not alternatives:**
+
+- **Routing** (rather than a single classifier) because the system has three distinct downstream paths: clear-safe (pass through), clear-unsafe (block + log), borderline (escalate). Conflating them into a single confidence threshold loses the routing semantics.
+- **Tool Use** (rather than pure LLM judgment) because the moderation policy lives in a versioned knowledge base, not the model's weights. A `lookup_policy(category)` tool keeps the policy independently auditable.
+- **Reflection** *on borderline cases only* (rather than always) because reflection cost is justified when the alternative is human review cost. A self-critique pass that catches 30% of borderline cases as actually-clear-safe cuts human queue load meaningfully.
+- **Human-in-the-Loop** *for what reflection couldn't resolve* (rather than for everything) because human time is the most expensive resource in this system. HITL is the abstention path, not the default.
+
+```mermaid
+graph TD
+    Item([Incoming Item]) --> Router[Router:<br/>Classify safety]
+    Router -->|"clear safe"| Pass([Pass through])
+    Router -->|"clear unsafe"| Block([Block + log])
+    Router -->|"borderline"| Tools[Tool Use:<br/>Policy lookup + context]
+    Tools --> Reflect[Reflection:<br/>Self-critique borderline call]
+    Reflect -->|"resolved safe"| Pass
+    Reflect -->|"resolved unsafe"| Block
+    Reflect -->|"still borderline"| HITL[Human in the Loop:<br/>Queue for review]
+    HITL -->|"human decides"| Block
+    HITL -->|"human decides"| Pass
+    HITL -->|"feedback"| Learn[Append to eval set]
+
+    style Item fill:#e3f2fd
+    style Router fill:#fff8e1
+    style Tools fill:#e8f5e9
+    style Reflect fill:#fff3e0
+    style HITL fill:#ffcdd2
+    style Learn fill:#f3e5f5
+    style Pass fill:#c8e6c9
+    style Block fill:#fce4ec
+```
+
+**Failure modes considered:**
+- *Router miscalibrated.* The classifier confidently routes borderline items to "clear safe." Defense: track classifier confidence distribution; alert when the borderline rate drifts; retrain quarterly.
+- *Reflection rubber-stamps the router.* When reflection always agrees with the router's borderline call, it adds cost without value. Defense: eval the reflector against historical human decisions; require disagreement rate above a threshold.
+- *HITL queue overflow.* Borderline rate spikes (a new attack pattern) and the human queue can't keep up. Defense: queue depth alerts; auto-escalate to "block + log" when depth exceeds threshold (false positives are recoverable; missed harms aren't).
+- *Policy lookup tool returns stale policy.* Defense: cache invalidation on policy publish; eval against current policy nightly.
+- *Adversarial inputs craft a borderline classification deliberately.* Defense: refuse-list of known-bad patterns at the router; track adversarial signal (e.g., obvious obfuscation) as a route input.
+
+**Pointers:**
+- Production wiring for the human queue, async work, and audit logs: see [`agent-deployments`](https://github.com/jagguvarma15/agent-deployments) cross-cutting docs.
+- Security: see [Security & Safety](../foundations/security-and-safety.md) for adversarial input handling and provenance-tracked audit logs.
+- Evals: every human decision lands in the eval suite — see [Evals & Quality](../foundations/evals-and-quality.md).
+
+---
+
+## 10. Event-Driven Ingestion + RAG Enrichment
+
+**Patterns used:** Event-Driven + Tool Use + RAG + Memory
+
+**The problem:** A system needs to react asynchronously to inbound events (webhooks, queue messages, scheduled jobs) by enriching each event with context from a knowledge base and writing the enriched record back to storage. Volume is high (hundreds of events/sec at peak), the knowledge base is too large to load in-context, and event order matters within a user but not across users.
+
+**Pattern selection — why these and not alternatives:**
+
+- **Event-Driven** (rather than synchronous request handling) because the upstream is a queue/stream, the user isn't waiting, and the workload is naturally bursty. Idempotency is mandatory because the event source delivers at-least-once.
+- **Tool Use** (rather than freeform LLM action) because each event must produce a structured downstream write. Free-form output would corrupt the storage schema.
+- **RAG** (rather than memory or context-stuffing) because the knowledge base is large and authored externally — it's documents to be retrieved against, not memories to be accumulated.
+- **Memory** *per-user only* (rather than across users) because event order matters within a user (a "user updated" event after a "user created" should see the updated state) but cross-user memory adds no value and amplifies the cross-tenant blast radius.
+
+```mermaid
+graph TD
+    Stream([Event Stream<br/>at-least-once]) --> Trigger[Event Trigger:<br/>Per-event consumer]
+    Trigger --> Idem[Idempotency Check:<br/>Have we seen this event?]
+    Idem -->|"yes"| Skip([Skip + ack])
+    Idem -->|"no"| Memory[(Per-User Memory:<br/>Prior context)]
+    Memory --> Agent[Tool-Using Agent]
+    KB[(Knowledge Base)] --> RAG[RAG Retrieval]
+    RAG --> Agent
+    Agent -->|"structured action"| Tools[Tool Dispatcher]
+    Tools -->|"write enriched record"| Store[(Downstream Storage)]
+    Tools -->|"update memory"| Memory
+    Tools -->|"emit downstream event"| Next([Downstream Stream])
+    Tools -->|"failure"| DLQ([Dead Letter Queue])
+
+    style Stream fill:#e3f2fd
+    style Trigger fill:#fff8e1
+    style Idem fill:#fce4ec
+    style Memory fill:#f3e5f5
+    style KB fill:#e8f5e9
+    style RAG fill:#fff3e0
+    style Agent fill:#fff3e0
+    style Tools fill:#fff8e1
+    style Store fill:#e8f5e9
+    style Next fill:#e3f2fd
+    style Skip fill:#c8e6c9
+    style DLQ fill:#ffcdd2
+```
+
+**Failure modes considered:**
+- *Idempotency key collision.* Two events with the same key but different payloads. Defense: idempotency key includes payload hash; mismatches alert rather than silently dedup.
+- *RAG retrieval drift.* Knowledge base updates change what retrieval returns over time; the same event reprocessed yields different enrichment. Defense: version-pin the KB snapshot per event when reprocessing matters; otherwise accept the drift and document it.
+- *Per-user memory poisoning.* A bad earlier event pollutes future enrichment for that user. Defense: provenance tags on memory; supersession on contradicting events; periodic memory audits.
+- *DLQ pile-up.* A bad upstream event format starts failing all consumers. Defense: DLQ depth alerts; per-event-type circuit breakers (see `agent-deployments`).
+- *Hot user.* One user's event volume saturates a partition. Defense: per-user rate limits; partition reassignment under sustained load.
+
+**Pointers:**
+- Idempotency, retries, DLQ, distributed tracing: see [`agent-deployments/docs/cross-cutting/`](https://github.com/jagguvarma15/agent-deployments/tree/main/docs/cross-cutting).
+- Per-pattern guidance: [Event-Driven](../patterns/event-driven/overview.md), [RAG](../patterns/rag/overview.md), [Memory](../patterns/memory/overview.md), [Tool Use](../patterns/tool-use/overview.md).
+- Recipes that share this shape: see [`restaurant-rebooking`](https://github.com/jagguvarma15/agent-deployments/blob/main/docs/recipes/restaurant-rebooking.md) for an event-driven recipe in `agent-deployments`.
+
+---
+
 ## Architecture Selection Guide
 
 | If You Need... | Start With | Then Add | Reference |
