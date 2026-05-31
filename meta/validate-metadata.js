@@ -109,6 +109,27 @@ for (const dir of PATTERN_DIRS) {
   }
 }
 
+// Cross-check that every pattern id is registered in the website data file.
+// Without this, a new pattern can ship to the repo with all its docs and
+// metadata, pass CI, and still be invisible on the deployed site.
+const SITE_DATA_PATH = join(ROOT, 'website/src/data/patterns.ts');
+if (existsSync(SITE_DATA_PATH)) {
+  const siteData = readFileSync(SITE_DATA_PATH, 'utf-8');
+  for (const dir of PATTERN_DIRS) {
+    const id = dir.split('/')[1];
+    // Match either single or double quoted id literals.
+    if (!siteData.includes(`id: '${id}'`) && !siteData.includes(`id: "${id}"`)) {
+      console.error(
+        `MISSING FROM SITE DATA: pattern "${id}" is in metadata but not registered in website/src/data/patterns.ts`,
+      );
+      errors++;
+    }
+  }
+} else {
+  console.error(`MISSING FILE: ${SITE_DATA_PATH}`);
+  errors++;
+}
+
 if (errors === 0) {
   console.log(`All ${PATTERN_DIRS.length} metadata.json files are valid.`);
   process.exit(0);
