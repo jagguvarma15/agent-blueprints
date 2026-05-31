@@ -68,3 +68,16 @@ RouteConfig:
 - **+ Multi-Agent:** Route to specialized agents instead of handlers
 - **+ RAG:** One route handler uses RAG for knowledge questions
 - **+ Memory:** Per-route or shared memory for continuity
+
+## Production concerns
+
+Cognitive concerns this repo covers; operational concerns belong in [agent-deployments](https://github.com/jagguvarma15/agent-deployments).
+
+| Concern | This pattern's surface | Where to read |
+|---|---|---|
+| Prompt injection | crafted input can spoof intent — enforce allow-listed enumeration of routes | [foundations/security-and-safety.md](../../foundations/security-and-safety.md) |
+| Hallucination & grounding | classifier hallucinates outside the enumeration; explicit `unknown`/`escalate` class catches this | [foundations/hallucination-and-grounding.md](../../foundations/hallucination-and-grounding.md) |
+| Cost & model selection | 1 classifier call (cheap) + downstream pattern cost | [foundations/cost-and-model-selection.md](../../foundations/cost-and-model-selection.md) |
+| Rate limiting & retries | inherited | [agent-deployments cross-cutting](https://github.com/jagguvarma15/agent-deployments/tree/main/docs/cross-cutting) |
+| Idempotency | inherited | [agent-deployments cross-cutting](https://github.com/jagguvarma15/agent-deployments/blob/main/docs/cross-cutting/idempotency.md) |
+| Observability hooks | see `observability.md` alongside this file | [foundations](../../foundations/README.md) |

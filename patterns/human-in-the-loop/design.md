@@ -152,3 +152,16 @@ The combination is powerful: a refund saga can gate the `refund_step` behind HIT
 - **+ [Tool Use](../tool-use/overview.md)** — Tools can carry an `approval_required` flag; the tool dispatcher routes those through the gate before invoking the tool function.
 - **+ Audit logging** (cross-cutting `agent-deployments/docs/cross-cutting/audit-logging.md`) — every decision is an audit-log entry; mandatory for compliance use cases.
 - **+ Authorization** (cross-cutting `agent-deployments/docs/cross-cutting/authorization-rbac.md`) — the gate must verify the approver has the right role for the proposal class; otherwise any Slack user could approve anything.
+
+## Production concerns
+
+Cognitive concerns this repo covers; operational concerns belong in [agent-deployments](https://github.com/jagguvarma15/agent-deployments).
+
+| Concern | This pattern's surface | Where to read |
+|---|---|---|
+| Prompt injection | proposed actions presented to humans should be schema-bound; free-text proposals can hide injected instructions | [foundations/security-and-safety.md](../../foundations/security-and-safety.md) |
+| Hallucination & grounding | the human IS the grounding mechanism for the gated action | [foundations/hallucination-and-grounding.md](../../foundations/hallucination-and-grounding.md) |
+| Cost & model selection | low LLM cost; high human-time cost — budget review time as a first-class resource | [foundations/cost-and-model-selection.md](../../foundations/cost-and-model-selection.md) |
+| Rate limiting & retries | inherited | [agent-deployments cross-cutting](https://github.com/jagguvarma15/agent-deployments/tree/main/docs/cross-cutting) |
+| Idempotency | approval replay must be safe | [agent-deployments cross-cutting](https://github.com/jagguvarma15/agent-deployments/blob/main/docs/cross-cutting/idempotency.md) |
+| Observability hooks | see `observability.md` alongside this file | [foundations](../../foundations/README.md) |

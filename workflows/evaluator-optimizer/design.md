@@ -126,3 +126,16 @@ When evaluator and generator should be the same entity with richer self-critique
 | Best for | Prototyping | Format checks | Production |
 
 **Guideline:** Start LLM-based. Replace measurable criteria with rules as you identify them. Production = hybrid.
+
+## Production concerns
+
+Cognitive concerns this repo covers; operational concerns belong in [agent-deployments](https://github.com/jagguvarma15/agent-deployments).
+
+| Concern | This pattern's surface | Where to read |
+|---|---|---|
+| Prompt injection | evaluator output feeds back into generator — a poisoned evaluator output drives a bad next generation | [foundations/security-and-safety.md](../../foundations/security-and-safety.md) |
+| Hallucination & grounding | this pattern IS a grounding mechanism; evaluator needs its own grounding to be trustworthy | [foundations/hallucination-and-grounding.md](../../foundations/hallucination-and-grounding.md) |
+| Cost & model selection | 2× per iteration; cap iterations explicitly | [foundations/cost-and-model-selection.md](../../foundations/cost-and-model-selection.md) |
+| Rate limiting & retries | inherited | [agent-deployments cross-cutting](https://github.com/jagguvarma15/agent-deployments/tree/main/docs/cross-cutting) |
+| Idempotency | inherited | [agent-deployments cross-cutting](https://github.com/jagguvarma15/agent-deployments/blob/main/docs/cross-cutting/idempotency.md) |
+| Observability hooks | see `observability.md` alongside this file | [foundations](../../foundations/README.md) |

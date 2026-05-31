@@ -215,3 +215,16 @@ The consumer extracts these into the agent's logging context so every tool call,
 - **+ Memory:** Rebuild agent working state by replaying the event log. Combine with the Outcome Store as a write-through cache.
 - **+ Outbox pattern:** When the agent must update its own DB and emit a follow-up event atomically, write both to the same transaction; a separate worker reads the outbox table and publishes.
 - **+ Saga pattern:** Long-running multi-step workflows where each step is an event; compensating actions roll back on failure.
+
+## Production concerns
+
+Cognitive concerns this repo covers; operational concerns belong in [agent-deployments](https://github.com/jagguvarma15/agent-deployments).
+
+| Concern | This pattern's surface | Where to read |
+|---|---|---|
+| Prompt injection | event payloads from external sources are untrusted input; validate schemas before agent invocation | [foundations/security-and-safety.md](../../foundations/security-and-safety.md) |
+| Hallucination & grounding | schema-validated event payloads constrain the agent's reasoning surface | [foundations/hallucination-and-grounding.md](../../foundations/hallucination-and-grounding.md) |
+| Cost & model selection | per-event agent cost × event rate; rate-limit per partition | [foundations/cost-and-model-selection.md](../../foundations/cost-and-model-selection.md) |
+| Rate limiting & retries | inherited | [agent-deployments cross-cutting](https://github.com/jagguvarma15/agent-deployments/tree/main/docs/cross-cutting) |
+| Idempotency | required (replays are normal); idempotency keys are part of the event contract | [agent-deployments cross-cutting](https://github.com/jagguvarma15/agent-deployments/blob/main/docs/cross-cutting/idempotency.md) |
+| Observability hooks | see `observability.md` alongside this file | [foundations](../../foundations/README.md) |

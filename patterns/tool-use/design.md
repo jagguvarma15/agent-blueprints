@@ -89,3 +89,16 @@ MCP servers run outside the agent's direct control. That introduces concerns the
 - **Prefer MCP** when a tool is reused across multiple agents or hosts (filesystem, vector DB, observability backend, ticketing system).
 - **Prefer in-process tools** when latency matters per call, the tool is single-agent specialized, or state coupling makes MCP's process boundary awkward.
 - An agent can mix both. The Tool Registry component above accommodates either by treating the MCP client adapter as just another handler source.
+
+## Production concerns
+
+Cognitive concerns this repo covers; operational concerns belong in [agent-deployments](https://github.com/jagguvarma15/agent-deployments).
+
+| Concern | This pattern's surface | Where to read |
+|---|---|---|
+| Prompt injection | tool descriptions are LLM-readable; MCP server descriptions are a supply-chain surface | [foundations/security-and-safety.md](../../foundations/security-and-safety.md) |
+| Hallucination & grounding | LLM may invent tool arguments — schema-bound calls and allow-listed function set catch this | [foundations/hallucination-and-grounding.md](../../foundations/hallucination-and-grounding.md) |
+| Cost & model selection | 1 LLM call per tool decision; tool execution cost (paid APIs) often dominates | [foundations/cost-and-model-selection.md](../../foundations/cost-and-model-selection.md) |
+| Rate limiting & retries | inherited | [agent-deployments cross-cutting](https://github.com/jagguvarma15/agent-deployments/tree/main/docs/cross-cutting) |
+| Idempotency | each tool call must be idempotent; design tools accordingly | [agent-deployments cross-cutting](https://github.com/jagguvarma15/agent-deployments/blob/main/docs/cross-cutting/idempotency.md) |
+| Observability hooks | see `observability.md` alongside this file | [foundations](../../foundations/README.md) |

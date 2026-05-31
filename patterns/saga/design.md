@@ -163,3 +163,16 @@ If your steps all live in one DB and the DB supports transactions, **use a trans
 - **+ Human-in-the-Loop** (planned: `patterns/human-in-the-loop/`) — Compensators that fail escalate to a human queue. High-irreversibility steps can require approval before `do` runs.
 - **+ [Multi-Agent (Flat)](../multi-agent/overview.md)** — Individual steps can delegate to specialized agents; the coordinator stays simple.
 - **+ Idempotency** (cross-cutting `agent-deployments/docs/cross-cutting/idempotency.md`) — every `do` and every `undo` must be idempotent so retries are safe.
+
+## Production concerns
+
+Cognitive concerns this repo covers; operational concerns belong in [agent-deployments](https://github.com/jagguvarma15/agent-deployments).
+
+| Concern | This pattern's surface | Where to read |
+|---|---|---|
+| Prompt injection | compromise of any step can trigger spurious compensations; validate state before each step | [foundations/security-and-safety.md](../../foundations/security-and-safety.md) |
+| Hallucination & grounding | saga log carries provenance; compensation triggered by validated state, not LLM judgment alone | [foundations/hallucination-and-grounding.md](../../foundations/hallucination-and-grounding.md) |
+| Cost & model selection | steps + potential compensations; compensations amplify cost on failure | [foundations/cost-and-model-selection.md](../../foundations/cost-and-model-selection.md) |
+| Rate limiting & retries | inherited | [agent-deployments cross-cutting](https://github.com/jagguvarma15/agent-deployments/tree/main/docs/cross-cutting) |
+| Idempotency | required (both forward steps and compensations); foundational | [agent-deployments cross-cutting](https://github.com/jagguvarma15/agent-deployments/blob/main/docs/cross-cutting/idempotency.md) |
+| Observability hooks | see `observability.md` alongside this file | [foundations](../../foundations/README.md) |

@@ -86,3 +86,16 @@ The history grows by ~2 messages per iteration (assistant tool_call + tool resul
 - **+ Memory:** Load relevant memories into the system prompt. Store important findings after the run.
 - **+ Reflection:** After the agent produces a final answer, run a reflection pass. If quality is low, re-run.
 - **+ Plan & Execute:** Use ReAct as the step executor within a plan. Each plan step gets a bounded ReAct loop.
+
+## Production concerns
+
+Cognitive concerns this repo covers; operational concerns belong in [agent-deployments](https://github.com/jagguvarma15/agent-deployments).
+
+| Concern | This pattern's surface | Where to read |
+|---|---|---|
+| Prompt injection | tool outputs and fetched content land in the agent's context — indirect injection is the headline risk | [foundations/security-and-safety.md](../../foundations/security-and-safety.md) |
+| Hallucination & grounding | hallucinated tool calls are common; schema-bound tools catch invented function names | [foundations/hallucination-and-grounding.md](../../foundations/hallucination-and-grounding.md) |
+| Cost & model selection | variable per step; unbounded without iteration cap (`max_steps` is mandatory) | [foundations/cost-and-model-selection.md](../../foundations/cost-and-model-selection.md) |
+| Rate limiting & retries | inherited | [agent-deployments cross-cutting](https://github.com/jagguvarma15/agent-deployments/tree/main/docs/cross-cutting) |
+| Idempotency | required at the tool layer — agent may retry | [agent-deployments cross-cutting](https://github.com/jagguvarma15/agent-deployments/blob/main/docs/cross-cutting/idempotency.md) |
+| Observability hooks | see `observability.md` alongside this file | [foundations](../../foundations/README.md) |
