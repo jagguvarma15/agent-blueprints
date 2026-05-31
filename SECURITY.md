@@ -25,3 +25,9 @@ We aim to acknowledge reports within 3 business days and publish a fix or adviso
 
 - Vulnerabilities in third-party dependencies used only in the documentation website build (Astro, Tailwind, etc.) — report these upstream
 - Issues that only apply if readers copy code without adapting it to their own security requirements
+
+## Security considerations for adopters
+
+If you're using patterns from this repo to build a production agent, the security concerns specific to LLM agents — prompt injection (direct and indirect), tool poisoning, denial-of-wallet, MCP supply chain risks, secrets leakage through model output, hallucinated tool arguments — are covered in [`foundations/security-and-safety.md`](./foundations/security-and-safety.md). That doc is the primer; treat it as the floor.
+
+The operational reliability concerns (auth, rate limiting, retries, idempotency, distributed tracing) compound with the cognitive concerns and live in the sister repo [`agent-deployments`](https://github.com/jagguvarma15/agent-deployments) under `docs/cross-cutting/`. See [System Design Heritage](./foundations/system-design-heritage.md) for the cognitive/operational boundary.

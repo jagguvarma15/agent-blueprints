@@ -122,3 +122,16 @@ Orchestrator-Worker is the upgrade when splitting requires LLM reasoning instead
 | Consistency | High | Variable |
 | Scaling | Scales with input volume | Fixed by task count |
 | Aggregation | Usually concatenate | Usually synthesize |
+
+## Production concerns
+
+Cognitive concerns this repo covers; operational concerns belong in [agent-deployments](https://github.com/jagguvarma15/agent-deployments).
+
+| Concern | This pattern's surface | Where to read |
+|---|---|---|
+| Prompt injection | each branch is a separate prompt; one poisoned branch can taint aggregation | [foundations/security-and-safety.md](../../foundations/security-and-safety.md) |
+| Hallucination & grounding | cross-branch consistency is the structural eval signal | [foundations/hallucination-and-grounding.md](../../foundations/hallucination-and-grounding.md) |
+| Cost & model selection | N concurrent branches + 1 aggregation; scales with fan-out width | [foundations/cost-and-model-selection.md](../../foundations/cost-and-model-selection.md) |
+| Rate limiting & retries | inherited | [agent-deployments cross-cutting](https://github.com/jagguvarma15/agent-deployments/tree/main/docs/cross-cutting) |
+| Idempotency | inherited | [agent-deployments cross-cutting](https://github.com/jagguvarma15/agent-deployments/blob/main/docs/cross-cutting/idempotency.md) |
+| Observability hooks | see `observability.md` alongside this file | [foundations](../../foundations/README.md) |

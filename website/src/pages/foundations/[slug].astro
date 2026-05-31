@@ -10,6 +10,10 @@ export function getStaticPaths() {
     { slug: 'anatomy-of-an-agent', file: 'foundations/anatomy-of-an-agent.md' },
     { slug: 'choosing-a-pattern', file: 'foundations/choosing-a-pattern.md' },
     { slug: 'frameworks-and-integrations', file: 'foundations/frameworks-and-integrations.md' },
+    { slug: 'security-and-safety', file: 'foundations/security-and-safety.md' },
+    { slug: 'hallucination-and-grounding', file: 'foundations/hallucination-and-grounding.md' },
+    { slug: 'evals-and-quality', file: 'foundations/evals-and-quality.md' },
+    { slug: 'cost-and-model-selection', file: 'foundations/cost-and-model-selection.md' },
   ];
   return pages.map((p) => ({
     params: { slug: p.slug },

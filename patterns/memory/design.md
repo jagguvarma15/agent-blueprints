@@ -59,3 +59,16 @@ Each turn: retrieve relevant long-term memories → include with short-term cont
 ## Composition
 - **+ RAG:** Share the same vector store — documents on one side, memories on the other
 - **+ Multi-Agent:** Shared memory enables agent collaboration across sessions
+
+## Production concerns
+
+Cognitive concerns this repo covers; operational concerns belong in [agent-deployments](https://github.com/jagguvarma15/agent-deployments).
+
+| Concern | This pattern's surface | Where to read |
+|---|---|---|
+| Prompt injection | stored memories are inputs to future calls — a poisoned memory persists across sessions | [foundations/security-and-safety.md](../../foundations/security-and-safety.md) |
+| Hallucination & grounding | provenance tags on memories let the agent reason about freshness; without them, stale state reads as fact | [foundations/hallucination-and-grounding.md](../../foundations/hallucination-and-grounding.md) |
+| Cost & model selection | linear in retrieved memories; compression bounds long sessions | [foundations/cost-and-model-selection.md](../../foundations/cost-and-model-selection.md) |
+| Rate limiting & retries | inherited | [agent-deployments cross-cutting](https://github.com/jagguvarma15/agent-deployments/tree/main/docs/cross-cutting) |
+| Idempotency | memory writes should be idempotent (replays don't double-store) | [agent-deployments cross-cutting](https://github.com/jagguvarma15/agent-deployments/blob/main/docs/cross-cutting/idempotency.md) |
+| Observability hooks | see `observability.md` alongside this file | [foundations](../../foundations/README.md) |

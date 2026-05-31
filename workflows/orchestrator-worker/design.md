@@ -117,3 +117,16 @@ Evaluate synthesized output and re-run if quality is insufficient.
 | Quality | Good for uniform tasks | Better for diverse tasks |
 
 **Guideline:** Start homogeneous. Specialize only when quality differences emerge.
+
+## Production concerns
+
+Cognitive concerns this repo covers; operational concerns belong in [agent-deployments](https://github.com/jagguvarma15/agent-deployments).
+
+| Concern | This pattern's surface | Where to read |
+|---|---|---|
+| Prompt injection | worker outputs become orchestrator inputs — validate before re-aggregating | [foundations/security-and-safety.md](../../foundations/security-and-safety.md) |
+| Hallucination & grounding | orchestrator can hallucinate task decompositions; workers can hallucinate their step outputs | [foundations/hallucination-and-grounding.md](../../foundations/hallucination-and-grounding.md) |
+| Cost & model selection | 1 plan + N workers + 1 synthesis; plan and synth carry full context | [foundations/cost-and-model-selection.md](../../foundations/cost-and-model-selection.md) |
+| Rate limiting & retries | inherited | [agent-deployments cross-cutting](https://github.com/jagguvarma15/agent-deployments/tree/main/docs/cross-cutting) |
+| Idempotency | inherited (or per-worker if workers have side effects) | [agent-deployments cross-cutting](https://github.com/jagguvarma15/agent-deployments/blob/main/docs/cross-cutting/idempotency.md) |
+| Observability hooks | see `observability.md` alongside this file | [foundations](../../foundations/README.md) |

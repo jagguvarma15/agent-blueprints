@@ -76,3 +76,16 @@ PlanState:
 - **+ Multi-Agent:** Delegate steps to specialized worker agents instead of a generic executor
 - **+ Memory:** Store successful plans for similar tasks to speed future planning
 - **+ Reflection:** Reflect on plan quality before execution
+
+## Production concerns
+
+Cognitive concerns this repo covers; operational concerns belong in [agent-deployments](https://github.com/jagguvarma15/agent-deployments).
+
+| Concern | This pattern's surface | Where to read |
+|---|---|---|
+| Prompt injection | plan-time injection compromises every subsequent step; execute-time injection is contained per step | [foundations/security-and-safety.md](../../foundations/security-and-safety.md) |
+| Hallucination & grounding | plan validity is the first eval signal; per-step grounding catches execution drift | [foundations/hallucination-and-grounding.md](../../foundations/hallucination-and-grounding.md) |
+| Cost & model selection | 1 plan + N steps + 0–1 replan; plan size determines blast radius | [foundations/cost-and-model-selection.md](../../foundations/cost-and-model-selection.md) |
+| Rate limiting & retries | inherited | [agent-deployments cross-cutting](https://github.com/jagguvarma15/agent-deployments/tree/main/docs/cross-cutting) |
+| Idempotency | per-step execution should be idempotent for safe replan | [agent-deployments cross-cutting](https://github.com/jagguvarma15/agent-deployments/blob/main/docs/cross-cutting/idempotency.md) |
+| Observability hooks | see `observability.md` alongside this file | [foundations](../../foundations/README.md) |

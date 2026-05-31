@@ -4,6 +4,8 @@ These are example composed systems showing how patterns combine to solve real-wo
 
 Use these as starting points and adapt them to your specific requirements.
 
+> **Before shipping any of these to production**, read [Security & Safety](../foundations/security-and-safety.md), [Hallucination & Grounding](../foundations/hallucination-and-grounding.md), and [Evals & Quality](../foundations/evals-and-quality.md). The architectures below name the cognitive shape; the foundations docs name the failure modes you'll hit at scale.
+
 ## 1. Research Assistant
 
 **Patterns used:** Routing + RAG + ReAct + Reflection

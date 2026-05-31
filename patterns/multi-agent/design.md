@@ -90,3 +90,16 @@ SharedState:
 - **+ Plan & Execute:** Supervisor generates a plan, delegates steps to agents
 - **+ Memory:** Shared long-term memory across agents
 - **+ RAG:** Knowledge-grounded agents with shared document store
+
+## Production concerns
+
+Cognitive concerns this repo covers; operational concerns belong in [agent-deployments](https://github.com/jagguvarma15/agent-deployments).
+
+| Concern | This pattern's surface | Where to read |
+|---|---|---|
+| Prompt injection | an agent compromised by injection propagates to every agent it talks to; defense is per-message | [foundations/security-and-safety.md](../../foundations/security-and-safety.md) |
+| Hallucination & grounding | cross-agent consistency checks; supervisor validates worker outputs | [foundations/hallucination-and-grounding.md](../../foundations/hallucination-and-grounding.md) |
+| Cost & model selection | sum of agent-call costs + orchestration overhead; supervisor cost scales with handoffs | [foundations/cost-and-model-selection.md](../../foundations/cost-and-model-selection.md) |
+| Rate limiting & retries | inherited | [agent-deployments cross-cutting](https://github.com/jagguvarma15/agent-deployments/tree/main/docs/cross-cutting) |
+| Idempotency | sub-agent invocations should be idempotent under retry | [agent-deployments cross-cutting](https://github.com/jagguvarma15/agent-deployments/blob/main/docs/cross-cutting/idempotency.md) |
+| Observability hooks | see `observability.md` alongside this file | [foundations](../../foundations/README.md) |

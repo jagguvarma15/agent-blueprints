@@ -142,3 +142,16 @@ Wrap the chain or individual steps in an evaluation loop. See [Evaluator-Optimiz
 | Latency | Lower | Higher |
 
 **Guideline:** Start with smaller steps for debuggability. Merge steps only when cost or latency is a bottleneck.
+
+## Production concerns
+
+Cognitive concerns this repo covers; operational concerns belong in [agent-deployments](https://github.com/jagguvarma15/agent-deployments).
+
+| Concern | This pattern's surface | Where to read |
+|---|---|---|
+| Prompt injection | user input flows through every step; sanitize at entry, re-tag at each gate | [foundations/security-and-safety.md](../../foundations/security-and-safety.md) |
+| Hallucination & grounding | per-step schema validation catches structural drift; hallucination compounds across long chains | [foundations/hallucination-and-grounding.md](../../foundations/hallucination-and-grounding.md) |
+| Cost & model selection | linear in step count; each step accumulates context unless explicitly trimmed | [foundations/cost-and-model-selection.md](../../foundations/cost-and-model-selection.md) |
+| Rate limiting & retries | inherited | [agent-deployments cross-cutting](https://github.com/jagguvarma15/agent-deployments/tree/main/docs/cross-cutting) |
+| Idempotency | inherited (gates are deterministic given inputs) | [agent-deployments cross-cutting](https://github.com/jagguvarma15/agent-deployments/blob/main/docs/cross-cutting/idempotency.md) |
+| Observability hooks | see `observability.md` alongside this file | [foundations](../../foundations/README.md) |

@@ -88,3 +88,16 @@ Assembles the final prompt: question + retrieved context + instructions for grou
 - **+ ReAct:** Agent decides when and what to retrieve (Agentic RAG)
 - **+ Memory:** Same vector store for documents and conversation history
 - **+ Reflection:** Evaluate answer quality against retrieved sources
+
+## Production concerns
+
+Cognitive concerns this repo covers; operational concerns belong in [agent-deployments](https://github.com/jagguvarma15/agent-deployments).
+
+| Concern | This pattern's surface | Where to read |
+|---|---|---|
+| Prompt injection | retrieved content is the headline indirect-injection surface; sandbox retrieved text with explicit tags | [foundations/security-and-safety.md](../../foundations/security-and-safety.md) |
+| Hallucination & grounding | cite-or-refuse enforced via output schema; retrieval recall is the ceiling on grounding quality | [foundations/hallucination-and-grounding.md](../../foundations/hallucination-and-grounding.md) |
+| Cost & model selection | retrieval (cheap) + generation (medium); generation cost scales with retrieved context size | [foundations/cost-and-model-selection.md](../../foundations/cost-and-model-selection.md) |
+| Rate limiting & retries | inherited | [agent-deployments cross-cutting](https://github.com/jagguvarma15/agent-deployments/tree/main/docs/cross-cutting) |
+| Idempotency | inherited (retrieval is read-only; writes to the index belong in ingestion pipelines) | [agent-deployments cross-cutting](https://github.com/jagguvarma15/agent-deployments/blob/main/docs/cross-cutting/idempotency.md) |
+| Observability hooks | see `observability.md` alongside this file | [foundations](../../foundations/README.md) |

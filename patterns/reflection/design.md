@@ -59,3 +59,16 @@ Critique:
 - **+ ReAct:** Reflect on the agent's final output before returning
 - **+ Plan & Execute:** Reflect on plan quality before execution
 - **+ Any generator:** Reflection wraps any generation pattern as a quality layer
+
+## Production concerns
+
+Cognitive concerns this repo covers; operational concerns belong in [agent-deployments](https://github.com/jagguvarma15/agent-deployments).
+
+| Concern | This pattern's surface | Where to read |
+|---|---|---|
+| Prompt injection | a poisoned critic can rubber-stamp bad generation or reject good generation | [foundations/security-and-safety.md](../../foundations/security-and-safety.md) |
+| Hallucination & grounding | the pattern itself is a grounding mechanism; the critic needs its own grounding | [foundations/hallucination-and-grounding.md](../../foundations/hallucination-and-grounding.md) |
+| Cost & model selection | 2–N× per iteration; iteration cap is the lever | [foundations/cost-and-model-selection.md](../../foundations/cost-and-model-selection.md) |
+| Rate limiting & retries | inherited | [agent-deployments cross-cutting](https://github.com/jagguvarma15/agent-deployments/tree/main/docs/cross-cutting) |
+| Idempotency | inherited | [agent-deployments cross-cutting](https://github.com/jagguvarma15/agent-deployments/blob/main/docs/cross-cutting/idempotency.md) |
+| Observability hooks | see `observability.md` alongside this file | [foundations](../../foundations/README.md) |
