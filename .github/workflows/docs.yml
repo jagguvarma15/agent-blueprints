@@ -87,7 +87,7 @@ jobs:
           npx --yes markdownlint-cli2 "**/*.md" "#legacy/**" "#node_modules/**" "#website/**"
 
       - name: Set up Node for website build
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: '20'
           cache: 'npm'
