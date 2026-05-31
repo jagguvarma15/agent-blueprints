@@ -110,6 +110,12 @@ response = agent.chat("How should I handle form validation in my project?")
 - **[Implementation](./implementation.md)** — Pseudocode, context window management, vector store integration, testing
 - **[Evolution](./evolution.md)** — How memory evolves from prompt chaining
 
+## When NOT to use this pattern
+
+- The interaction is single-turn — memory is a forgetting tax with no benefit.
+- The user hasn't consented to long-term storage — privacy regression.
+- You don't have a story for memory decay, invalidation, or auditing — stored memories fossilize and contradict reality.
+
 ## Next steps
 
 - Production version: see [Blueprints → Deployments](../../composition/blueprints-to-deployments.md) for the deployment agents that use this pattern.

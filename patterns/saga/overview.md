@@ -134,6 +134,12 @@ result = saga.run(payload={"original_reservation_id": "res_42", "customer_id": "
 - **[Observability](./observability.md)** — Saga duration, compensation rate, stuck-saga alerts, per-step P95
 - **[Cost & Latency](./cost-and-latency.md)** — Compensation amplifies cost; log overhead is small
 
+## When NOT to use this pattern
+
+- All steps live in one database that supports transactions — use a transaction, not a saga.
+- Steps are reversible by the system's normal undo (no new side effects required) — simpler patterns work.
+- You don't have an answer for the partially-compensated state — sagas without operator escalation become silent inconsistency.
+
 ## Next steps
 
 - Production version: see [Blueprints → Deployments](../../composition/blueprints-to-deployments.md) for the deployment agents that use this pattern.

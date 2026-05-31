@@ -120,6 +120,12 @@ result = router.route("I was charged twice on my invoice this month")
 - **[Implementation](./implementation.md)** — Pseudocode, classification prompts, handler registration, testing
 - **[Evolution](./evolution.md)** — How routing evolves from parallel calls
 
+## When NOT to use this pattern
+
+- All inputs follow the same process — routing is pure overhead.
+- Routes overlap significantly (multi-label is the natural shape) — flat routing forces incorrect exclusivity.
+- The classifier's accuracy is unmeasured and untuned — misrouting silently produces wrong handler outputs.
+
 ## Next steps
 
 - Production version: see [Blueprints → Deployments](../../composition/blueprints-to-deployments.md) for the deployment agents that use this pattern.

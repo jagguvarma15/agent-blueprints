@@ -8,7 +8,8 @@ We welcome contributions to agent-blueprints. This guide explains how to add new
 If you want to document a new workflow or agent pattern:
 
 1. **Open an issue first** — Use the [New Pattern Proposal](./../.github/ISSUE_TEMPLATE/blueprint-proposal.yml) template. Describe the pattern, its use cases, and how it relates to existing patterns. Get alignment before writing.
-2. **Follow the full structure** — Every pattern needs:
+2. **Mirror the exemplar.** [`patterns/multi-agent/`](../patterns/multi-agent/) is the canonical reference for new patterns. Match its structural sections in `design.md` (components, data flow, topology choices, failure modes, scaling considerations, observability hooks, composition) and its tier depth. New `design.md` files should land at or above the multi-agent line count when complete.
+3. **Follow the full structure** — Every pattern needs:
    - `overview.md` (Tier 1) — architecture diagram, how it works, minimal example, tradeoffs
    - `design.md` (Tier 2) — component breakdown, data flow, error handling, scaling
    - `implementation.md` (Tier 3) — pseudocode, interfaces, testing strategy, pitfalls
@@ -16,9 +17,9 @@ If you want to document a new workflow or agent pattern:
    - `observability.md` — key metrics, trace format, failure signatures
    - `cost-and-latency.md` — token budget, latency profile, cost control knobs
    - `metadata.json` — pattern ID, complexity, evolution and composability relationships
-3. **Include diagrams** — Every overview must have at least one Mermaid architecture diagram.
-4. **Cross-reference** — Link to related patterns, workflows, and the choosing-a-pattern guide using relative paths.
-5. **Follow the style guide** — See [style-guide.md](./style-guide.md).
+4. **Include diagrams** — Every overview must have at least one Mermaid architecture diagram.
+5. **Cross-reference** — Link to related patterns, workflows, and the choosing-a-pattern guide using relative paths.
+6. **Follow the style guide** — See [style-guide.md](./style-guide.md).
 
 ### Improving Existing Documentation
 - Fix errors, improve clarity, add missing cross-references

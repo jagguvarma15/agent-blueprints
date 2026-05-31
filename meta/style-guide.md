@@ -2,6 +2,8 @@
 
 Rules for writing documentation in this repository. Consistency matters — every document should feel like it was written by the same team.
 
+> **Exemplar:** [`patterns/multi-agent/`](../patterns/multi-agent/) is the canonical reference. When in doubt about structure, depth, or section choice, match it.
+
 ## Voice and Tone
 
 - **Technical but approachable.** Write as if explaining to a smart engineer who hasn't built agents before.

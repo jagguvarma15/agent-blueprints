@@ -120,6 +120,12 @@ Step 5: Generate a README.md documenting setup and usage
 - **[Implementation](./implementation.md)** — Pseudocode, planner prompts, state management, testing
 - **[Evolution](./evolution.md)** — How Plan & Execute evolves from orchestrator-worker
 
+## When NOT to use this pattern
+
+- The task has fewer than 3 steps — planning overhead exceeds the value.
+- Steps depend on what each one discovers (true exploratory work) — [ReAct](../react/overview.md) is more flexible.
+- You can't validate the plan before execution — a bad plan executed in full is expensive.
+
 ## Next steps
 
 - Production version: see [Blueprints → Deployments](../../composition/blueprints-to-deployments.md) for the deployment agents that use this pattern.

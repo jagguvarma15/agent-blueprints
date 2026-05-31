@@ -126,6 +126,12 @@ result = system.run(
 - **[Implementation](./implementation.md)** — Pseudocode, delegation mechanics, state management, testing strategies
 - **[Evolution](./evolution.md)** — How multi-agent evolves from orchestrator-worker and routing
 
+## When NOT to use this pattern
+
+- One specialized agent can handle the full scope — multi-agent multiplies cost without benefit.
+- You haven't yet built and stabilized the single-agent version — multi-agent is harder to debug and tune.
+- Worker agents would share most tools and prompts — they're not actually specialized; the topology adds nothing.
+
 ## Next steps
 
 - Production version: see [Blueprints → Deployments](../../composition/blueprints-to-deployments.md) for the deployment agents that use this pattern.

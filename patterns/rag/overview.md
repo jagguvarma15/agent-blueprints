@@ -120,6 +120,12 @@ result = pipeline.query("What is the process for requesting parental leave?")
 - **[Implementation](./implementation.md)** — Pseudocode, ingestion pipeline, query pipeline, testing with fixtures
 - **[Evolution](./evolution.md)** — How RAG evolves from parallel calls
 
+## When NOT to use this pattern
+
+- All needed knowledge fits in the context window — context-stuffing is simpler.
+- Retrieval recall is unmeasured — you'll ship hallucinations grounded in irrelevant chunks.
+- The corpus is small and changes rarely — a flat document in the system prompt may suffice.
+
 ## Next steps
 
 - Production version: see [Blueprints → Deployments](../../composition/blueprints-to-deployments.md) for the deployment agents that use this pattern.

@@ -111,6 +111,12 @@ result = agent.run("Write a beginner-friendly explanation of database indexing")
 - **[Implementation](./implementation.md)** — Pseudocode, reflection prompts, iteration management, testing
 - **[Evolution](./evolution.md)** — How reflection evolves from evaluator-optimizer
 
+## When NOT to use this pattern
+
+- Latency is more important than incremental quality — reflection at least doubles latency.
+- The critic is the same model as the generator and you don't have a stronger grader — risk of self-rubber-stamping.
+- You haven't measured the quality lift on real eval data — the cost premium may not translate to value.
+
 ## Next steps
 
 - Production version: see [Blueprints → Deployments](../../composition/blueprints-to-deployments.md) for the deployment agents that use this pattern.

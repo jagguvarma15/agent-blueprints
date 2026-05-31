@@ -132,6 +132,12 @@ result = agent.run(
 - **[Implementation](./implementation.md)** — Pseudocode, registry patterns, validation, testing tool calls
 - **[Evolution](./evolution.md)** — How tool use evolves from prompt chaining
 
+## When NOT to use this pattern
+
+- The task is text-in, text-out with no external actions — Tool Use adds unnecessary structure.
+- The tools you'd expose are destructive without good guardrails — defer to a [HITL](../human-in-the-loop/overview.md) pattern.
+- You only have one tool that's always called — direct function-calling without the registry abstraction is simpler.
+
 ## Next steps
 
 - Production version: see [Blueprints → Deployments](../../composition/blueprints-to-deployments.md) for the deployment agents that use this pattern.
