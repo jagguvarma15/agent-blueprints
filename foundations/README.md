@@ -76,3 +76,4 @@ For background and positioning:
 - **[Anti-Patterns](./anti-patterns.md)** — What not to build, why people build it anyway, and the correct alternative
 - **[Testing Strategies](./testing-strategies.md)** — Unit tests, mock LLMs, integration tests, evaluation, and regression testing for LLM systems
 - **[System Design Heritage](./system-design-heritage.md)** — Lineage map from classical system-design patterns to the blueprints here, and the reliability gap scoped to `agent-deployments`
+- **[Frameworks & Integrations](./frameworks-and-integrations.md)** — A map from patterns to LangGraph, Claude Agent SDK, CrewAI, AutoGen, LlamaIndex, and MCP
