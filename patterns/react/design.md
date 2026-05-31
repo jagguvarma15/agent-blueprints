@@ -73,12 +73,32 @@ The history grows by ~2 messages per iteration (assistant tool_call + tool resul
 - **Repeated failures:** If the agent calls the same tool with the same args 3+ times, inject a hint to try a different approach.
 - **Context overflow:** Summarize or truncate history.
 
+## Termination Strategies
+
+A ReAct loop without a clear termination policy is a budget bug. Combine layers:
+
+- **Iteration cap (mandatory).** Hard limit on agent loop steps. Default 10–15 for general agents; tighter for specialized ones.
+- **Token budget.** Cap total tokens across all iterations. Catches long-context blow-ups.
+- **Repeat detection.** Same tool + same args twice in a row → inject a hint ("you've tried this; try something different") before iterating further. Three repeats → terminate.
+- **Explicit done-tool.** Provide a `finalize_answer` tool. Force the agent to call it rather than guess when to stop returning text. Often the cleanest termination.
+- **Confidence threshold.** When the agent claims confidence above a calibrated bar, stop. Below it after K iterations, escalate.
+
 ## Scaling Considerations
 
-- **Cost:** Unpredictable — depends on iteration count. Set cost budgets alongside iteration limits.
-- **Latency:** Variable. Each iteration = 1 LLM call + tool execution time.
+- **Cost:** Unpredictable — depends on iteration count. Set cost budgets alongside iteration limits; track P50/P95 iteration count in production.
+- **Latency:** Variable. Each iteration = 1 LLM call + tool execution time. Tools that block (sequential web fetches) dominate.
 - **Throughput:** Each agent run is independent. Scale by running multiple agents in parallel.
-- **At 100x:** Use cheaper models for simple tool-use tasks. Cache common tool results.
+- **Model selection:** A ReAct loop's reasoning steps benefit from Sonnet or Opus; simple tool-formatting steps can use Haiku. Many production ReAct agents mix tiers within one loop.
+- **At 100×:** Cache deterministic tool results (web fetch with stable URL, DB lookup with stable key). Use cheaper models for simple-tool-use tasks. Pool agent instances.
+
+## Observability Hooks
+
+The minimum trace surface for a ReAct agent:
+
+- Per-task: iteration count, total tokens, total tool calls, success/failure, time-to-first-token, time-to-final-answer.
+- Per-iteration: thought (reasoning) length, action (tool call) name, observation length, time per step.
+- Per-tool: invocation count, success rate, latency, retry rate.
+- Track **iteration-count distribution** — bimodal distributions (cluster at 1 and at max) usually indicate two distinct task types that should be routed differently. See [observability.md](./observability.md).
 
 ## Composition Notes
 

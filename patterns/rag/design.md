@@ -69,10 +69,28 @@ Assembles the final prompt: question + retrieved context + instructions for grou
 - **Context overflow:** Limit chunks to fit within context budget (reserve tokens for generation)
 - **Embedding failure:** Retry; fall back to keyword search if persistent
 
+## Retrieval Quality Strategies
+
+Retrieval is the ceiling on RAG quality. Three strategies that compound:
+
+- **Hybrid search.** Combine dense (embedding) and sparse (BM25/keyword) retrieval. Catches different failure modes — dense for semantic similarity, sparse for exact-match terms (product codes, names, jargon).
+- **Query rewriting.** Reformulate the user's question before retrieval. Useful for short queries that under-specify intent; can be implemented as a small LLM call.
+- **Multi-query.** Generate K paraphrases of the query, retrieve for each, union and deduplicate results. Improves recall at the cost of K× retrieval calls.
+
+For high-stakes RAG (medical, legal, financial), all three combined plus a cross-encoder reranker is the standard production stack.
+
 ## Scaling
-- **Ingestion:** Batch process documents; parallelize chunking and embedding
-- **Query latency:** Embedding (~50ms) + vector search (~10ms for ANN) + LLM call
-- **At scale:** Use approximate search (HNSW, IVF), cache frequent queries, shard vector store
+- **Ingestion:** Batch process documents; parallelize chunking and embedding.
+- **Query latency:** Embedding (~50ms) + vector search (~10ms for ANN) + LLM call.
+- **At scale:** Use approximate search (HNSW, IVF); cache frequent queries; shard vector store; pre-compute embeddings for high-frequency queries.
+- **Cost balance:** Cheap retrieval but generation cost scales with retrieved-context size — tighter top-K + reranking often wins over loose top-K.
+
+## Observability Hooks
+
+- Per-query: retrieved-chunk IDs, similarity scores, reranker scores, final-context size in tokens.
+- Per-corpus: hit-rate distribution (zero-hit queries are a leading indicator of corpus gaps).
+- Track **citation usage** — did the generator's output reference the retrieved sources? Generated answers that ignore retrieval defeat the pattern.
+- Track **retrieval-vs-final correlation** — when retrieval scored low, did the answer fail? If not, retrieval may be over-weighted. See [observability.md](./observability.md).
 
 ## Decision Matrix: Chunk Size
 

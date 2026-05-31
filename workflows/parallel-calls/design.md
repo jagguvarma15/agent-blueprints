@@ -123,6 +123,13 @@ Orchestrator-Worker is the upgrade when splitting requires LLM reasoning instead
 | Scaling | Scales with input volume | Fixed by task count |
 | Aggregation | Usually concatenate | Usually synthesize |
 
+## Observability Hooks
+
+- Per-fan-out: chunk count, concurrency utilized, total wall time vs sum of per-call times (ratio measures parallelism efficiency).
+- Per-chunk: status (success/error/timeout), latency, tokens.
+- Track **straggler distribution** — when P95 chunk latency dominates total fan-out time, the bottleneck is one slow branch, not the model. Consider per-branch timeouts.
+- Track **aggregator overhead** — when the aggregator's cost approaches per-branch cost, the fan-out savings shrink. See whether sequential would suffice. See [observability.md](./observability.md).
+
 ## Production concerns
 
 Cognitive concerns this repo covers; operational concerns belong in [agent-deployments](https://github.com/jagguvarma15/agent-deployments).

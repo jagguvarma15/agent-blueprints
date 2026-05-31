@@ -46,19 +46,81 @@ Critique:
   should_continue: boolean
 ```
 
-## Error Handling
-- **Self-congratulatory critique:** LLM declares output perfect prematurely. Fix: prompt for adversarial critique.
-- **Oscillating revisions:** Fix one issue, break another. Fix: track which issues were addressed.
-- **Over-polishing:** Minor edits that don't improve quality. Fix: convergence detection.
+## Critique Prompt Design
 
-## Scaling
-- 2+ LLM calls per iteration (reflect + revise). Total = 2K + 1 (initial generation).
-- Diminishing returns after 2–3 iterations. Default max = 3.
+The critique prompt determines whether reflection adds value or noise. Three principles:
+
+- **Adversarial framing.** Ask the critic to *find* problems, not to *agree*. *"List 3 ways this answer could be wrong"* beats *"Evaluate this answer."*
+- **Concrete criteria over global judgment.** *"Does the answer cite at least one source? Does each claim follow from a citation? Are any tool calls hallucinated?"* — beats *"Is this good?"*
+- **Severity scoring.** Force the critic to label each issue as `blocker`, `major`, or `nit`. Revisers should fix blockers, address majors, and ignore nits.
+
+## Critic Design Choices
+
+| Dimension | Choices | Tradeoff |
+|---|---|---|
+| **Same model or different** | Generator and critic share a model vs critic uses a stronger model | Different (stronger critic): better catches but higher cost; same: cheaper but risks self-rubber-stamping |
+| **Has access to source material** | Critic sees only the output vs critic sees output + grounding context | With grounding: faithfulness check possible; without: only style/coherence checks |
+| **Single-shot or multi-shot** | One critique per iteration vs multiple critics with different roles | Multi-shot: better coverage; higher cost |
+
+**Default:** Different (stronger) critic with access to source material. The cost premium pays for catches the cheaper homogeneous critic misses.
+
+## Termination Strategies
+
+Reflection without a hard termination is a budget bug. Combine all three:
+
+1. **Iteration cap.** Hard limit (default 3). Once hit, return current output.
+2. **Convergence.** Same critique across two iterations → stop. The next revision will be a no-op or oscillation.
+3. **Severity threshold.** No `blocker` or `major` issues found → stop. Don't iterate to fix nits.
+
+## Data Flow
+
+```
+Critique:
+  strengths: list of string
+  weaknesses: list of string
+  issues: list of {description, severity, suggestion, addressed_by_prior_revision}
+  overall_assessment: string
+  should_continue: boolean              // critic's recommendation
+
+ReflectionState:
+  iteration: integer
+  generator_output_history: list of string
+  critique_history: list of Critique
+  converged: boolean
+```
+
+## Failure Modes
+
+| Failure | Response |
+|---------|----------|
+| Self-congratulatory critique (output declared perfect at iter 1) | Adversarial prompt; require at least one finding even if `nit` |
+| Oscillating revisions (fix issue A → break issue B → fix B → break A) | Track which issues were addressed across iterations; refuse to undo a fix |
+| Over-polishing (minor edits that don't improve quality) | Convergence detection; severity threshold |
+| Critic itself hallucinates issues that aren't there | Grounding the critic (give it the source material); track critic accuracy via eval suite |
+| Critic rubber-stamps (matches generator's style) | Use a stronger or differently-trained critic model |
+| Reviser fails to address criticism | Track per-issue resolution; halt and report if reviser is consistently ignoring blockers |
+
+## Scaling Considerations
+
+- **Cost shape:** `initial_generation + N × (critique + revision)`. With N=3, that's 7 LLM calls vs 1 for the no-reflection baseline.
+- **Latency:** Sequential by construction; can't parallelize iterations.
+- **Iteration cap is the primary lever.** A default of 3 covers most useful cases; raise only with measured evidence that further iterations add quality.
+- **Model selection:** Generator and critic often warrant different tiers. Critic should be at least as capable as generator.
+
+## Observability Hooks
+
+- Per-task: iteration count, time-to-converge, cost per task vs baseline.
+- Per-iteration: critic's severity distribution, revision delta size (small revisions = converging; large = oscillating).
+- Per-issue category: which issue types the critic flags vs which actually impact downstream quality.
+- Track **net improvement** — for tasks with ground truth, did the final output score higher than the initial? If not, reflection is paying cost without value. See [observability.md](./observability.md).
 
 ## Composition
-- **+ ReAct:** Reflect on the agent's final output before returning
-- **+ Plan & Execute:** Reflect on plan quality before execution
-- **+ Any generator:** Reflection wraps any generation pattern as a quality layer
+
+- **+ [ReAct](../react/overview.md):** Reflect on the agent's final output before returning. Adds a quality layer to open-ended tool-using tasks.
+- **+ [Plan & Execute](../plan-and-execute/overview.md):** Reflect on plan quality *before execution* — catches bad plans before spending step-by-step LLM cost.
+- **+ [RAG](../rag/overview.md):** Reflect against retrieved sources — faithfulness check is the most valuable critique target.
+- **+ [Multi-Agent](../multi-agent/overview.md):** A critic worker reviews other workers' outputs; the supervisor decides whether to accept or revise.
+- **+ Any generator:** Reflection wraps any generation pattern as a quality layer — but check that the cost premium translates to measurable quality gain.
 
 ## Production concerns
 

@@ -53,21 +53,88 @@ RouteConfig:
   model: string                         // Optional per-route model
 ```
 
-## Error Handling
-- **Misclassification:** Monitor route accuracy; retrain classifier or add examples
-- **Handler failure:** Fall back to general handler
-- **Unknown route:** Return to classifier with more context, or use fallback
-- **Confidence edge cases:** Tune threshold based on error analysis
+## Routing Topology
 
-## Scaling
-- Classification: cheap, fast (can use smaller model)
-- Handlers: cost/latency varies by route (use appropriate model per route)
-- Add new routes without modifying existing handlers
+Three topologies, used for different classification surfaces:
+
+| Topology | Description | Use When |
+|---|---|---|
+| **Flat (multi-class)** | One classifier picks one of N routes | Routes are mutually exclusive; N ≤ ~10 |
+| **Hierarchical** | Coarse classifier → fine classifier per branch | Many sub-routes; coarse split is structural (billing vs technical) |
+| **Multi-label** | One classifier can pick multiple routes | Routes can overlap (a message might need both billing and technical handlers) |
+
+**Default:** Flat. Promote to hierarchical when N exceeds what one classifier can handle cleanly (low confidence rate climbing). Multi-label is rare and harder to test — use only when the requirement is clearly overlapping.
+
+## Classifier Design
+
+The classifier is doing a constrained task — picking from an enumeration. Three choices:
+
+- **LLM classifier.** Most flexible; can use entities and reasoning. Use a smaller model (Haiku-class) — classification doesn't need Opus.
+- **Embedding similarity.** Match input embedding against each route's description embedding. Cheaper and faster than an LLM call; less accurate for nuanced classifications.
+- **Hybrid.** Embedding similarity as a first pass; LLM as a confidence-check or tiebreaker.
+
+For high-throughput, low-latency routing (chat triage, support inbox), the hybrid approach is usually the right point on the cost/quality curve.
+
+## Confidence Calibration
+
+A confidence score from an LLM classifier is not reliable out of the box. Calibrate it:
+
+- **Self-reported confidence is noisy.** "Confidence: 0.92" from the LLM means little. Pair with structural signals.
+- **Use eval-derived thresholds.** Run the classifier against the golden dataset, plot accuracy at each threshold, pick the threshold that maximizes precision at acceptable recall.
+- **Different thresholds per route.** A billing misclassification is cheaper than a security-escalation misclassification. Set per-route thresholds.
+- **Drift detection.** Periodically rerun the calibration. Distribution shift moves the optimal threshold.
+
+## Data Flow
+
+```
+Classification:
+  route: string                          // from allow-listed enumeration
+  confidence: float                      // calibrated, not raw
+  entities: map of string → any          // extracted data
+  alternative_routes: list of {route, score}  // for ambiguous cases
+
+RouteConfig:
+  name: string
+  description: string                    // read by classifier
+  handler: function(input, entities) → response
+  system_prompt: string
+  tools: list of ToolSchema
+  model: string                          // per-route model
+  min_confidence: float                  // per-route threshold
+```
+
+## Failure Modes
+
+| Failure | Response |
+|---------|----------|
+| Confidence below threshold | Fallback handler (general-purpose) or explicit "I'm not sure — could you clarify?" |
+| Classifier hallucinates a route name not in the enumeration | Strict allow-list enforcement at dispatch; return `unknown` and route to fallback |
+| Handler for the selected route fails | Retry once, then fall back to general handler |
+| Two routes tie at top score | Defer to the human — ask clarifying question or default to safer route |
+| Classifier consistently wrong on a category | Adversarial test cases land in golden dataset; tune classifier prompt or add examples |
+| Adversarial input bypasses classifier | Input sanitization at the entry; refuse-list for known-bad patterns |
+
+## Scaling Considerations
+
+- **Classifier is cheap and fast** — smaller model + tight prompt. Often runs on every request.
+- **Handlers vary by route** — use appropriate model per route. A complex RAG route may use Opus; a simple FAQ lookup may use Haiku.
+- **Adding routes is mostly safe** — new route doesn't affect existing handlers, but it does change the classifier's decision boundary. Test classifier accuracy on the existing set after adding a route.
+- **At scale:** Cache classification for identical inputs; route-specific rate limits to prevent one runaway handler from starving others.
+
+## Observability Hooks
+
+- Per-classification: input, route chosen, confidence, alternative routes considered.
+- Per-route: traffic share, handler success rate, average latency.
+- Track `unknown` / `escalate` / fallback rate — too low suggests over-confident classifier; too high suggests under-trained classifier or genuinely ambiguous inputs.
+- Track route distribution over time — drift is a leading indicator of distribution shift in production. See [observability.md](./observability.md).
 
 ## Composition
-- **+ Multi-Agent:** Route to specialized agents instead of handlers
-- **+ RAG:** One route handler uses RAG for knowledge questions
-- **+ Memory:** Per-route or shared memory for continuity
+
+- **+ [Multi-Agent](../multi-agent/overview.md):** Route to specialized agents instead of handlers; classifier becomes the supervisor's first decision.
+- **+ [RAG](../rag/overview.md):** One route handler uses RAG; classifier triages knowledge-grounded vs non-grounded queries.
+- **+ [Memory](../memory/overview.md):** Per-route or shared memory for continuity. Per-route is safer (no cross-route context bleed).
+- **+ [Human in the Loop](../human-in-the-loop/overview.md):** Low-confidence classifications escalate to a human queue rather than risking a wrong handler.
+- **+ [Reflection](../reflection/overview.md):** Reflect on the handler's output before returning — useful for high-stakes routes where the classifier's confidence isn't enough.
 
 ## Production concerns
 

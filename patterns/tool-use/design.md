@@ -57,10 +57,30 @@ if response.has_tool_call:
 - **Execution failure:** Return error message; let LLM adapt
 - **Parallel tool calls:** Execute independently; collect all results
 
+## Structured Output Mechanisms
+
+Two API shapes for tool calls, with different reliability properties:
+
+| Mechanism | Description | Reliability |
+|---|---|---|
+| **Function calling** (OpenAI, Anthropic, etc.) | The API returns a structured tool_call object with validated schema | High — type-checked at the protocol layer |
+| **JSON mode** | The model returns a JSON blob you parse into a tool call | Medium — parsing failures still possible |
+
+**Default:** Use function calling when available. JSON mode is a fallback for models that don't support function calling natively.
+
 ## Scaling
-- Cost: 1 LLM call per tool decision. Tool execution cost varies.
-- Latency: LLM decision time + tool execution time per call.
-- Parallel tool calls reduce latency when multiple tools are independent.
+
+- **Cost:** 1 LLM call per tool decision. Tool execution cost (paid APIs) often exceeds LLM cost.
+- **Latency:** LLM decision time + tool execution time per call. Tool latency dominates for fast LLM tiers.
+- **Parallel tool calls** reduce latency when multiple tools are independent — most modern APIs support this. Falling back to sequential is a common implementation mistake.
+- **At scale:** Per-tool rate limits, per-tool concurrency caps, request-level deduplication for idempotent tools.
+
+## Observability Hooks
+
+- Per-tool: invocation count, success rate, P50/P95 latency, argument-validation failure rate.
+- Per-call: tool name, latency, status (success/validation_error/execution_error/timeout).
+- Track **tool selection patterns** — which tools get chosen for which tasks; mis-selection rate is a signal that descriptions need work.
+- Track **MCP server health** when MCP is in use — server reachability, version drift between client and server. See [observability.md](./observability.md).
 
 ## Composition
 Tool Use is a foundation for all agent patterns. It provides the mechanism; other patterns provide the control flow (ReAct adds the loop, Plan & Execute adds the planning).
