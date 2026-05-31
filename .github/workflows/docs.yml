@@ -61,20 +61,13 @@ jobs:
         run: |
           echo "Checking pattern documentation structure..."
           errors=0
-          # Check workflows have all required docs
-          for dir in workflows/prompt-chaining workflows/parallel-calls workflows/orchestrator-worker workflows/evaluator-optimizer; do
-            for file in overview.md design.md implementation.md observability.md cost-and-latency.md; do
-              if [ ! -s "$dir/$file" ]; then
-                echo "MISSING or EMPTY: $dir/$file"
-                errors=$((errors + 1))
-              fi
-            done
-          done
-          # Check patterns have all required docs
-          for dir in patterns/react patterns/plan-and-execute patterns/tool-use patterns/memory patterns/rag patterns/reflection patterns/routing patterns/multi-agent; do
-            for file in overview.md design.md implementation.md evolution.md observability.md cost-and-latency.md; do
-              if [ ! -s "$dir/$file" ]; then
-                echo "MISSING or EMPTY: $dir/$file"
+          # Required tier files for every workflow and pattern directory.
+          # Optional polish files (evolution, observability, cost-and-latency, code/)
+          # are checked per-directory via metadata.json + validate-metadata.js below.
+          for dir in workflows/*/ patterns/*/; do
+            for file in overview.md design.md implementation.md metadata.json; do
+              if [ ! -s "$dir$file" ]; then
+                echo "MISSING or EMPTY: $dir$file"
                 errors=$((errors + 1))
               fi
             done
@@ -92,3 +85,16 @@ jobs:
       - name: Lint markdown (style guide enforcement)
         run: |
           npx --yes markdownlint-cli2 "**/*.md" "#legacy/**" "#node_modules/**" "#website/**"
+
+      - name: Set up Node for website build
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: website/package-lock.json
+
+      - name: Build website
+        working-directory: website
+        run: |
+          npm ci
+          npm run build
