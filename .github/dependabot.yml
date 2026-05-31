@@ -1,0 +1,21 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /website
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 5
+    groups:
+      astro-stack:
+        patterns:
+          - astro
+          - "@astrojs/*"
+      react:
+        patterns:
+          - react
+          - react-dom
+          - "@types/react*"
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly

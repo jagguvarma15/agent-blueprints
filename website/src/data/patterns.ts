@@ -146,6 +146,24 @@ export const AGENT_PATTERNS: PatternMeta[] = [
     category: 'agent',
     evolvesFrom: ['tool-use'],
   },
+  {
+    id: 'saga',
+    name: 'Saga',
+    slug: 'saga',
+    description: 'Long-running, multi-step processes with compensation when an intermediate step fails.',
+    complexity: 'Advanced',
+    category: 'agent',
+    evolvesFrom: ['tool-use', 'prompt-chaining'],
+  },
+  {
+    id: 'human-in-the-loop',
+    name: 'Human in the Loop',
+    slug: 'human-in-the-loop',
+    description: 'Agent proposes an action; a human approves, denies, or modifies before it commits.',
+    complexity: 'Intermediate',
+    category: 'agent',
+    evolvesFrom: ['tool-use'],
+  },
 ];
 
 export const ALL_PATTERNS: PatternMeta[] = [...WORKFLOWS, ...AGENT_PATTERNS];
@@ -323,5 +341,27 @@ export const PATTERN_COMPARISONS: PatternComparison[] = [
     bestFor: 'Async reactive systems on a queue or stream',
     requires: ['tools', 'event-source', 'idempotency-store'],
     composableWith: ['multi-agent', 'routing', 'memory'],
+  },
+  {
+    id: 'saga',
+    name: 'Saga',
+    category: 'agent',
+    complexity: 'Advanced',
+    latency: 'High',
+    cost: 'Medium',
+    bestFor: 'Long-running workflows requiring compensation on failure',
+    requires: ['storage', 'idempotency', 'compensation-handlers'],
+    composableWith: ['event-driven', 'multi-agent'],
+  },
+  {
+    id: 'human-in-the-loop',
+    name: 'Human in the Loop',
+    category: 'agent',
+    complexity: 'Intermediate',
+    latency: 'Variable',
+    cost: 'Low',
+    bestFor: 'High-stakes actions requiring human approval or correction',
+    requires: ['pause-resume', 'approver-surface', 'audit'],
+    composableWith: ['saga', 'event-driven', 'tool-use'],
   },
 ];

@@ -1,0 +1,8 @@
+# Default owner for everything in the repo.
+* @jagguvarma15
+
+# Website tooling
+/website/ @jagguvarma15
+
+# GitHub configuration and CI
+/.github/ @jagguvarma15
