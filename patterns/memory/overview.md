@@ -109,3 +109,9 @@ response = agent.chat("How should I handle form validation in my project?")
 - **[Design](./design.md)** — Memory types, storage strategies, retrieval patterns, summarization, forgetting policies
 - **[Implementation](./implementation.md)** — Pseudocode, context window management, vector store integration, testing
 - **[Evolution](./evolution.md)** — How memory evolves from prompt chaining
+
+## Next steps
+
+- Production version: see [Blueprints → Deployments](../../composition/blueprints-to-deployments.md) for the deployment agents that use this pattern.
+- Generate a starter project: see [Blueprint → Spec → Scaffold](../../composition/blueprint-to-spec-to-scaffold.md).
+- Combine with other patterns: see the [Composition guide](../../composition/README.md).

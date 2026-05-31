@@ -133,3 +133,9 @@ result = saga.run(payload={"original_reservation_id": "res_42", "customer_id": "
 - **[Evolution](./evolution.md)** — How saga evolves from prompt chaining + tool use
 - **[Observability](./observability.md)** — Saga duration, compensation rate, stuck-saga alerts, per-step P95
 - **[Cost & Latency](./cost-and-latency.md)** — Compensation amplifies cost; log overhead is small
+
+## Next steps
+
+- Production version: see [Blueprints → Deployments](../../composition/blueprints-to-deployments.md) for the deployment agents that use this pattern.
+- Generate a starter project: see [Blueprint → Spec → Scaffold](../../composition/blueprint-to-spec-to-scaffold.md).
+- Combine with other patterns: see the [Composition guide](../../composition/README.md).

@@ -68,3 +68,5 @@ Multiple patterns share a resource. Example: RAG and Memory both use the same ve
 
 - **[Combination Matrix](./combination-matrix.md)** — Which patterns pair well, which conflict, and why
 - **[Reference Architectures](./reference-architectures.md)** — Example composed systems for common use cases
+- **[Blueprints → Deployments](./blueprints-to-deployments.md)** — Which deployment recipes in `agent-deployments` use which patterns
+- **[Blueprint → Spec → Scaffold](./blueprint-to-spec-to-scaffold.md)** — End-to-end walkthrough of the pattern → spec → generated project lifecycle

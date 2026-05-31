@@ -131,3 +131,9 @@ result = agent.run(
 - **[Design](./design.md)** — Schema design, dispatch patterns, error handling, parallel tool calls
 - **[Implementation](./implementation.md)** — Pseudocode, registry patterns, validation, testing tool calls
 - **[Evolution](./evolution.md)** — How tool use evolves from prompt chaining
+
+## Next steps
+
+- Production version: see [Blueprints → Deployments](../../composition/blueprints-to-deployments.md) for the deployment agents that use this pattern.
+- Generate a starter project: see [Blueprint → Spec → Scaffold](../../composition/blueprint-to-spec-to-scaffold.md).
+- Combine with other patterns: see the [Composition guide](../../composition/README.md).

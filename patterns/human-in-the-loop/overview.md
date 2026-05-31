@@ -137,3 +137,9 @@ execute_rebooking(proposal)
 - **[Evolution](./evolution.md)** — Tool Use + approval flag → HITL
 - **[Observability](./observability.md)** — Approval latency P50/P95, approval rate, timeout/escalation rate, per-approver throughput
 - **[Cost & Latency](./cost-and-latency.md)** — LLM cost is negligible; wall-clock is the constraint — SLO design and approver-pool sizing
+
+## Next steps
+
+- Production version: see [Blueprints → Deployments](../../composition/blueprints-to-deployments.md) for the deployment agents that use this pattern.
+- Generate a starter project: see [Blueprint → Spec → Scaffold](../../composition/blueprint-to-spec-to-scaffold.md).
+- Combine with other patterns: see the [Composition guide](../../composition/README.md).

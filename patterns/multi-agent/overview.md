@@ -125,3 +125,9 @@ result = system.run(
 - **[Design](./design.md)** — Agent registry, communication protocols, shared state, supervisor prompting, worker design
 - **[Implementation](./implementation.md)** — Pseudocode, delegation mechanics, state management, testing strategies
 - **[Evolution](./evolution.md)** — How multi-agent evolves from orchestrator-worker and routing
+
+## Next steps
+
+- Production version: see [Blueprints → Deployments](../../composition/blueprints-to-deployments.md) for the deployment agents that use this pattern.
+- Generate a starter project: see [Blueprint → Spec → Scaffold](../../composition/blueprint-to-spec-to-scaffold.md).
+- Combine with other patterns: see the [Composition guide](../../composition/README.md).

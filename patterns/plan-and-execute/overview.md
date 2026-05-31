@@ -119,3 +119,9 @@ Step 5: Generate a README.md documenting setup and usage
 - **[Design](./design.md)** — Plan schema, step tracking, replanning strategies, executor design
 - **[Implementation](./implementation.md)** — Pseudocode, planner prompts, state management, testing
 - **[Evolution](./evolution.md)** — How Plan & Execute evolves from orchestrator-worker
+
+## Next steps
+
+- Production version: see [Blueprints → Deployments](../../composition/blueprints-to-deployments.md) for the deployment agents that use this pattern.
+- Generate a starter project: see [Blueprint → Spec → Scaffold](../../composition/blueprint-to-spec-to-scaffold.md).
+- Combine with other patterns: see the [Composition guide](../../composition/README.md).

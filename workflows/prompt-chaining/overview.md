@@ -112,3 +112,9 @@ result = chain.run(raw_spec_document)
 
 - **[Design](./design.md)** — Component breakdown, data flow, gate strategies, error handling
 - **[Implementation](./implementation.md)** — Pseudocode, interfaces, testing strategy, common pitfalls
+
+## Next steps
+
+- Production version: see [Blueprints → Deployments](../../composition/blueprints-to-deployments.md) for the deployment agents that use this pattern.
+- Generate a starter project: see [Blueprint → Spec → Scaffold](../../composition/blueprint-to-spec-to-scaffold.md).
+- Combine with other patterns: see the [Composition guide](../../composition/README.md).

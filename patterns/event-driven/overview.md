@@ -122,3 +122,9 @@ async def consume():
 
 - **[Design](./design.md)** — Event-source choice (Kafka / SQS / Redis Streams / NATS), consumer groups, idempotency keys, retry + DLQ, ordering, schema evolution, backpressure, observability, failure modes.
 - **[Implementation](./implementation.md)** — Subscriber pseudocode, idempotency store design, retry-with-backoff, testing event-driven agents, migration from polling.
+
+## Next steps
+
+- Production version: see [Blueprints → Deployments](../../composition/blueprints-to-deployments.md) for the deployment agents that use this pattern.
+- Generate a starter project: see [Blueprint → Spec → Scaffold](../../composition/blueprint-to-spec-to-scaffold.md).
+- Combine with other patterns: see the [Composition guide](../../composition/README.md).
