@@ -1,7 +1,7 @@
 name: New Pattern Proposal
 description: Propose a new workflow or agent pattern to be added to the documentation
 labels:
-  - new-pattern
+  - new-pattern-proposal
 body:
   - type: input
     id: name
@@ -29,9 +29,9 @@ body:
       label: Complexity
       description: Relative complexity compared to existing patterns.
       options:
-        - Simple
-        - Medium
-        - Complex
+        - Beginner
+        - Intermediate
+        - Advanced
     validations:
       required: true
 
@@ -54,6 +54,18 @@ body:
         - Reflection
         - Routing
         - Multi-Agent
+        - Event-Driven
+        - Saga
+        - Human in the Loop
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: One-sentence Description
+      description: A single-sentence summary suitable for the metadata.json `description` field and pattern tables.
+      placeholder: "Agent proposes an action; a human approves, denies, or modifies before the action commits."
     validations:
       required: true
 
@@ -65,6 +77,28 @@ body:
       placeholder: |
         This pattern addresses the case where ...
         Existing patterns fall short because ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: when-to-use
+    attributes:
+      label: When to Use This Pattern
+      description: 2-4 concrete scenarios where this pattern is the right answer.
+      placeholder: |
+        - When the action is high-stakes and must not commit without approval
+        - When regulatory or compliance requirements mandate human review
+    validations:
+      required: true
+
+  - type: textarea
+    id: when-not-to-use
+    attributes:
+      label: When NOT to Use This Pattern
+      description: 2-4 concrete scenarios where a simpler pattern is the right answer instead.
+      placeholder: |
+        - When the action is low-stakes and human approval is a rubber-stamp
+        - When approver latency would break the user-facing flow
     validations:
       required: true
 
@@ -85,6 +119,15 @@ body:
     attributes:
       label: Key Tradeoffs
       description: What are the main strengths and limitations compared to related patterns?
+    validations:
+      required: false
+
+  - type: textarea
+    id: example-deployment
+    attributes:
+      label: Example Deployment
+      description: Which deployment recipe in `agent-deployments` would compose this pattern? If none yet, that's fine — it's a contribution opportunity.
+      placeholder: "Example: `customer-support-triage` composes Routing + Tool Use"
     validations:
       required: false
 
