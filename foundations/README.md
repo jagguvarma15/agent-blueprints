@@ -77,3 +77,7 @@ For background and positioning:
 - **[Testing Strategies](./testing-strategies.md)** — Unit tests, mock LLMs, integration tests, evaluation, and regression testing for LLM systems
 - **[System Design Heritage](./system-design-heritage.md)** — Lineage map from classical system-design patterns to the blueprints here, and the reliability gap scoped to `agent-deployments`
 - **[Frameworks & Integrations](./frameworks-and-integrations.md)** — A map from patterns to LangGraph, Claude Agent SDK, CrewAI, AutoGen, LlamaIndex, and MCP
+- **[Security & Safety](./security-and-safety.md)** — Prompt injection, tool-use safety, secrets, output filtering, MCP supply chain — the security primer for LLM agents
+- **[Hallucination & Grounding](./hallucination-and-grounding.md)** — Why agents hallucinate, grounding strategies, abstention patterns, eval-gated deployment
+- **[Evals & Quality](./evals-and-quality.md)** — Evals as tests (not benchmarks), golden datasets, metric selection, online vs offline, regression suites
+- **[Cost & Model Selection](./cost-and-model-selection.md)** — Model tier selection, token budgets, per-pattern cost shape, the latency/cost/quality triangle, cost guardrails
