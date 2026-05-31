@@ -17,9 +17,9 @@ If you want to document a new workflow or agent pattern:
    - `observability.md` — key metrics, trace format, failure signatures
    - `cost-and-latency.md` — token budget, latency profile, cost control knobs
    - `metadata.json` — pattern ID, complexity, evolution and composability relationships
-3. **Include diagrams** — Every overview must have at least one Mermaid architecture diagram.
-4. **Cross-reference** — Link to related patterns, workflows, and the choosing-a-pattern guide using relative paths.
-5. **Follow the style guide** — See [style-guide.md](./style-guide.md).
+4. **Include diagrams** — Every overview must have at least one Mermaid architecture diagram.
+5. **Cross-reference** — Link to related patterns, workflows, and the choosing-a-pattern guide using relative paths.
+6. **Follow the style guide** — See [style-guide.md](./style-guide.md).
 
 ### Improving Existing Documentation
 - Fix errors, improve clarity, add missing cross-references
