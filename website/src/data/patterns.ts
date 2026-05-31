@@ -146,6 +146,24 @@ export const AGENT_PATTERNS: PatternMeta[] = [
     category: 'agent',
     evolvesFrom: ['tool-use'],
   },
+  {
+    id: 'saga',
+    name: 'Saga',
+    slug: 'saga',
+    description: 'Long-running, multi-step processes with compensation when an intermediate step fails.',
+    complexity: 'Advanced',
+    category: 'agent',
+    evolvesFrom: ['tool-use', 'prompt-chaining'],
+  },
+  {
+    id: 'human-in-the-loop',
+    name: 'Human in the Loop',
+    slug: 'human-in-the-loop',
+    description: 'Agent proposes an action; a human approves, denies, or modifies before it commits.',
+    complexity: 'Intermediate',
+    category: 'agent',
+    evolvesFrom: ['tool-use'],
+  },
 ];
 
 export const ALL_PATTERNS: PatternMeta[] = [...WORKFLOWS, ...AGENT_PATTERNS];
