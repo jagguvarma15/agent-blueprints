@@ -64,3 +64,28 @@ if response.has_tool_call:
 
 ## Composition
 Tool Use is a foundation for all agent patterns. It provides the mechanism; other patterns provide the control flow (ReAct adds the loop, Plan & Execute adds the planning).
+
+## MCP and tool registries
+
+The Tool Registry component above is logical — it doesn't prescribe *where* the tools come from. The dominant standard for that "where" is **MCP (Model Context Protocol)**: a protocol for exposing tools, resources, and prompts from a separate process to any compatible LLM client. See [Frameworks & Integrations → MCP-specific guidance](../../foundations/frameworks-and-integrations.md) for the broader frame.
+
+### Why MCP belongs in the Tool Use design surface
+
+- **Centralized tool registry.** One MCP server can serve many agents — the registry component becomes an MCP client adapter instead of a per-agent function list.
+- **Standardized invocation.** Tool calls follow the MCP JSON-RPC contract regardless of which agent or framework is calling. No bespoke serialization per integration.
+- **Decoupled from the agent.** Tool authors ship MCP servers; agent authors consume them. Tool updates don't require agent redeploys.
+
+### Security surface
+
+MCP servers run outside the agent's direct control. That introduces concerns the in-process Tool Registry does not have:
+
+- **Server allow-listing.** The agent should connect only to pre-approved servers per environment. A `connect_to_any_server` flag is a vulnerability.
+- **Tool description spoofing.** A malicious server can embed prompt-injection payloads in tool descriptions or parameter docs. Validate descriptions out-of-band before enabling a server.
+- **Destructive tools.** MCP makes it easy to expose `delete_user`, `transfer_funds`, etc. Run servers with least-privilege credentials and gate destructive calls behind out-of-band confirmation, not just the LLM's judgment.
+- **Supply chain.** Pin MCP server versions in production. A silent server update can change tool semantics that the agent has been validated against.
+
+### When to use MCP vs in-process tools
+
+- **Prefer MCP** when a tool is reused across multiple agents or hosts (filesystem, vector DB, observability backend, ticketing system).
+- **Prefer in-process tools** when latency matters per call, the tool is single-agent specialized, or state coupling makes MCP's process boundary awkward.
+- An agent can mix both. The Tool Registry component above accommodates either by treating the MCP client adapter as just another handler source.
