@@ -138,6 +138,13 @@ execute_rebooking(proposal)
 - **[Observability](./observability.md)** — Approval latency P50/P95, approval rate, timeout/escalation rate, per-approver throughput
 - **[Cost & Latency](./cost-and-latency.md)** — LLM cost is negligible; wall-clock is the constraint — SLO design and approver-pool sizing
 
+## When NOT to use this pattern
+
+- The action is low-stakes and human approval is a rubber-stamp — wastes both the agent's and the human's time.
+- You don't have a clear approver surface (queue, UI, escalation channel) — HITL without surfaces is a dropped action.
+- Human review latency breaks the user-facing flow — async handoff or a different pattern fits better.
+
+
 ## Next steps
 
 - Production version: see [Blueprints → Deployments](../../composition/blueprints-to-deployments.md) for the deployment agents that use this pattern.

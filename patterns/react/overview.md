@@ -123,6 +123,13 @@ Final Answer: At 5.25%, $5,000 grows to approximately $8,293 over 10 years.
 - **[Implementation](./implementation.md)** — Pseudocode, interfaces, prompt templates, testing approach
 - **[Evolution](./evolution.md)** — How ReAct emerges from prompt chaining
 
+## When NOT to use this pattern
+
+- Steps are predictable in advance — use a workflow ([prompt chaining](../../workflows/prompt-chaining/overview.md) or [orchestrator-worker](../../workflows/orchestrator-worker/overview.md)).
+- Latency budget is tight — ReAct loops are unbounded by default and unpredictable.
+- You can't enforce a tool allow-list — ReAct's freedom amplifies the blast radius of any unsafe tool.
+
+
 ## Next steps
 
 - Production version: see [Blueprints → Deployments](../../composition/blueprints-to-deployments.md) for the deployment agents that use this pattern.

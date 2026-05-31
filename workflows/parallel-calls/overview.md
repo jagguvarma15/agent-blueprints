@@ -103,6 +103,13 @@ result = runner.run(
 - **[Design](./design.md)** — Splitting strategies, aggregation patterns, partial failure handling
 - **[Implementation](./implementation.md)** — Pseudocode, concurrency management, testing with stubs
 
+## When NOT to use this pattern
+
+- Tasks depend on each other's output — use [prompt chaining](../prompt-chaining/overview.md) or [orchestrator-worker](../orchestrator-worker/overview.md).
+- The aggregation step is more expensive than the parallel work — single-pass is usually better.
+- You can't actually run branches concurrently (sequential fan-out) — the pattern adds complexity without latency gain.
+
+
 ## Next steps
 
 - Production version: see [Blueprints → Deployments](../../composition/blueprints-to-deployments.md) for the deployment agents that use this pattern.

@@ -113,6 +113,13 @@ result = chain.run(raw_spec_document)
 - **[Design](./design.md)** — Component breakdown, data flow, gate strategies, error handling
 - **[Implementation](./implementation.md)** — Pseudocode, interfaces, testing strategy, common pitfalls
 
+## When NOT to use this pattern
+
+- The steps depend on dynamic decisions only an LLM can make — promote to an agent pattern (ReAct or Tool Use).
+- The task is a single transformation — skip the chain and use a single LLM call.
+- Steps run independently and don't pass data — use [parallel calls](../parallel-calls/overview.md) instead.
+
+
 ## Next steps
 
 - Production version: see [Blueprints → Deployments](../../composition/blueprints-to-deployments.md) for the deployment agents that use this pattern.
