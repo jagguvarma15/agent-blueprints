@@ -4,10 +4,27 @@
   "category": "workflow",
   "complexity": "Intermediate",
   "description": "LLM decomposes a task and delegates to specialized workers.",
-  "tiers": ["overview", "design", "implementation"],
-  "evolvesInto": ["plan-and-execute", "multi-agent"],
-  "composableWith": ["parallel-calls", "evaluator-optimizer"],
-  "tags": ["decomposition", "delegation", "dynamic", "specialization"],
+  "tiers": [
+    "overview",
+    "design",
+    "implementation",
+    "observability",
+    "cost-and-latency"
+  ],
+  "evolvesInto": [
+    "plan-and-execute",
+    "multi-agent"
+  ],
+  "composableWith": [
+    "parallel-calls",
+    "evaluator-optimizer"
+  ],
+  "tags": [
+    "decomposition",
+    "delegation",
+    "dynamic",
+    "specialization"
+  ],
   "costTier": "medium-high",
   "latencyTier": "medium"
 }

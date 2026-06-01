@@ -4,11 +4,30 @@
   "category": "agent",
   "complexity": "Beginner",
   "description": "Intent classification dispatches inputs to specialized handlers.",
-  "tiers": ["overview", "design", "implementation", "evolution"],
-  "evolvesFrom": ["parallel-calls"],
-  "composableWith": ["react", "rag", "multi-agent"],
+  "tiers": [
+    "overview",
+    "design",
+    "implementation",
+    "evolution",
+    "observability",
+    "cost-and-latency"
+  ],
+  "evolvesFrom": [
+    "parallel-calls"
+  ],
+  "composableWith": [
+    "react",
+    "rag",
+    "multi-agent"
+  ],
   "requires": [],
-  "tags": ["classification", "dispatch", "specialization", "intent", "multi-skill"],
+  "tags": [
+    "classification",
+    "dispatch",
+    "specialization",
+    "intent",
+    "multi-skill"
+  ],
   "costTier": "low",
   "latencyTier": "low"
 }
