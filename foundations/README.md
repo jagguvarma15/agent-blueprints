@@ -70,14 +70,30 @@ For background and positioning:
 
 ## In This Section
 
+The foundations split into three groups. Read them in the order that matches your goal.
+
+### Core concepts — read first
+
+The vocabulary, mental models, and decision frameworks you'll use everywhere else.
+
 - **[Terminology](./terminology.md)** — Precise definitions of agent, workflow, tool, and other overloaded terms
 - **[Anatomy of an Agent](./anatomy-of-an-agent.md)** — The components every agent has and what distinguishes agents from workflows
 - **[Choosing a Pattern](./choosing-a-pattern.md)** — Decision flowchart and guidance for selecting the right pattern
 - **[Anti-Patterns](./anti-patterns.md)** — What not to build, why people build it anyway, and the correct alternative
+
+### Production concerns — read before shipping
+
+Cross-cutting concerns every production agent inherits. Not pattern-specific; safe to read at any depth tier.
+
+- **[Security & Safety](./security-and-safety.md)** — Prompt injection, tool-use safety, secrets, output filtering, MCP supply chain
+- **[Hallucination & Grounding](./hallucination-and-grounding.md)** — Why agents hallucinate, grounding strategies, abstention, eval-gated deployment
+- **[Evals & Quality](./evals-and-quality.md)** — Evals as tests (not benchmarks), golden datasets, metric selection, online vs offline, regression suites
+- **[Cost & Model Selection](./cost-and-model-selection.md)** — Model tier selection, token budgets, per-pattern cost shape, the latency/cost/quality triangle, guardrails
 - **[Testing Strategies](./testing-strategies.md)** — Unit tests, mock LLMs, integration tests, evaluation, and regression testing for LLM systems
+
+### Reference and positioning
+
+The repo's lineage and its place in the broader ecosystem.
+
 - **[System Design Heritage](./system-design-heritage.md)** — Lineage map from classical system-design patterns to the blueprints here, and the reliability gap scoped to `agent-deployments`
 - **[Frameworks & Integrations](./frameworks-and-integrations.md)** — A map from patterns to LangGraph, Claude Agent SDK, CrewAI, AutoGen, LlamaIndex, and MCP
-- **[Security & Safety](./security-and-safety.md)** — Prompt injection, tool-use safety, secrets, output filtering, MCP supply chain — the security primer for LLM agents
-- **[Hallucination & Grounding](./hallucination-and-grounding.md)** — Why agents hallucinate, grounding strategies, abstention patterns, eval-gated deployment
-- **[Evals & Quality](./evals-and-quality.md)** — Evals as tests (not benchmarks), golden datasets, metric selection, online vs offline, regression suites
-- **[Cost & Model Selection](./cost-and-model-selection.md)** — Model tier selection, token budgets, per-pattern cost shape, the latency/cost/quality triangle, cost guardrails
