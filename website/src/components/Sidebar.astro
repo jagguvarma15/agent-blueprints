@@ -89,6 +89,40 @@ function isActive(href: string) {
     <!-- Composition -->
     <div class="mb-6">
       <p class="px-3 mb-2 text-2xs font-semibold font-mono uppercase tracking-widest text-text-tertiary">
+        Composition
+      </p>
+      <ul class="space-y-0.5">
+        {[
+          { slug: '', label: 'Overview' },
+          { slug: 'combination-matrix', label: 'Combination Matrix' },
+          { slug: 'anti-compositions', label: 'Anti-Compositions' },
+          { slug: 'reference-architectures', label: 'Reference Architectures' },
+          { slug: 'blueprints-to-deployments', label: 'Blueprints → Deployments' },
+          { slug: 'blueprint-to-spec-to-scaffold', label: 'Blueprint → Spec → Scaffold' },
+        ].map((p) => {
+          const href = p.slug ? `${base}/composition/${p.slug}/` : `${base}/composition/`;
+          const active = p.slug ? currentPath.includes(`/composition/${p.slug}`) : currentPath === `${base}/composition/` || currentPath === `${base}/composition`;
+          return (
+            <li>
+              <a
+                href={href}
+                class={`flex items-center px-3 py-1.5 text-sm rounded-md transition-all border-l-2 ${
+                  active
+                    ? 'border-accent text-accent bg-accent-light font-medium'
+                    : 'border-transparent text-text-secondary hover:text-text hover:bg-surface hover:border-surface-border'
+                }`}
+              >
+                {p.label}
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+
+    <!-- More -->
+    <div class="mb-6">
+      <p class="px-3 mb-2 text-2xs font-semibold font-mono uppercase tracking-widest text-text-tertiary">
         More
       </p>
       <ul class="space-y-0.5">

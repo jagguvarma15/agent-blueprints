@@ -4,11 +4,30 @@
   "category": "agent",
   "complexity": "Intermediate",
   "description": "LLM critiques its own output and self-improves through structured feedback.",
-  "tiers": ["overview", "design", "implementation", "evolution"],
-  "evolvesFrom": ["evaluator-optimizer"],
-  "composableWith": ["react", "rag", "plan-and-execute"],
+  "tiers": [
+    "overview",
+    "design",
+    "implementation",
+    "evolution",
+    "observability",
+    "cost-and-latency"
+  ],
+  "evolvesFrom": [
+    "evaluator-optimizer"
+  ],
+  "composableWith": [
+    "react",
+    "rag",
+    "plan-and-execute"
+  ],
   "requires": [],
-  "tags": ["self-critique", "quality", "iterative", "feedback", "improvement"],
+  "tags": [
+    "self-critique",
+    "quality",
+    "iterative",
+    "feedback",
+    "improvement"
+  ],
   "costTier": "medium-high",
   "latencyTier": "high"
 }

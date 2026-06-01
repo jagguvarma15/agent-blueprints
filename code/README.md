@@ -29,7 +29,10 @@ patterns/
 ├── rag/code/python/                    rag.py
 ├── reflection/code/python/             reflection.py
 ├── routing/code/python/                routing.py
-└── multi-agent/code/python/            multi_agent.py
+├── multi-agent/code/python/            multi_agent.py
+├── event-driven/code/python/           event_driven.py
+├── saga/code/python/                   saga.py
+└── human-in-the-loop/code/python/      human_in_the_loop.py
 ```
 
 ## Plugging in a real LLM

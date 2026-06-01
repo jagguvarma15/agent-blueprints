@@ -1,0 +1,73 @@
+---
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import { readMarkdown } from '../../utils/content';
+import { renderMarkdown } from '../../utils/markdown';
+
+const readmeMd = readMarkdown('composition/README.md');
+const readmeHtml = readmeMd ? renderMarkdown(readmeMd) : null;
+
+const base = import.meta.env.BASE_URL || '/agent-blueprints';
+
+const pages = [
+  {
+    slug: 'combination-matrix',
+    title: 'Combination Matrix',
+    description: 'Which patterns pair well, which conflict, and why — workflow-to-workflow and workflow-to-agent combinations rated Natural / Useful / Complex / Redundant.',
+    file: 'composition/combination-matrix.md',
+  },
+  {
+    slug: 'anti-compositions',
+    title: 'Anti-Compositions',
+    description: 'Pattern pairs that fight, overlap, or leak state. Concrete what-to-use-instead guidance for the failure modes the matrix labels Complex or Redundant.',
+    file: 'composition/anti-compositions.md',
+  },
+  {
+    slug: 'reference-architectures',
+    title: 'Reference Architectures',
+    description: '10 example composed systems — from research assistants to event-driven ingestion pipelines — with mermaid diagrams and failure-mode analysis.',
+    file: 'composition/reference-architectures.md',
+  },
+  {
+    slug: 'blueprints-to-deployments',
+    title: 'Blueprints → Deployments',
+    description: 'Reverse-lookup: which deployment recipes in agent-deployments use which patterns, plus the operational concerns every recipe inherits.',
+    file: 'composition/blueprints-to-deployments.md',
+  },
+  {
+    slug: 'blueprint-to-spec-to-scaffold',
+    title: 'Blueprint → Spec → Scaffold',
+    description: 'End-to-end walkthrough of the pattern → deployment spec → agent-scaffold CLI → running agent lifecycle.',
+    file: 'composition/blueprint-to-spec-to-scaffold.md',
+  },
+];
+---
+
+<DocsLayout title="Composition" description="How patterns combine into production systems — composition methods, combination matrix, anti-compositions, reference architectures, and the bridge to agent-deployments + agent-scaffold.">
+  <div class="max-w-prose">
+    <div class="mb-8">
+      <h1 class="font-display font-bold text-4xl tracking-display text-text mb-3">Composition</h1>
+      <p class="text-lg text-text-secondary">
+        Patterns are building blocks. Production systems combine them. This section covers how to compose patterns — which combinations work, which create problems, and the bridge from these abstract patterns to the production-shaped recipes in <code>agent-deployments</code>.
+      </p>
+    </div>
+
+    <!-- Composition pages grid -->
+    <div class="grid sm:grid-cols-1 gap-4 mb-10">
+      {pages.map((p) => (
+        <a
+          href={`${base}/composition/${p.slug}/`}
+          class="group bg-bg border border-surface-border rounded-xl p-5 hover:shadow-card-hover hover:-translate-y-0.5 transition-all"
+        >
+          <h2 class="font-display font-bold text-base tracking-display text-text group-hover:text-accent transition-colors mb-1.5">
+            {p.title}
+          </h2>
+          <p class="text-sm text-text-secondary leading-relaxed">{p.description}</p>
+        </a>
+      ))}
+    </div>
+
+    {readmeHtml && (
+      <div class="prose-content border-t border-surface-border pt-8" set:html={readmeHtml} />
+    )}
+  </div>
+</DocsLayout>

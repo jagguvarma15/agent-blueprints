@@ -1,0 +1,57 @@
+---
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import TableOfContents from '../../components/TableOfContents';
+import { readMarkdown, extractHeadings, extractTitle } from '../../utils/content';
+import { renderMarkdown } from '../../utils/markdown';
+
+export function getStaticPaths() {
+  const pages = [
+    { slug: 'combination-matrix', file: 'composition/combination-matrix.md' },
+    { slug: 'anti-compositions', file: 'composition/anti-compositions.md' },
+    { slug: 'reference-architectures', file: 'composition/reference-architectures.md' },
+    { slug: 'blueprints-to-deployments', file: 'composition/blueprints-to-deployments.md' },
+    { slug: 'blueprint-to-spec-to-scaffold', file: 'composition/blueprint-to-spec-to-scaffold.md' },
+  ];
+  return pages.map((p) => ({
+    params: { slug: p.slug },
+    props: { slug: p.slug, file: p.file },
+  }));
+}
+
+const { slug, file } = Astro.props;
+const md = readMarkdown(file);
+const html = md ? renderMarkdown(md) : null;
+const title = md ? extractTitle(md) : slug;
+const headings = md ? extractHeadings(md) : [];
+---
+
+<DocsLayout title={title}>
+  <div class="flex gap-8">
+    <div class="flex-1 min-w-0">
+      <div class="flex items-center gap-2 mb-6">
+        <a href={`${import.meta.env.BASE_URL || '/agent-blueprints'}/composition/`}
+          class="text-xs font-mono text-text-tertiary hover:text-accent transition-colors uppercase tracking-wider">
+          ← Composition
+        </a>
+      </div>
+
+      {html ? (
+        <div class="prose-content" set:html={html} />
+      ) : (
+        <div class="py-16 text-center">
+          <div class="inline-flex items-center justify-center w-12 h-12 bg-surface rounded-xl mb-4">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="1.5">
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+            </svg>
+          </div>
+          <p class="text-text-secondary text-sm">Content coming soon.</p>
+        </div>
+      )}
+    </div>
+
+    <div class="w-toc flex-shrink-0 hidden xl:block">
+      <TableOfContents client:load headings={headings} />
+    </div>
+  </div>
+</DocsLayout>
