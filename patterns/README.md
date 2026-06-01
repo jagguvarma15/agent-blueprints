@@ -14,7 +14,7 @@ Workflows break down when:
 
 Agents solve this by letting the LLM reason about the next step dynamically. The tradeoff: you gain flexibility at the cost of predictability, testability, and cost control.
 
-## The Eight Agent Patterns
+## The Eleven Agent Patterns
 
 ```mermaid
 graph TD
@@ -30,6 +30,11 @@ graph TD
     subgraph "Multi-Agent Patterns"
         MultiAgent[Multi-Agent<br/>Delegation + supervision]
     end
+    subgraph "Operational Patterns"
+        EventDriven[Event-Driven<br/>Queue/stream triggered]
+        Saga[Saga<br/>Compensation on failure]
+        HITL[Human in the Loop<br/>Approval gate]
+    end
 
     ToolUse -.->|"adds reasoning loop"| ReAct
     ReAct -.->|"adds planning"| PlanExec
@@ -38,6 +43,9 @@ graph TD
     ReAct -.->|"adds persistence"| Memory
     Routing -.->|"adds delegation"| MultiAgent
     PlanExec -.->|"adds multi-agent"| MultiAgent
+    ToolUse -.->|"adds event source"| EventDriven
+    ToolUse -.->|"adds compensation"| Saga
+    ToolUse -.->|"adds approval gate"| HITL
 
     style ReAct fill:#fff3e0
     style ToolUse fill:#fff3e0
@@ -47,18 +55,24 @@ graph TD
     style Routing fill:#fff3e0
     style PlanExec fill:#fff3e0
     style MultiAgent fill:#fce4ec
+    style EventDriven fill:#fff3e0
+    style Saga fill:#fff3e0
+    style HITL fill:#fff3e0
 ```
 
 | Pattern | Complexity | Evolves From (Workflow) | Best For |
 |---------|-----------|----------------------|----------|
-| [ReAct](./react/overview.md) | Beginner | Prompt Chaining | Open-ended tasks with tool use |
+| [ReAct](./react/overview.md) | Intermediate | Prompt Chaining | Open-ended tasks with tool use |
 | [Tool Use](./tool-use/overview.md) | Beginner | Prompt Chaining | Structured function calling |
 | [Memory](./memory/overview.md) | Intermediate | Prompt Chaining | Multi-session context |
 | [RAG](./rag/overview.md) | Intermediate | Parallel Calls | Knowledge-grounded generation |
 | [Reflection](./reflection/overview.md) | Intermediate | Evaluator-Optimizer | Self-improving output |
-| [Routing](./routing/overview.md) | Intermediate | Parallel Calls | Intent-based dispatch |
-| [Plan & Execute](./plan-and-execute/overview.md) | Advanced | Orchestrator-Worker | Complex multi-step tasks |
+| [Routing](./routing/overview.md) | Beginner | Parallel Calls | Intent-based dispatch |
+| [Plan & Execute](./plan-and-execute/overview.md) | Intermediate | Orchestrator-Worker | Complex multi-step tasks |
 | [Multi-Agent](./multi-agent/overview.md) | Advanced | Orchestrator-Worker + Routing | Collaborative task solving |
+| [Event-Driven](./event-driven/overview.md) | Advanced | Tool Use | Async reactive systems on a queue or stream |
+| [Saga](./saga/overview.md) | Advanced | Tool Use + Prompt Chaining | Long-running multi-step processes with compensation |
+| [Human in the Loop](./human-in-the-loop/overview.md) | Intermediate | Tool Use | High-stakes actions requiring approval |
 
 ## Reading Order
 
@@ -72,6 +86,9 @@ If you're new to agent patterns, start with **ReAct** — it's the simplest and 
 6. **[Routing](./routing/overview.md)** — Directing inputs to specialized handlers.
 7. **[Plan & Execute](./plan-and-execute/overview.md)** — Strategic planning before execution.
 8. **[Multi-Agent](./multi-agent/overview.md)** — Multiple agents collaborating.
+9. **[Event-Driven](./event-driven/overview.md)** — Agents triggered by queue/stream events instead of synchronous requests.
+10. **[Saga](./saga/overview.md)** — Long-running, multi-step processes that need compensation when an intermediate step fails.
+11. **[Human in the Loop](./human-in-the-loop/overview.md)** — Gating high-stakes actions behind human approval.
 
 ## Documentation Tiers
 
@@ -81,3 +98,5 @@ Each pattern has three levels of documentation:
 - **design.md** (Tier 2) — Component breakdown, data flow, error handling, scaling.
 - **implementation.md** (Tier 3) — Pseudocode, interfaces, state management, testing strategy.
 - **evolution.md** — How this pattern evolves from its parent workflow pattern.
+
+Most patterns also ship with **observability.md** (metrics, traces, failure signatures) and **cost-and-latency.md** (token budgets, latency profile, cost control knobs).
