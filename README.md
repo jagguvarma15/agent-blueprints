@@ -54,7 +54,7 @@ flowchart LR
 | Are new to LLM systems | [Foundations](./foundations/README.md) — concepts, terminology, mental models |
 | Need to pick a pattern | [Choosing a Pattern](./foundations/choosing-a-pattern.md) — decision flowchart |
 | Want structured LLM pipelines | [Workflows](./workflows/README.md) — 4 pre-agent patterns |
-| Want autonomous LLM behavior | [Agent Patterns](./patterns/README.md) — 8 agent architectures |
+| Want autonomous LLM behavior | [Agent Patterns](./patterns/README.md) — 11 agent architectures |
 | Are designing a production system | [Composition](./composition/README.md) — how patterns combine |
 | Want a production-shaped agent | [Blueprints → Deployments](./composition/blueprints-to-deployments.md) — which patterns power which deployments |
 | Want to generate a starter project | [Blueprint → Spec → Scaffold](./composition/blueprint-to-spec-to-scaffold.md) — end-to-end walkthrough |
@@ -88,6 +88,8 @@ Agents are systems where **the LLM controls the flow**. The developer provides t
 | **Routing** | Intent classification + dispatch | Parallel Calls | [overview](./patterns/routing/overview.md) | [design](./patterns/routing/design.md) | [impl](./patterns/routing/implementation.md) |
 | **Multi-Agent** | Supervisor-worker delegation | Orchestrator-Worker + Routing | [overview](./patterns/multi-agent/overview.md) | [design](./patterns/multi-agent/design.md) | [impl](./patterns/multi-agent/implementation.md) |
 | **Event-Driven** | Agents triggered by stream/queue events | Tool Use | [overview](./patterns/event-driven/overview.md) | [design](./patterns/event-driven/design.md) | [impl](./patterns/event-driven/implementation.md) |
+| **Saga** | Long-running multi-step processes with compensation | Tool Use + Prompt Chaining | [overview](./patterns/saga/overview.md) | [design](./patterns/saga/design.md) | [impl](./patterns/saga/implementation.md) |
+| **Human in the Loop** | Agent proposes, human approves before commit | Tool Use | [overview](./patterns/human-in-the-loop/overview.md) | [design](./patterns/human-in-the-loop/design.md) | [impl](./patterns/human-in-the-loop/implementation.md) |
 
 ## How Workflows Become Agents
 
@@ -105,6 +107,8 @@ graph LR
     Route -->|"+ agent workers"| MA
     EO[Evaluator-Optimizer] -->|"+ self-critique"| Ref[Reflection]
     TU -->|"+ event source"| ED[Event-Driven]
+    TU -->|"+ compensation"| Saga[Saga]
+    TU -->|"+ approval gate"| HITL[Human in the Loop]
 
     style PC fill:#e8f5e9
     style PAR fill:#e8f5e9
@@ -119,6 +123,8 @@ graph LR
     style MA fill:#fff3e0
     style Ref fill:#fff3e0
     style ED fill:#fff3e0
+    style Saga fill:#fff3e0
+    style HITL fill:#fff3e0
 ```
 
 Each agent pattern includes an [evolution.md](./patterns/react/evolution.md) document that traces this bridge in detail.
@@ -129,7 +135,7 @@ Each agent pattern includes an [evolution.md](./patterns/react/evolution.md) doc
 agent-blueprints/
 ├── foundations/          # Core concepts, terminology, pattern selection
 ├── workflows/           # 4 pre-agent workflow patterns (3 tiers each)
-├── patterns/            # 8 agent patterns (3 tiers + evolution bridge each)
+├── patterns/            # 11 agent patterns (3 tiers + evolution bridge each)
 ├── composition/         # How patterns combine into production systems
 ├── meta/                # Contributing, style guide, roadmap
 └── code/                # Reference implementations (per-pattern under patterns/*/code/ and workflows/*/code/)
