@@ -9,7 +9,11 @@ graph TD
     Start([What does your system need to do?]) --> Q0{Is the trigger an<br/>external event<br/>not a user request?}
 
     Q0 -->|"Yes — queue/stream event"| EventDriven([Event-Driven])
-    Q0 -->|"No — user request"| Q1{Does the LLM need to<br/>take actions or use tools?}
+    Q0 -->|"No — user request"| QHITL{Action is high-stakes<br/>and must require<br/>human approval?}
+    QHITL -->|"Yes"| HITL([Human in the Loop])
+    QHITL -->|"No"| QSaga{Multi-step process where<br/>intermediate steps must be<br/>undone on failure?}
+    QSaga -->|"Yes"| Saga([Saga])
+    QSaga -->|"No"| Q1{Does the LLM need to<br/>take actions or use tools?}
 
     Q1 -->|"No — text in, text out"| Q2{Multiple processing steps?}
     Q2 -->|"No"| Single([Single LLM Call<br/>No pattern needed])
@@ -45,6 +49,8 @@ graph TD
     style PlanExec fill:#66bb6a
     style MultiAgent fill:#4caf50
     style EventDriven fill:#4caf50
+    style Saga fill:#4caf50
+    style HITL fill:#66bb6a
 ```
 
 Green intensity indicates increasing complexity. Start as light as possible.
@@ -70,6 +76,8 @@ Green intensity indicates increasing complexity. Start as light as possible.
 | [Routing](../patterns/routing/overview.md) | Agent | Different inputs need different handling paths | All inputs follow the same process |
 | [Multi-Agent](../patterns/multi-agent/overview.md) | Agent | Task requires multiple specialized capabilities | Single agent can handle the scope |
 | [Event-Driven](../patterns/event-driven/overview.md) | Agent | Trigger is an external event (cancellation, status change, scheduled job) | User is waiting synchronously for a response |
+| [Saga](../patterns/saga/overview.md) | Agent | Long-running multi-step process with steps that have to be undone on failure | All steps live in one DB that supports transactions |
+| [Human in the Loop](../patterns/human-in-the-loop/overview.md) | Agent | High-stakes action must not commit without human approval | Action is low-stakes and review would be a rubber-stamp |
 
 ## Decision Criteria
 
