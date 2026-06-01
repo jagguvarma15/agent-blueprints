@@ -415,6 +415,69 @@ graph TD
 
 ---
 
+## 11. Multi-Step Booking Flow (Saga headline)
+
+**Patterns used:** Saga + Tool Use + Human in the Loop (escalation)
+
+**The problem:** A travel-booking agent has to commit a multi-step transaction across three independent services — reserve a hotel, reserve a flight, charge the customer's card. Any step can fail (no rooms left, card declined, flight pricing changed). The system has no shared database transaction across these services. A naive sequential implementation leaves the user with a charged card but no booking, or a held room with no flight. Saga is the right shape: each step has a compensator that reverses or mitigates its side effect.
+
+**Pattern selection — why these and not alternatives:**
+
+- **Saga** (rather than a single tool-using agent with manual undo logic) because steps cross service boundaries that don't share a transaction context. The compensator contract makes the failure semantics explicit at design time instead of buried in error handlers.
+- **Tool Use** (rather than ReAct) because each step is a well-defined action with known arguments and return shape. There's no reasoning loop inside a step; the LLM picks the next step from the saga's plan, not from open-ended exploration.
+- **Human in the Loop** *only on compensation failure* (rather than always) because the happy path doesn't need human review — it's a routine booking. But a saga stuck in a `partially_compensated` state (the customer is charged but the flight cancellation API returned a permanent error) is exactly the kind of edge case that needs a human, not another retry loop.
+
+```mermaid
+graph TD
+    Req([Booking Request]) --> Plan[Saga Plan:<br/>3 steps + 3 compensators]
+    Plan -->|"step 1"| Step1[Reserve Hotel]
+    Step1 -->|"success"| Step2[Reserve Flight]
+    Step1 -->|"failure"| Abort1([Abort: nothing to undo])
+    Step2 -->|"success"| Step3[Charge Card]
+    Step2 -->|"failure"| C1[Compensate:<br/>Cancel Hotel]
+    C1 --> Abort2([Aborted: hotel released])
+    Step3 -->|"success"| Done([Booking confirmed])
+    Step3 -->|"failure"| C2[Compensate:<br/>Cancel Flight, Cancel Hotel]
+    C2 -->|"compensator success"| Abort3([Aborted: everything released])
+    C2 -->|"compensator failure"| HITL[Human in the Loop:<br/>Manual recovery queue]
+    Log[(Saga Log)] <-->|"audit"| Plan
+    Log <-->|"audit"| Step1
+    Log <-->|"audit"| Step2
+    Log <-->|"audit"| Step3
+    Log <-->|"audit"| C1
+    Log <-->|"audit"| C2
+
+    style Req fill:#e3f2fd
+    style Plan fill:#fff8e1
+    style Step1 fill:#e8f5e9
+    style Step2 fill:#e8f5e9
+    style Step3 fill:#e8f5e9
+    style C1 fill:#ffe0b2
+    style C2 fill:#ffe0b2
+    style Log fill:#f3e5f5
+    style Done fill:#c8e6c9
+    style Abort1 fill:#fce4ec
+    style Abort2 fill:#fce4ec
+    style Abort3 fill:#fce4ec
+    style HITL fill:#ffcdd2
+```
+
+**Failure modes considered:**
+
+- *Hotel reserved, flight reservation times out without confirming.* Compensator runs `cancel_hotel`; saga ends aborted. Customer not charged, hotel released. The flight API may have actually reserved despite the timeout — saga log carries the attempted reservation_id so a separate reconciliation job can claim it back later.
+- *Card declined after both reservations succeed.* Two compensators fire in reverse order (cancel flight, then cancel hotel). Both must be idempotent because saga retry on coordinator restart may re-invoke them.
+- *Compensator itself fails permanently* (e.g., hotel cancellation API returns 410 Gone). Saga enters `partially_compensated` state; alert fires; HITL queue receives a structured case with the saga log, the failed compensator's error, and a one-click "manually mark resolved" action.
+- *Coordinator crashes mid-saga.* On restart, saga log replay determines the last completed step and resumes; idempotent `do` and `undo` make this safe.
+- *Two concurrent bookings for the same room.* Step 1's `reserve_hotel` returns a unique reservation_id; the hotel service handles concurrency at its own boundary. Saga doesn't need to.
+
+**Pointers:**
+
+- Pattern guidance: [Saga](../patterns/saga/overview.md) — compensation semantics, orchestration vs choreography, saga log shape.
+- Production wiring: [`agent-deployments/docs/cross-cutting/idempotency.md`](https://github.com/jagguvarma15/agent-deployments/blob/main/docs/cross-cutting/idempotency.md). Saga compensators rely on it heavily.
+- Composition cross-references: [Saga + Human-in-the-Loop](./combination-matrix.md) is rated *Useful* for exactly this escalation pattern.
+
+---
+
 ## Architecture Selection Guide
 
 | If You Need... | Start With | Then Add | Reference |
