@@ -1,5 +1,7 @@
 # Saga — Design
 
+> Canonical Pydantic state schema: [`schemas/state.py`](schemas/state.py) — `SagaState` is the top-level shape; `SagaStep`, `Compensation` are the auxiliary models. Recipes targeting Saga reference these names verbatim.
+
 ## Component Breakdown
 
 ```mermaid

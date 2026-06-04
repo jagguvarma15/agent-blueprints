@@ -1,5 +1,7 @@
 # Plan & Execute — Design
 
+> Canonical Pydantic state schema: [`schemas/state.py`](schemas/state.py) — `PlanExecuteState` is the top-level shape; `Plan`, `Step`, `ExecutionResult` are the auxiliary models. Recipes targeting Plan & Execute reference these names verbatim.
+
 ## Component Breakdown
 
 ```mermaid

@@ -1,5 +1,7 @@
 # Routing — Design
 
+> Canonical Pydantic state schema: [`schemas/state.py`](schemas/state.py) — `RoutingState` is the top-level shape; `Route`, `RouteDecision` are the auxiliary models. Recipes targeting Routing reference these names verbatim.
+
 ## Component Breakdown
 
 ```mermaid

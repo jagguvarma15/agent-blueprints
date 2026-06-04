@@ -1,5 +1,7 @@
 # ReAct — Design
 
+> Canonical Pydantic state schema: [`schemas/state.py`](schemas/state.py) — `ReActState` is the top-level shape; `ReActStep`, `ToolCall`, `Observation` are the auxiliary models. Recipes targeting ReAct reference these names verbatim.
+
 ## Component Breakdown
 
 ```mermaid

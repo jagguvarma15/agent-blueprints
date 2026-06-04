@@ -1,5 +1,7 @@
 # Tool Use — Design
 
+> Canonical Pydantic state schema: [`schemas/state.py`](schemas/state.py) — `ToolUseState` is the top-level shape; `ToolCall`, `ToolResult` are the auxiliary models. Recipes targeting Tool Use reference these names verbatim.
+
 ## Component Breakdown
 
 ```mermaid
