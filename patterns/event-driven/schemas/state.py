@@ -14,7 +14,7 @@ See ``../design.md`` for the prose definition of each field.
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import UTC, datetime
 
 from pydantic import BaseModel, Field
 
@@ -27,7 +27,7 @@ class Event(BaseModel):
     )
     event_type: str = Field(description="Routing discriminator (e.g. 'reservation.cancelled').")
     occurred_at: datetime
-    received_at: datetime = Field(default_factory=datetime.utcnow)
+    received_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
     payload: dict[str, object] = Field(default_factory=dict)
     headers: dict[str, str] = Field(default_factory=dict)
 

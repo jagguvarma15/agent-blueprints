@@ -10,7 +10,7 @@ See ``../design.md`` for the prose definition of each field.
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import UTC, datetime
 
 from pydantic import BaseModel, Field
 
@@ -25,7 +25,7 @@ class MemoryEntry(BaseModel):
         default="fact",
         description="Coarse category (fact | preference | event | constraint).",
     )
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
     last_used_at: datetime | None = Field(
         default=None,
         description="Updated when this entry is included in a Recall; drives eviction.",

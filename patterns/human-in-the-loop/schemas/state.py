@@ -10,7 +10,7 @@ See ``../design.md`` for the prose definition of each field.
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Literal
 
 from pydantic import BaseModel, Field
@@ -32,7 +32,7 @@ class Interrupt(BaseModel):
         default_factory=dict,
         description="Snapshot of agent state the human needs to decide.",
     )
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
     expires_at: datetime | None = Field(
         default=None,
         description="If set, the interrupt auto-fails after this timestamp.",
@@ -52,7 +52,7 @@ class HumanInput(BaseModel):
         default=None,
         description="User id of the responder; used for audit.",
     )
-    received_at: datetime = Field(default_factory=datetime.utcnow)
+    received_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
 
 class HitlState(BaseModel):
