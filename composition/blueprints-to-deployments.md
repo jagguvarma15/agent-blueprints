@@ -32,6 +32,10 @@ This page is the index. For the canonical recipe-to-pattern table with deploymen
 
 Patterns marked "no current recipe" are documented here but don't yet have a production-shaped example in `agent-deployments`. That's a contribution opportunity — see [agent-deployments contributing guide](https://github.com/jagguvarma15/agent-deployments/blob/main/CONTRIBUTING.md).
 
+## Per-framework code variants
+
+Pattern code lives under `patterns/<name>/code/<lang>/<framework>/` — see [`meta/style-guide.md`](../meta/style-guide.md#code-layout) for the convention. `_reference.py` next to those directories holds the framework-agnostic MockLLM reference the design docs read against. When `agent-scaffold` resolves a recipe that targets a specific framework, its context assembler prefers the matching variant (e.g. a `langgraph` recipe loads `patterns/<name>/code/python/langgraph/<name>.py`) over the generic reference. ReAct is the current exemplar of the layout; other patterns follow in per-pattern PRs.
+
 ## What every deployment inherits
 
 The cognitive/operational boundary isn't decorative — it's load-bearing. Each pattern's design doc should be silent on these concerns; each deployment recipe must be explicit about them. The table below lists what `agent-deployments` always provides, so you know what you're not reading about in this repo.
