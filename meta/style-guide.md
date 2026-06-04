@@ -134,3 +134,42 @@ Rules:
 - **Every file opens with a 5–7 line docstring**: pattern name, framework, idioms used, line-of-sight to the design doc, install + run instructions.
 
 The variants are linked from each pattern's `overview.md` in a small Implementation table so readers pick the file that matches their stack.
+
+## Typed prompts
+
+Every LLM call inside a pattern has a canonical prompt file at `patterns/<name>/prompts/<role>.md`. The frontmatter declares the prompt's I/O contract so downstream tooling (validators, recipe generators) can reason about it without parsing the prose body.
+
+Frontmatter schema:
+
+```yaml
+---
+role: planner                       # the role this prompt serves (matches the pattern's design vocabulary)
+pattern: plan-and-execute           # the pattern slug
+inputs:
+  - {name: goal, type: string, description: "..."}
+  - {name: context, type: ["string", "null"], description: "..."}
+output_schema:                      # JSON Schema (Draft 2020-12) for the model's response
+  type: object
+  required: [steps]
+  properties:
+    steps: {type: array, ...}
+model_hint: sonnet                  # haiku | sonnet | opus (no full model ids — they rotate)
+estimated_tokens: 800               # optional; used by cost-estimation tooling
+---
+```
+
+Field semantics:
+
+- **`role`** matches the pattern's design vocabulary (e.g. `planner`, `critic`, `decider`). Lock these names — recipes reference them.
+- **`pattern`** is the directory slug under `patterns/`.
+- **`inputs`** is a list of `{name, type, description}`. Type can be a single JSON-Schema type or a list (`["string", "null"]`) for nullable.
+- **`output_schema`** is valid JSON Schema (Draft 2020-12). Runtime code can validate the model's response against it.
+- **`model_hint`** is one of `haiku | sonnet | opus`. Don't put full model ids here — they rotate; the scaffold maps the hint to the current model.
+- **`estimated_tokens`** is optional output-budget guidance.
+
+Body of the prompt file:
+
+- **`## Prompt template`** — the actual prompt text in a fenced block. Use `{{var_name}}` for interpolation; names must match the `inputs` frontmatter.
+- **`## Notes`** — when to use this prompt, why the schema looks the way it does, common failure modes, eval recommendations.
+
+When multiple roles share a prompt file (rare — usually one per file), name them `<role>.md`. When a pattern needs per-instance variants of a role (e.g., per-route specialists), name them `<role>-<variant>.md` and document the variant in `Notes`.

@@ -1,6 +1,8 @@
 # Multi-Agent — Design
 
 > Canonical Pydantic state schema: [`schemas/state.py`](schemas/state.py) — `MultiAgentState` is the top-level shape; `AgentResult`, `SupervisorDecision` are the auxiliary models. Recipes targeting Multi-Agent reference these names verbatim.
+>
+> Typed prompts: [`prompts/`](prompts/) — `supervisor.md` (routing/termination) + `worker.md` (generic, parameterized by `agent_name`). See [`meta/style-guide.md`](../../meta/style-guide.md#typed-prompts) for the frontmatter contract.
 
 ## Component Breakdown
 

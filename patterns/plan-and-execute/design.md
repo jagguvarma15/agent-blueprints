@@ -1,6 +1,8 @@
 # Plan & Execute — Design
 
 > Canonical Pydantic state schema: [`schemas/state.py`](schemas/state.py) — `PlanExecuteState` is the top-level shape; `Plan`, `Step`, `ExecutionResult` are the auxiliary models. Recipes targeting Plan & Execute reference these names verbatim.
+>
+> Typed prompts: [`prompts/`](prompts/) — `planner.md`, `executor.md`, `reflector.md`. See [`meta/style-guide.md`](../../meta/style-guide.md#typed-prompts) for the frontmatter contract.
 
 ## Component Breakdown
 

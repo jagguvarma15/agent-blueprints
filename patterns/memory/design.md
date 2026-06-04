@@ -1,6 +1,8 @@
 # Memory — Design
 
 > Canonical Pydantic state schema: [`schemas/state.py`](schemas/state.py) — `MemoryState` is the top-level shape; `MemoryEntry`, `Recall` are the auxiliary models. Recipes targeting Memory reference these names verbatim.
+>
+> Typed prompts: [`prompts/`](prompts/) — `extractor.md` (write path) + `chat.md` (read path). See [`meta/style-guide.md`](../../meta/style-guide.md#typed-prompts) for the frontmatter contract.
 
 ## Component Breakdown
 
