@@ -1,6 +1,8 @@
 # Saga — Design
 
 > Canonical Pydantic state schema: [`schemas/state.py`](schemas/state.py) — `SagaState` is the top-level shape; `SagaStep`, `Compensation` are the auxiliary models. Recipes targeting Saga reference these names verbatim.
+>
+> Typed prompts: [`prompts/`](prompts/) — `coordinator.md` (state-machine driver) + `compensator.md` (rollback planner). See [`meta/style-guide.md`](../../meta/style-guide.md#typed-prompts) for the frontmatter contract.
 
 ## Component Breakdown
 

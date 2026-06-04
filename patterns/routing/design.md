@@ -1,6 +1,8 @@
 # Routing — Design
 
 > Canonical Pydantic state schema: [`schemas/state.py`](schemas/state.py) — `RoutingState` is the top-level shape; `Route`, `RouteDecision` are the auxiliary models. Recipes targeting Routing reference these names verbatim.
+>
+> Typed prompts: [`prompts/`](prompts/) — `router.md` (classification) + `specialist.md` (generic per-route handler). See [`meta/style-guide.md`](../../meta/style-guide.md#typed-prompts) for the frontmatter contract.
 
 ## Component Breakdown
 

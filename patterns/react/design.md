@@ -1,6 +1,8 @@
 # ReAct — Design
 
 > Canonical Pydantic state schema: [`schemas/state.py`](schemas/state.py) — `ReActState` is the top-level shape; `ReActStep`, `ToolCall`, `Observation` are the auxiliary models. Recipes targeting ReAct reference these names verbatim.
+>
+> Typed prompts: [`prompts/`](prompts/) — one file per LLM role with JSON-Schema I/O. See [`meta/style-guide.md`](../../meta/style-guide.md#typed-prompts) for the frontmatter contract.
 
 ## Component Breakdown
 

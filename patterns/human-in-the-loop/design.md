@@ -1,6 +1,8 @@
 # Human in the Loop — Design
 
 > Canonical Pydantic state schema: [`schemas/state.py`](schemas/state.py) — `HitlState` is the top-level shape; `Interrupt`, `HumanInput` are the auxiliary models. Recipes targeting Human-in-the-Loop reference these names verbatim.
+>
+> Typed prompts: [`prompts/`](prompts/) — `agent.md` (the main loop with interrupt capability) + `interrupt-formatter.md` (sanitizes interrupts for the UI). See [`meta/style-guide.md`](../../meta/style-guide.md#typed-prompts) for the frontmatter contract.
 
 ## Component Breakdown
 

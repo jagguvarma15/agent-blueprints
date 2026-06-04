@@ -1,6 +1,8 @@
 # Reflection — Design
 
 > Canonical Pydantic state schema: [`schemas/state.py`](schemas/state.py) — `ReflectionState` is the top-level shape; `Draft`, `Critique` are the auxiliary models. Recipes targeting Reflection reference these names verbatim.
+>
+> Typed prompts: [`prompts/`](prompts/) — `drafter.md`, `critic.md`. See [`meta/style-guide.md`](../../meta/style-guide.md#typed-prompts) for the frontmatter contract.
 
 ## Component Breakdown
 

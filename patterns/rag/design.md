@@ -1,6 +1,8 @@
 # RAG — Design
 
 > Canonical Pydantic state schema: [`schemas/state.py`](schemas/state.py) — `RagState` is the top-level shape; `Query`, `RetrievedDoc`, `Answer` are the auxiliary models. Recipes targeting RAG reference these names verbatim.
+>
+> Typed prompts: [`prompts/`](prompts/) — `qa.md` (the synthesis step). See [`meta/style-guide.md`](../../meta/style-guide.md#typed-prompts) for the frontmatter contract.
 
 ## Component Breakdown
 
