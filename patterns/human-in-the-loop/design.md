@@ -1,5 +1,7 @@
 # Human in the Loop — Design
 
+> Canonical Pydantic state schema: [`schemas/state.py`](schemas/state.py) — `HitlState` is the top-level shape; `Interrupt`, `HumanInput` are the auxiliary models. Recipes targeting Human-in-the-Loop reference these names verbatim.
+
 ## Component Breakdown
 
 ```mermaid

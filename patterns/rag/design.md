@@ -1,5 +1,7 @@
 # RAG — Design
 
+> Canonical Pydantic state schema: [`schemas/state.py`](schemas/state.py) — `RagState` is the top-level shape; `Query`, `RetrievedDoc`, `Answer` are the auxiliary models. Recipes targeting RAG reference these names verbatim.
+
 ## Component Breakdown
 
 ```mermaid

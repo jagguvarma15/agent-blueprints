@@ -1,5 +1,7 @@
 # Multi-Agent — Design
 
+> Canonical Pydantic state schema: [`schemas/state.py`](schemas/state.py) — `MultiAgentState` is the top-level shape; `AgentResult`, `SupervisorDecision` are the auxiliary models. Recipes targeting Multi-Agent reference these names verbatim.
+
 ## Component Breakdown
 
 ```mermaid

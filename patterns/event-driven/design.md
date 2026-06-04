@@ -1,5 +1,7 @@
 # Event-Driven Agents — Design
 
+> Canonical Pydantic state schema: [`schemas/state.py`](schemas/state.py) — `EventDrivenState` is the top-level shape; `Event`, `Case`, `Outcome` are the auxiliary models. Recipes targeting Event-Driven reference these names verbatim.
+
 ## Component Breakdown
 
 ```mermaid

@@ -1,5 +1,7 @@
 # Reflection — Design
 
+> Canonical Pydantic state schema: [`schemas/state.py`](schemas/state.py) — `ReflectionState` is the top-level shape; `Draft`, `Critique` are the auxiliary models. Recipes targeting Reflection reference these names verbatim.
+
 ## Component Breakdown
 
 ```mermaid

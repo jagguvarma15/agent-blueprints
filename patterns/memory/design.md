@@ -1,5 +1,7 @@
 # Memory — Design
 
+> Canonical Pydantic state schema: [`schemas/state.py`](schemas/state.py) — `MemoryState` is the top-level shape; `MemoryEntry`, `Recall` are the auxiliary models. Recipes targeting Memory reference these names verbatim.
+
 ## Component Breakdown
 
 ```mermaid
