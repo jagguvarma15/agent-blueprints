@@ -107,3 +107,30 @@ Don't use bold labels as a substitute for real headings when the content is a fu
 - Include comments explaining "why" for non-obvious logic
 - Format as indented blocks with clear structure
 - No real language syntax (no Python's `def`, no TypeScript's `const`)
+
+## Code layout
+
+Per-pattern code lives under `patterns/<name>/code/` in a three-tier structure:
+
+```
+patterns/<name>/
+  code/
+    _reference.py                  # framework-agnostic MockLLM reference
+    python/
+      pydantic-ai/<name>.py        # real Pydantic AI implementation
+      langgraph/<name>.py          # real LangGraph implementation
+      crewai/<name>.py             # only where idiomatic
+    typescript/
+      vercel-ai-sdk/<name>.ts      # real Vercel AI SDK implementation
+      mastra/<name>.ts             # only where idiomatic
+```
+
+Rules:
+
+- **`_reference.py` is the canonical control-flow doc.** It uses a `MockLLM` so the design docs (`design.md`, `implementation.md`) can read against it without depending on any framework. Keep it small and simple; don't optimize.
+- **Per-framework files run end-to-end against the real framework.** Pin imports to the versions in `agent-deployments/docs/frameworks/<framework>.md` frontmatter. Each file ships an `if __name__ == "__main__":` (Python) or top-level `import.meta.url` guard (TypeScript) that exercises the loop with a stubbed-or-real model.
+- **Skip a (language × framework) variant when it's not idiomatic.** CrewAI for ReAct, Mastra for RAG — not every cell in the matrix earns a file. Document the skip in the pattern's `overview.md` variants table.
+- **TypeScript files use ESM** (`"type": "module"` in `package.json`); the file header includes a 1-line `tsconfig` snippet showing the minimum config.
+- **Every file opens with a 5–7 line docstring**: pattern name, framework, idioms used, line-of-sight to the design doc, install + run instructions.
+
+The variants are linked from each pattern's `overview.md` in a small Implementation table so readers pick the file that matches their stack.
