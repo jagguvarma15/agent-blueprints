@@ -49,24 +49,35 @@ _MOCK_DICTIONARY: dict[str, str] = {
 }
 
 
-agent: Agent[None, Definition] = Agent(
-    "anthropic:claude-haiku-4-5",
-    result_type=Definition,
-    system_prompt=(
-        "You are a dictionary agent. Given a word, call the lookup_definition "
-        "tool exactly once, then return a Definition. Do not guess if the tool "
-        "returns 'unknown'."
-    ),
+SYSTEM_PROMPT = (
+    "You are a dictionary agent. Given a word, call the lookup_definition "
+    "tool exactly once, then return a Definition. Do not guess if the tool "
+    "returns 'unknown'."
 )
 
 
-@agent.tool
-def lookup_definition(
-    ctx: RunContext[None],
-    word: Annotated[str, "The word to look up."],
-) -> str:
-    """Return the canonical definition of ``word`` from the mock dictionary."""
-    return _MOCK_DICTIONARY.get(word.lower(), f"unknown: no entry for {word!r}")
+def build_agent() -> Agent[None, Definition]:
+    """Construct the Pydantic AI agent.
+
+    Wrapped in a function so importing this module doesn't fail when no
+    ANTHROPIC_API_KEY is set — the Anthropic provider validates the key
+    at construction time.
+    """
+    agent: Agent[None, Definition] = Agent(
+        "anthropic:claude-haiku-4-5",
+        result_type=Definition,
+        system_prompt=SYSTEM_PROMPT,
+    )
+
+    @agent.tool
+    def lookup_definition(
+        ctx: RunContext[None],
+        word: Annotated[str, "The word to look up."],
+    ) -> str:
+        """Return the canonical definition of ``word`` from the mock dictionary."""
+        return _MOCK_DICTIONARY.get(word.lower(), f"unknown: no entry for {word!r}")
+
+    return agent
 
 
 def main() -> int:
@@ -74,6 +85,7 @@ def main() -> int:
         print("Skipping smoke run — set ANTHROPIC_API_KEY to exercise the real loop.")
         return 0
 
+    agent = build_agent()
     result = agent.run_sync("What does the word 'recursion' mean?")
     definition = result.output
     print(f"word:    {definition.word}")
