@@ -79,6 +79,8 @@ result = pipeline.query("What is the process for requesting parental leave?")
 | Implementation | Language | Path |
 |----------------|----------|------|
 | Framework-agnostic pipeline (MockLLM + MockEmbedder) | Python | [`code/python/rag.py`](code/python/rag.py) |
+| Pydantic AI (`Agent` with typed `RAGAnswer` result + retrieval-as-tool) | Python | [`code/python/pydantic-ai/rag.py`](code/python/pydantic-ai/rag.py) |
+| LangGraph (`StateGraph`: retrieve node → generate node) | Python | [`code/python/langgraph/rag.py`](code/python/langgraph/rag.py) |
 | Vercel AI SDK (retrieve outside `generateText`, inline context) | TypeScript | [`code/typescript/vercel-ai-sdk/rag.ts`](code/typescript/vercel-ai-sdk/rag.ts) |
 
 The framework-specific files share an identical task (ingest three short documents about ReAct / RAG / Plan-and-Execute; query for RAG) so they're diff-friendly across stacks. Both use a deterministic hash-based mock embedder so the chunk scores are reproducible offline; swap in a real embedding provider (OpenAI, Voyage, Cohere) to ship.
