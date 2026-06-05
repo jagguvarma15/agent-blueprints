@@ -86,7 +86,15 @@ result = saga.run(payload={"original_reservation_id": "res_42", "customer_id": "
 # result.saga_log              → durable record of every transition
 ```
 
-> Full implementation: [`code/python/saga.py`](code/python/saga.py)
+### Code variants
+
+| Implementation | Language | Path |
+|----------------|----------|------|
+| Framework-agnostic coordinator with three scenarios | Python | [`code/python/saga.py`](code/python/saga.py) |
+| Vercel AI SDK (plain TS saga; SDK used inside individual steps if needed) | TypeScript | [`code/typescript/vercel-ai-sdk/saga.ts`](code/typescript/vercel-ai-sdk/saga.ts) |
+| Mastra (plain TS saga + optional `coordinatorAgent` for ambiguous-failure decisions) | TypeScript | [`code/typescript/mastra/saga.ts`](code/typescript/mastra/saga.ts) |
+
+All three variants run the same three scenarios — happy path, mid-saga failure with clean compensation, and a compensator that itself fails leading to `partially_compensated`. The saga shape (do/undo step pairs, reverse compensation walk, three terminal states) is plain TS / Python in both languages; the agent framework's role is inside individual step bodies (e.g. an LLM call to choose a compensation strategy under uncertainty).
 
 ## Input / Output
 

@@ -80,7 +80,15 @@ async def consume():
                         await r.xack(STREAM, GROUP, msg_id)
 ```
 
-> Full implementation deferred to a follow-up PR. See [Implementation](./implementation.md) for the complete pseudocode, idempotency store, and retry-with-backoff helper.
+### Code variants
+
+| Implementation | Language | Path |
+|----------------|----------|------|
+| Framework-agnostic consumer (asyncio, idempotency claims, retry / DLQ) | Python | [`code/python/event_driven.py`](code/python/event_driven.py) |
+| Vercel AI SDK (typed `HandlerOutcome`, in-memory broker, plain handler fn) | TypeScript | [`code/typescript/vercel-ai-sdk/event-driven.ts`](code/typescript/vercel-ai-sdk/event-driven.ts) |
+| Mastra (`Agent.generate({ output: HandlerDecision })` per event) | TypeScript | [`code/typescript/mastra/event-driven.ts`](code/typescript/mastra/event-driven.ts) |
+
+All three variants run the same five-event smoke (two clean events, one permanent-failure, one no-op `reservation.no_show`, and a duplicate of `evt_001` that the idempotency claim deduplicates) so they're diff-friendly across stacks. See [Implementation](./implementation.md) for the complete pseudocode and retry-with-backoff helper.
 
 ## Input / Output
 
