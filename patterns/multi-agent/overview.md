@@ -80,7 +80,15 @@ result = system.run(
 # result.final_output   → synthesized deliverable
 ```
 
-> Full implementation: [`code/python/multi_agent.py`](code/python/multi_agent.py)
+### Code variants
+
+| Implementation | Language | Path |
+|----------------|----------|------|
+| Framework-agnostic supervisor + sub-agents (MockLLM) | Python | [`code/python/multi_agent.py`](code/python/multi_agent.py) |
+| Vercel AI SDK (`generateObject` supervisor decisions, plain sub-agent functions) | TypeScript | [`code/typescript/vercel-ai-sdk/multi-agent.ts`](code/typescript/vercel-ai-sdk/multi-agent.ts) |
+| Mastra (one `Agent` per role + supervisor `Agent.generate({ output })`) | TypeScript | [`code/typescript/mastra/multi-agent.ts`](code/typescript/mastra/multi-agent.ts) |
+
+All three variants run the same researcher → writer → reviewer delegation against the same enterprise-overview task so they're diff-friendly across stacks. The Mastra variant treats every role as a first-class `Agent`; the Vercel AI SDK variant leaves sub-agents as plain `(task, context) => Promise<string>` functions for lower ceremony.
 
 ## Input / Output
 

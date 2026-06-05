@@ -74,7 +74,15 @@ Step 4: Write a Dockerfile for the project
 Step 5: Generate a README.md documenting setup and usage
 ```
 
-> Full implementation: [`code/python/plan_and_execute.py`](code/python/plan_and_execute.py)
+### Code variants
+
+| Implementation | Language | Path |
+|----------------|----------|------|
+| Framework-agnostic planner + executor (MockLLM) | Python | [`code/python/plan_and_execute.py`](code/python/plan_and_execute.py) |
+| Vercel AI SDK (`generateObject` planner, `generateText` executor) | TypeScript | [`code/typescript/vercel-ai-sdk/plan-and-execute.ts`](code/typescript/vercel-ai-sdk/plan-and-execute.ts) |
+| Mastra (`Agent.generate({ output })` planner + executor agents) | TypeScript | [`code/typescript/mastra/plan-and-execute.ts`](code/typescript/mastra/plan-and-execute.ts) |
+
+Both TS variants run the same three-step plan against the same enterprise-LLM-adoption report task as the Python sibling, so they're diff-friendly across stacks. The Mastra variant uses two `Agent` instances (planner + executor) over a plain TS execution loop; reach for `Workflow` instead when steps need branching, parallel fan-out, or durable resumption.
 
 ## Input / Output
 
