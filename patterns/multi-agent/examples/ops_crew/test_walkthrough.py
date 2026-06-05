@@ -12,8 +12,6 @@ Or as a script:
 
 from __future__ import annotations
 
-import pytest
-
 from .main import handle_incident
 from .schemas import Severity
 
@@ -37,8 +35,12 @@ def test_auth_500_incident_hits_auth_runbook() -> None:
 
 
 def test_unknown_incident_id_raises() -> None:
-    with pytest.raises(LookupError):
+    """Hand-rolled `pytest.raises` so the file runs in plain-script mode too."""
+    try:
         handle_incident("inc_does_not_exist")
+    except LookupError:
+        return
+    raise AssertionError("expected LookupError for unknown incident id")
 
 
 def _run_all() -> None:
@@ -47,13 +49,8 @@ def _run_all() -> None:
     print("PASS test_api_latency_incident_hits_db_pool_runbook")
     test_auth_500_incident_hits_auth_runbook()
     print("PASS test_auth_500_incident_hits_auth_runbook")
-    try:
-        test_unknown_incident_id_raises()
-        print("PASS test_unknown_incident_id_raises")
-    except LookupError as exc:
-        # The pytest.raises context would have swallowed this, but the
-        # plain-script path needs explicit handling so the print order is right.
-        raise AssertionError(f"expected pytest.raises to catch the LookupError, got {exc}")
+    test_unknown_incident_id_raises()
+    print("PASS test_unknown_incident_id_raises")
     print("All walkthrough cases passed.")
 
 
