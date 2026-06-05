@@ -90,7 +90,14 @@ if needs_review(proposal):
 execute_rebooking(proposal)
 ```
 
-> Full implementation: [`code/python/approval.py`](code/python/approval.py)
+### Code variants
+
+| Implementation | Language | Path |
+|----------------|----------|------|
+| Framework-agnostic gate (CLI / Slack / web-queue surfaces, TTL escalation, idempotent inbox) | Python | [`code/python/approval.py`](code/python/approval.py) |
+| Vercel AI SDK (`generateObject` proposal + in-memory gate + idempotent inbox) | TypeScript | [`code/typescript/vercel-ai-sdk/human-in-the-loop.ts`](code/typescript/vercel-ai-sdk/human-in-the-loop.ts) |
+
+The Python sibling is the fuller example — three surface flavours, escalation policies, threading-driven race tests. The TypeScript variant scopes down to the core contract (model proposes, gate suspends, idempotent inbox decides, TTL settles) so the dispatcher shape stays diff-friendly. Lift the Python file's escalation chain or Slack surface into TS as production needs.
 
 ## Input / Output
 
