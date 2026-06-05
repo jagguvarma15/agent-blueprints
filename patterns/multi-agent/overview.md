@@ -92,6 +92,10 @@ result = system.run(
 
 All three variants run the same researcher → writer → reviewer delegation against the same enterprise-overview task so they're diff-friendly across stacks. The Mastra variant treats every role as a first-class `Agent`; the Vercel AI SDK variant leaves sub-agents as plain `(task, context) => Promise<string>` functions for lower ceremony.
 
+## Examples
+
+- [Ops crew](examples/ops-crew.md) — concrete domain overlay anchored to the `ops-crew` recipe. Worked schemas for `IncidentSignal` / `TriageDecision` / `IncidentReport`, mock PagerDuty / runbook / Slack adapters, role prompts for triage / runbook_executor / incident_writer, and an end-to-end walkthrough with offline tests in [`examples/ops_crew/`](examples/ops_crew/).
+
 ## Input / Output
 
 - **Input:** A complex task requiring multiple specialized capabilities
