@@ -88,7 +88,14 @@ result = agent.run(
 # result.final_response   → the agent's summary of what it did
 ```
 
-> Full implementation: [`code/python/tool_use.py`](code/python/tool_use.py)
+### Code variants
+
+| Implementation | Language | Path |
+|----------------|----------|------|
+| Framework-agnostic dispatcher (MockLLM) | Python | [`code/python/tool_use.py`](code/python/tool_use.py) |
+| Vercel AI SDK (`generateText` + `tools`) | TypeScript | [`code/typescript/vercel-ai-sdk/tool-use.ts`](code/typescript/vercel-ai-sdk/tool-use.ts) |
+
+The framework-specific files share an identical task (look up the weather for a city and evaluate one arithmetic expression) so they're diff-friendly across stacks. The Python file rolls the dispatcher by hand to make the contract explicit; the TypeScript file lets the Vercel AI SDK own the dispatch under Zod-validated tool schemas.
 
 ## Input / Output
 
