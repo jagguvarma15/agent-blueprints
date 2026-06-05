@@ -64,7 +64,14 @@ response = agent.chat("How should I handle form validation in my project?")
 # and tailors the response accordingly
 ```
 
-> Full implementation: [`code/python/memory_agent.py`](code/python/memory_agent.py)
+### Code variants
+
+| Implementation | Language | Path |
+|----------------|----------|------|
+| Framework-agnostic agent (MockLLM, working + long-term + semantic interfaces) | Python | [`code/python/memory_agent.py`](code/python/memory_agent.py) |
+| Vercel AI SDK (`generateText` answer + `generateObject` fact extraction) | TypeScript | [`code/typescript/vercel-ai-sdk/memory.ts`](code/typescript/vercel-ai-sdk/memory.ts) |
+
+Both variants run the same two-turn smoke (user shares Python + agent project, asks a follow-up question, recalled facts shape the answer). The TypeScript variant uses the SDK's structured-output mode for the extract-and-store turn so the fact dictionary comes back typed.
 
 ## Input / Output
 

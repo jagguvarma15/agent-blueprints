@@ -74,7 +74,14 @@ result = router.route("I was charged twice on my invoice this month")
 # result.used_fallback → False
 ```
 
-> Full implementation: [`code/python/routing.py`](code/python/routing.py)
+### Code variants
+
+| Implementation | Language | Path |
+|----------------|----------|------|
+| Framework-agnostic router (MockLLM) | Python | [`code/python/routing.py`](code/python/routing.py) |
+| Vercel AI SDK (`generateObject` classifier + `generateText` handler) | TypeScript | [`code/typescript/vercel-ai-sdk/routing.ts`](code/typescript/vercel-ai-sdk/routing.ts) |
+
+Both variants run the same three routes (billing / technical / general) against the same three seed messages so they're diff-friendly across stacks.
 
 ## Input / Output
 

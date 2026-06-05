@@ -65,7 +65,14 @@ result = agent.run("Write a beginner-friendly explanation of database indexing")
 
 *Why use Reflection instead of a single prompt?* A single prompt asks the LLM to simultaneously write and judge its output — two conflicting objectives. Separating generation from critique with distinct prompts consistently produces higher-quality results.
 
-> Full implementation: [`code/python/reflection.py`](code/python/reflection.py)
+### Code variants
+
+| Implementation | Language | Path |
+|----------------|----------|------|
+| Framework-agnostic loop (MockLLM, hand-parsed VERDICT) | Python | [`code/python/reflection.py`](code/python/reflection.py) |
+| Vercel AI SDK (`generateObject` typed Critique schema) | TypeScript | [`code/typescript/vercel-ai-sdk/reflection.ts`](code/typescript/vercel-ai-sdk/reflection.ts) |
+
+Both variants run the same draft → critique → revise loop with `max_iterations=3` and the same technical-writer task. The TypeScript variant uses the SDK's structured-output mode for the critique step, so the VERDICT / ISSUES / SUGGESTION fields come back typed instead of as free-text the caller would have to parse.
 
 ## Input / Output
 
