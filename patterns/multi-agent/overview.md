@@ -85,6 +85,8 @@ result = system.run(
 | Implementation | Language | Path |
 |----------------|----------|------|
 | Framework-agnostic supervisor + sub-agents (MockLLM) | Python | [`code/python/multi_agent.py`](code/python/multi_agent.py) |
+| LangGraph (`StateGraph` supervisor + conditional edges to role nodes) | Python | [`code/python/langgraph/multi_agent.py`](code/python/langgraph/multi_agent.py) |
+| CrewAI (`Crew` + `Process.sequential` chain of role `Agent`s) | Python | [`code/python/crewai/multi_agent.py`](code/python/crewai/multi_agent.py) |
 | Vercel AI SDK (`generateObject` supervisor decisions, plain sub-agent functions) | TypeScript | [`code/typescript/vercel-ai-sdk/multi-agent.ts`](code/typescript/vercel-ai-sdk/multi-agent.ts) |
 | Mastra (one `Agent` per role + supervisor `Agent.generate({ output })`) | TypeScript | [`code/typescript/mastra/multi-agent.ts`](code/typescript/mastra/multi-agent.ts) |
 

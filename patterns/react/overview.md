@@ -85,6 +85,7 @@ Final Answer: At 5.25%, $5,000 grows to approximately $8,293 over 10 years.
 | Reference (MockLLM, framework-agnostic) | Python | [`code/_reference.py`](code/_reference.py) |
 | Pydantic AI | Python | [`code/python/pydantic-ai/react.py`](code/python/pydantic-ai/react.py) |
 | LangGraph (`create_react_agent`) | Python | [`code/python/langgraph/react.py`](code/python/langgraph/react.py) |
+| LangChain (`create_tool_calling_agent` + `AgentExecutor`) | Python | [`code/python/langchain/react.py`](code/python/langchain/react.py) |
 | Vercel AI SDK (`generateText` + `tools`) | TypeScript | [`code/typescript/vercel-ai-sdk/react.ts`](code/typescript/vercel-ai-sdk/react.ts) |
 
 The reference file is the canonical control-flow doc — read it with `design.md`. The framework-specific files share an identical task (look up a word's definition via a single tool) so they're diff-friendly across stacks. The per-framework layout convention is documented in [`meta/style-guide.md`](../../meta/style-guide.md#code-layout).
