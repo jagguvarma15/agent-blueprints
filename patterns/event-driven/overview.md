@@ -90,6 +90,10 @@ async def consume():
 
 All three variants run the same five-event smoke (two clean events, one permanent-failure, one no-op `reservation.no_show`, and a duplicate of `evt_001` that the idempotency claim deduplicates) so they're diff-friendly across stacks. See [Implementation](./implementation.md) for the complete pseudocode and retry-with-backoff helper.
 
+## Examples
+
+- [Restaurant rebooking](examples/restaurant-rebooking.md) — concrete domain overlay anchored to the `restaurant-rebooking` recipe. Worked schemas, mock Resy / OpenTable / notifier tools, role prompts for intake / eligibility / search / notifier, and an end-to-end walkthrough with offline tests in [`examples/restaurant_rebooking/`](examples/restaurant_rebooking/).
+
 ## Input / Output
 
 - **Input:** A typed event message — at minimum `event_id`, `partition_key`, `timestamp`, `schema_version`, and a typed `payload`.
