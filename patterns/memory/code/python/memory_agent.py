@@ -9,14 +9,14 @@ Three memory layers:
 Design doc:  ../../design.md
 Overview:    ../../overview.md
 """
+
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Protocol
 
-from patterns.memory.schemas.state import MemoryEntry, MemoryState, Recall
-
+from patterns.memory.schemas.state import MemoryEntry, MemoryState, Recall  # noqa: F401
 
 # ── Interfaces ────────────────────────────────────────────────────────────────
 #
@@ -24,21 +24,25 @@ from patterns.memory.schemas.state import MemoryEntry, MemoryState, Recall
 # implementation; recipes target the canonical ``MemoryState`` / ``MemoryEntry``
 # / ``Recall`` contract imported above to bind retrieval-result shapes.
 
+
 class LLM(Protocol):
     def generate(self, messages: list[dict]) -> str: ...
 
 
 class VectorStore(Protocol):
     """Implement with any embedding + retrieval backend (Chroma, Pinecone, etc.)"""
+
     def add(self, text: str, metadata: dict) -> None: ...
     def search(self, query: str, top_k: int = 3) -> list[dict]: ...
 
 
 # ── Memory stores ─────────────────────────────────────────────────────────────
 
+
 @dataclass
 class WorkingMemory:
     """Short-term: the rolling conversation window passed to the LLM."""
+
     max_turns: int = 20
 
     def __post_init__(self):
@@ -50,7 +54,7 @@ class WorkingMemory:
         if len(self._history) > self.max_turns * 2:
             system = [m for m in self._history if m["role"] == "system"]
             rest = [m for m in self._history if m["role"] != "system"]
-            self._history = system + rest[-(self.max_turns * 2):]
+            self._history = system + rest[-(self.max_turns * 2) :]
 
     def get(self) -> list[dict]:
         return list(self._history)
@@ -131,17 +135,20 @@ class MemoryAgent:
         if self.vector_store:
             results = self.vector_store.search(query, top_k=3)
             if results:
-                parts.append("Related memories:\n" + "\n".join(
-                    f"- {r.get('text', '')}" for r in results
-                ))
+                parts.append("Related memories:\n" + "\n".join(f"- {r.get('text', '')}" for r in results))
 
         return "\n\n".join(parts)
 
     def _extract_and_store(self, user_message: str, assistant_response: str) -> None:
-        messages = [{"role": "user", "content": EXTRACT_PROMPT.format(
-            user_message=user_message,
-            assistant_response=assistant_response,
-        )}]
+        messages = [
+            {
+                "role": "user",
+                "content": EXTRACT_PROMPT.format(
+                    user_message=user_message,
+                    assistant_response=assistant_response,
+                ),
+            }
+        ]
         raw = self.llm.generate(messages)
         try:
             facts = json.loads(raw)

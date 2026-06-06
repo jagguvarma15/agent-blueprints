@@ -149,6 +149,5 @@ class SlackAdapter:
     """
 
     def post(self, channel: str, report: IncidentReport) -> dict[str, object]:
-        log.info("slack.post channel=%s incident=%s severity=%s",
-                 channel, report.incident_id, report.severity.value)
+        log.info("slack.post channel=%s incident=%s severity=%s", channel, report.incident_id, report.severity.value)
         return {"ok": True, "ts": "1717593720.000100"}

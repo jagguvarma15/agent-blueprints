@@ -8,22 +8,25 @@ prompt, tools, and LLM configuration.
 Design doc:  ../../design.md
 Overview:    ../../overview.md
 """
+
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass, field
-from typing import Callable, Protocol
+from collections.abc import Callable
+from dataclasses import dataclass
+from typing import Protocol
 
-from patterns.routing.schemas.state import Route, RouteDecision, RoutingState
-
+from patterns.routing.schemas.state import Route
 
 # ── Interface ─────────────────────────────────────────────────────────────────
+
 
 class LLM(Protocol):
     def generate(self, messages: list[dict]) -> str: ...
 
 
 # ── Core types ────────────────────────────────────────────────────────────────
+
 
 @dataclass
 class RouteHandler:
@@ -38,7 +41,7 @@ class RouteHandler:
     """
 
     name: str
-    description: str            # Used by the classifier to decide routing
+    description: str  # Used by the classifier to decide routing
     system_prompt: str
     handler: Callable[[str, LLM], str] | None = None  # Custom handler, or default LLM call
 
@@ -73,6 +76,7 @@ Return only the JSON object."""
 
 # ── Implementation ────────────────────────────────────────────────────────────
 
+
 class Router:
     """
     Classifies incoming requests and dispatches to registered route handlers.
@@ -98,12 +102,8 @@ class Router:
         self._routes[route.name] = route
 
     def _classify(self, message: str) -> tuple[str, float]:
-        route_descriptions = "\n".join(
-            f"- {r.name}: {r.description}" for r in self._routes.values()
-        )
-        messages = [{"role": "user", "content": CLASSIFY_PROMPT.format(
-            routes=route_descriptions, message=message
-        )}]
+        route_descriptions = "\n".join(f"- {r.name}: {r.description}" for r in self._routes.values())
+        messages = [{"role": "user", "content": CLASSIFY_PROMPT.format(routes=route_descriptions, message=message)}]
         raw = self.classifier.generate(messages)
         try:
             data = json.loads(raw)
@@ -184,21 +184,27 @@ if __name__ == "__main__":
         confidence_threshold=0.5,
     )
 
-    router.add_route(RouteHandler(
-        name="billing",
-        description="Questions about invoices, payments, subscriptions, and pricing",
-        system_prompt="You are a billing support specialist. Be precise about payment details.",
-    ))
-    router.add_route(RouteHandler(
-        name="technical",
-        description="Bug reports, error messages, API issues, and technical troubleshooting",
-        system_prompt="You are a technical support engineer. Ask for logs and reproduction steps.",
-    ))
-    router.add_route(RouteHandler(
-        name="general",
-        description="General questions, product info, and anything else",
-        system_prompt="You are a general support agent. Be helpful and friendly.",
-    ))
+    router.add_route(
+        RouteHandler(
+            name="billing",
+            description="Questions about invoices, payments, subscriptions, and pricing",
+            system_prompt="You are a billing support specialist. Be precise about payment details.",
+        )
+    )
+    router.add_route(
+        RouteHandler(
+            name="technical",
+            description="Bug reports, error messages, API issues, and technical troubleshooting",
+            system_prompt="You are a technical support engineer. Ask for logs and reproduction steps.",
+        )
+    )
+    router.add_route(
+        RouteHandler(
+            name="general",
+            description="General questions, product info, and anything else",
+            system_prompt="You are a general support agent. Be helpful and friendly.",
+        )
+    )
 
     for message in [
         "I was charged twice on my invoice this month",

@@ -14,16 +14,16 @@ contract.
 Design doc:  ../../design.md
 Overview:    ../../overview.md
 """
+
 from __future__ import annotations
 
 import threading
 import time
-import uuid
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Any, Callable, Literal, Protocol
+from typing import Any, Literal, Protocol
 
-from patterns.human_in_the_loop.schemas.state import HitlState, HumanInput, Interrupt
-
+from patterns.human_in_the_loop.schemas.state import HitlState, HumanInput, Interrupt  # noqa: F401
 
 # ── Core types ────────────────────────────────────────────────────────────────
 #
@@ -167,7 +167,7 @@ class _DecisionInbox:
     def put(self, proposal_id: str, payload: dict, escalation_level: int) -> bool:
         with self._lock:
             if proposal_id in self._decisions or proposal_id in self._consumed:
-                return False           # first decision wins (idempotent)
+                return False  # first decision wins (idempotent)
             self._decisions[proposal_id] = (payload, escalation_level)
             return True
 
@@ -219,7 +219,10 @@ class ApprovalGate:
             if slot is not None:
                 payload, _level = slot
                 decision = self._build_decision(
-                    approval, payload, started_at, escalation_level,
+                    approval,
+                    payload,
+                    started_at,
+                    escalation_level,
                 )
                 self._append_audit(approval, active_surface, decision)
                 return decision
@@ -233,7 +236,7 @@ class ApprovalGate:
             if approval.on_timeout == "escalate" and self.escalation_surface is not None and escalation_level == 0:
                 escalation_level += 1
                 active_surface = self.escalation_surface
-                started_at = time.monotonic()    # reset clock for the new surface
+                started_at = time.monotonic()  # reset clock for the new surface
                 active_surface.deliver(approval, escalation_level)
                 continue
 
@@ -275,19 +278,21 @@ class ApprovalGate:
         )
 
     def _append_audit(self, approval: Approval, surface: Surface, decision: Decision) -> None:
-        self.audit.append(AuditEntry(
-            proposal_id=approval.proposal_id,
-            surface=surface.name,
-            action=approval.action,
-            context_shown=approval.context,
-            approver=decision.approver,
-            outcome=decision.outcome,
-            decided_at=decision.decided_at,
-            decided_in_seconds=decision.decided_in_seconds,
-            escalation_level=decision.escalation_level,
-            modification=decision.modification,
-            reason=decision.reason,
-        ))
+        self.audit.append(
+            AuditEntry(
+                proposal_id=approval.proposal_id,
+                surface=surface.name,
+                action=approval.action,
+                context_shown=approval.context,
+                approver=decision.approver,
+                outcome=decision.outcome,
+                decided_at=decision.decided_at,
+                decided_in_seconds=decision.decided_in_seconds,
+                escalation_level=decision.escalation_level,
+                modification=decision.modification,
+                reason=decision.reason,
+            )
+        )
 
 
 # ── Example ───────────────────────────────────────────────────────────────────
@@ -306,36 +311,50 @@ if __name__ == "__main__":
         responder=lambda a: {"outcome": "approved", "approver": "ops_alice"},
     )
     gate = fresh_gate(surface=cli, timeout_seconds=2, on_timeout="auto_deny")
-    decision = gate.request_approval(Approval(
-        proposal_id="rebook:vip_001",
-        action="rebook_reservation",
-        context={"customer": "cust_7", "tier": "vip", "value_usd": 245},
-        approver_pool="restaurant_staff",
-    ))
+    decision = gate.request_approval(
+        Approval(
+            proposal_id="rebook:vip_001",
+            action="rebook_reservation",
+            context={"customer": "cust_7", "tier": "vip", "value_usd": 245},
+            approver_pool="restaurant_staff",
+        )
+    )
     print("=== Scenario 1: CLI surface, immediate approval ===")
-    print(json.dumps({
-        "outcome": decision.outcome,
-        "approver": decision.approver,
-        "audit_count": len(gate.audit),
-    }, indent=2))
+    print(
+        json.dumps(
+            {
+                "outcome": decision.outcome,
+                "approver": decision.approver,
+                "audit_count": len(gate.audit),
+            },
+            indent=2,
+        )
+    )
 
     # Scenario 2: Slack surface with TTL + auto-deny escalation policy (no escalation surface).
     slack = SlackSurface(channel="#rebooking-approvals")
     gate = fresh_gate(surface=slack, timeout_seconds=0.3, on_timeout="auto_deny")
-    decision = gate.request_approval(Approval(
-        proposal_id="rebook:routine_002",
-        action="rebook_reservation",
-        context={"customer": "cust_9", "tier": "standard", "value_usd": 60},
-        approver_pool="restaurant_staff",
-        on_timeout="auto_deny",
-    ))
+    decision = gate.request_approval(
+        Approval(
+            proposal_id="rebook:routine_002",
+            action="rebook_reservation",
+            context={"customer": "cust_9", "tier": "standard", "value_usd": 60},
+            approver_pool="restaurant_staff",
+            on_timeout="auto_deny",
+        )
+    )
     print("\n=== Scenario 2: Slack delivered, no response, TTL → auto_deny ===")
-    print(json.dumps({
-        "outcome": decision.outcome,
-        "approver": decision.approver,
-        "reason": decision.reason,
-        "deliveries": slack.deliveries,
-    }, indent=2))
+    print(
+        json.dumps(
+            {
+                "outcome": decision.outcome,
+                "approver": decision.approver,
+                "reason": decision.reason,
+                "deliveries": slack.deliveries,
+            },
+            indent=2,
+        )
+    )
 
     # Scenario 3: Slack with TTL + escalate-to-web-queue policy.
     slack = SlackSurface(channel="#rebooking-approvals")
@@ -346,6 +365,7 @@ if __name__ == "__main__":
         on_timeout="escalate",
         escalation_surface=web,
     )
+
     # Spawn a deferred resolver that approves via the web queue 0.3s in.
     def resolve_later() -> None:
         time.sleep(0.3)
@@ -355,23 +375,31 @@ if __name__ == "__main__":
             approver="manager_bob",
             modification={"chosen_candidate_index": 1},
         )
+
     threading.Thread(target=resolve_later, daemon=True).start()
-    decision = gate.request_approval(Approval(
-        proposal_id="rebook:manager_003",
-        action="rebook_reservation",
-        context={"customer": "cust_11", "tier": "vip", "value_usd": 1200},
-        approver_pool="restaurant_staff",
-        on_timeout="escalate",
-    ))
+    decision = gate.request_approval(
+        Approval(
+            proposal_id="rebook:manager_003",
+            action="rebook_reservation",
+            context={"customer": "cust_11", "tier": "vip", "value_usd": 1200},
+            approver_pool="restaurant_staff",
+            on_timeout="escalate",
+        )
+    )
     print("\n=== Scenario 3: Slack TTL → escalate to web queue, then approver modifies ===")
-    print(json.dumps({
-        "outcome": decision.outcome,
-        "approver": decision.approver,
-        "escalation_level": decision.escalation_level,
-        "modification": decision.modification,
-        "slack_deliveries": slack.deliveries,
-        "web_deliveries": web.deliveries,
-    }, indent=2))
+    print(
+        json.dumps(
+            {
+                "outcome": decision.outcome,
+                "approver": decision.approver,
+                "escalation_level": decision.escalation_level,
+                "modification": decision.modification,
+                "slack_deliveries": slack.deliveries,
+                "web_deliveries": web.deliveries,
+            },
+            indent=2,
+        )
+    )
 
     # Scenario 4: idempotent double-decision (race).
     cli = CLISurface(
@@ -393,8 +421,13 @@ if __name__ == "__main__":
         escalation_level=0,
     )
     print("\n=== Scenario 4: Idempotent race — second decision rejected ===")
-    print(json.dumps({
-        "first_outcome": decision.outcome,
-        "first_approver": decision.approver,
-        "second_landed": second_landed,
-    }, indent=2))
+    print(
+        json.dumps(
+            {
+                "first_outcome": decision.outcome,
+                "first_approver": decision.approver,
+                "second_landed": second_landed,
+            },
+            indent=2,
+        )
+    )

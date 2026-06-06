@@ -8,14 +8,15 @@ The orchestrator synthesizes all worker outputs into a final result.
 Design doc:  ../../design.md
 Overview:    ../../overview.md
 """
+
 from __future__ import annotations
 
 import json
 from dataclasses import dataclass, field
 from typing import Protocol
 
-
 # ── LLM interface ─────────────────────────────────────────────────────────────
+
 
 class LLM(Protocol):
     def generate(self, messages: list[dict]) -> str: ...
@@ -23,11 +24,12 @@ class LLM(Protocol):
 
 # ── Core types ────────────────────────────────────────────────────────────────
 
+
 @dataclass
 class Worker:
     name: str
-    description: str        # What this worker specializes in
-    system_prompt: str      # Worker-specific instructions
+    description: str  # What this worker specializes in
+    system_prompt: str  # Worker-specific instructions
 
 
 @dataclass
@@ -51,6 +53,7 @@ class OrchestratorResult:
 
 
 # ── Implementation ────────────────────────────────────────────────────────────
+
 
 class OrchestratorWorker:
     """
@@ -93,13 +96,13 @@ Produce the final unified output."""
         self.workers: dict[str, Worker] = {w.name: w for w in workers}
 
     def _decompose(self, task: str) -> list[SubTask]:
-        worker_list = "\n".join(
-            f"- {w.name}: {w.description}" for w in self.workers.values()
-        )
-        messages = [{
-            "role": "user",
-            "content": self.DECOMPOSE_PROMPT.format(worker_list=worker_list, task=task),
-        }]
+        worker_list = "\n".join(f"- {w.name}: {w.description}" for w in self.workers.values())
+        messages = [
+            {
+                "role": "user",
+                "content": self.DECOMPOSE_PROMPT.format(worker_list=worker_list, task=task),
+            }
+        ]
         raw = self.orchestrator.generate(messages)
         try:
             items = json.loads(raw)
@@ -123,13 +126,13 @@ Produce the final unified output."""
         )
 
     def _synthesize(self, task: str, results: list[WorkerResult]) -> str:
-        formatted = "\n\n".join(
-            f"[{r.worker_name}]\n{r.output}" for r in results
-        )
-        messages = [{
-            "role": "user",
-            "content": self.SYNTHESIZE_PROMPT.format(task=task, results=formatted),
-        }]
+        formatted = "\n\n".join(f"[{r.worker_name}]\n{r.output}" for r in results)
+        messages = [
+            {
+                "role": "user",
+                "content": self.SYNTHESIZE_PROMPT.format(task=task, results=formatted),
+            }
+        ]
         return self.orchestrator.generate(messages)
 
     def run(self, task: str, worker_llm: LLM | None = None) -> OrchestratorResult:
@@ -156,10 +159,12 @@ if __name__ == "__main__":
         def generate(self, messages: list[dict]) -> str:
             content = messages[-1]["content"]
             if "JSON array" in content:
-                return json.dumps([
-                    {"worker": "researcher", "task": "Research current AI trends"},
-                    {"worker": "writer", "task": "Write a summary based on research"},
-                ])
+                return json.dumps(
+                    [
+                        {"worker": "researcher", "task": "Research current AI trends"},
+                        {"worker": "writer", "task": "Write a summary based on research"},
+                    ]
+                )
             return f"[output for: {content[:50]}]"
 
     system = OrchestratorWorker(

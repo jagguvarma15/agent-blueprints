@@ -75,9 +75,7 @@ def main() -> int:
         return 0
 
     agent = build_agent()
-    result = agent.invoke(
-        {"messages": [("user", "What does the word 'recursion' mean?")]}
-    )
+    result = agent.invoke({"messages": [("user", "What does the word 'recursion' mean?")]})
     final = result["messages"][-1]
     print(f"answer:   {final.content}")
     print(f"(loop produced {len(result['messages'])} messages)")

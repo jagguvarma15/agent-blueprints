@@ -15,7 +15,7 @@ Pattern this composes: Multi-Agent (supervisor → role peers). See
 from __future__ import annotations
 
 import logging
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from .schemas import (
     IncidentReport,
@@ -96,7 +96,7 @@ def _write_report(
     ]
     if execution is not None:
         timeline.append(
-            f"{datetime.now(timezone.utc).isoformat()} — runbook {execution.runbook_id} executed: "
+            f"{datetime.now(UTC).isoformat()} — runbook {execution.runbook_id} executed: "
             f"{execution.steps_run} steps, {'succeeded' if execution.succeeded else 'failed'}",
         )
         action_sentence = (

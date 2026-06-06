@@ -8,13 +8,13 @@ Two phases:
 Design doc:  ../../design.md
 Overview:    ../../overview.md
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import Protocol
 
-from patterns.rag.schemas.state import Answer, Query, RagState, RetrievedDoc
-
+from patterns.rag.schemas.state import Answer, Query, RagState, RetrievedDoc  # noqa: F401
 
 # ── Interfaces ────────────────────────────────────────────────────────────────
 #
@@ -23,22 +23,26 @@ from patterns.rag.schemas.state import Answer, Query, RagState, RetrievedDoc
 # ``Chunk`` / ``RAGResult`` dataclasses are illustrative in-memory
 # containers; an adapter pairs the two at the retrieval-result boundary.
 
+
 class LLM(Protocol):
     def generate(self, messages: list[dict]) -> str: ...
 
 
 class Embedder(Protocol):
     """Convert text to a float vector. Use any embedding model."""
+
     def embed(self, text: str) -> list[float]: ...
 
 
 class VectorStore(Protocol):
     """Minimal vector store interface."""
+
     def add(self, id: str, embedding: list[float], text: str, metadata: dict) -> None: ...
-    def search(self, embedding: list[float], top_k: int) -> list["Chunk"]: ...
+    def search(self, embedding: list[float], top_k: int) -> list[Chunk]: ...
 
 
 # ── Core types ────────────────────────────────────────────────────────────────
+
 
 @dataclass
 class Chunk:
@@ -57,6 +61,7 @@ class RAGResult:
 
 # ── In-memory vector store (for testing) ─────────────────────────────────────
 
+
 class InMemoryVectorStore:
     """
     Simple dot-product similarity store.
@@ -71,11 +76,10 @@ class InMemoryVectorStore:
 
     def search(self, embedding: list[float], top_k: int) -> list[Chunk]:
         def dot(a: list[float], b: list[float]) -> float:
-            return sum(x * y for x, y in zip(a, b))
+            return sum(x * y for x, y in zip(a, b, strict=False))
 
         scored = [
-            Chunk(id=id_, text=text, score=dot(embedding, emb), metadata=meta)
-            for id_, emb, text, meta in self._items
+            Chunk(id=id_, text=text, score=dot(embedding, emb), metadata=meta) for id_, emb, text, meta in self._items
         ]
         scored.sort(key=lambda c: c.score, reverse=True)
         return scored[:top_k]
@@ -137,7 +141,7 @@ class RAGPipeline:
         """
         metadata = metadata or [{}] * len(documents)
         added = 0
-        for doc, meta in zip(documents, metadata):
+        for doc, meta in zip(documents, metadata, strict=False):
             for chunk_text in self._split(doc):
                 chunk_id = f"chunk_{self._chunk_counter}"
                 self._chunk_counter += 1
@@ -152,18 +156,18 @@ class RAGPipeline:
         chunks = self.store.search(q_embedding, top_k=self.top_k)
 
         # Build context from retrieved chunks
-        context = "\n\n---\n\n".join(
-            f"[Source {i + 1}]\n{chunk.text}" for i, chunk in enumerate(chunks)
-        )
+        context = "\n\n---\n\n".join(f"[Source {i + 1}]\n{chunk.text}" for i, chunk in enumerate(chunks))
 
         # Generate grounded answer
         messages: list[dict] = []
         if self.system:
             messages.append({"role": "system", "content": self.system})
-        messages.append({
-            "role": "user",
-            "content": ANSWER_PROMPT.format(context=context, question=question),
-        })
+        messages.append(
+            {
+                "role": "user",
+                "content": ANSWER_PROMPT.format(context=context, question=question),
+            }
+        )
 
         answer = self.llm.generate(messages)
         return RAGResult(answer=answer, chunks_used=chunks, query=question)
@@ -176,6 +180,7 @@ if __name__ == "__main__":
 
     class MockEmbedder:
         """Deterministic fake embeddings based on text hash."""
+
         def embed(self, text: str) -> list[float]:
             h = int(hashlib.md5(text.encode()).hexdigest(), 16)
             return [(h >> i & 0xFF) / 255.0 for i in range(8)]
@@ -192,11 +197,13 @@ if __name__ == "__main__":
     )
 
     # Ingest documents
-    n = pipeline.ingest([
-        "ReAct is a prompting technique that combines chain-of-thought reasoning with action execution.",
-        "RAG stands for Retrieval-Augmented Generation. It retrieves relevant documents before generating.",
-        "Plan and Execute separates planning from execution. The planner creates a full plan upfront.",
-    ])
+    n = pipeline.ingest(
+        [
+            "ReAct is a prompting technique that combines chain-of-thought reasoning with action execution.",
+            "RAG stands for Retrieval-Augmented Generation. It retrieves relevant documents before generating.",
+            "Plan and Execute separates planning from execution. The planner creates a full plan upfront.",
+        ]
+    )
     print(f"Ingested {n} chunks")
 
     # Query

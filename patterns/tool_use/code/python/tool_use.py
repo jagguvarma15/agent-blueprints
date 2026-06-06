@@ -8,16 +8,18 @@ routes, executes, and injects the result back into the conversation.
 Design doc:  ../../design.md
 Overview:    ../../overview.md
 """
+
 from __future__ import annotations
 
 import json
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Any, Callable, Protocol
+from typing import Any, Protocol
 
-from patterns.tool_use.schemas.state import ToolCall, ToolResult, ToolUseState
-
+from patterns.tool_use.schemas.state import ToolCall
 
 # ── Interfaces ────────────────────────────────────────────────────────────────
+
 
 class LLM(Protocol):
     def generate(self, messages: list[dict], tools: list[dict] | None = None) -> str: ...
@@ -25,11 +27,12 @@ class LLM(Protocol):
 
 # ── Core types ────────────────────────────────────────────────────────────────
 
+
 @dataclass
 class Tool:
     name: str
     description: str
-    parameters: dict        # JSON Schema for the parameters object
+    parameters: dict  # JSON Schema for the parameters object
     fn: Callable[..., Any]
 
     def to_schema(self) -> dict:
@@ -50,7 +53,7 @@ class Tool:
 
 @dataclass
 class Turn:
-    role: str           # "user" | "assistant" | "tool"
+    role: str  # "user" | "assistant" | "tool"
     content: str
     tool_call: ToolCall | None = None
     tool_name: str | None = None
@@ -64,6 +67,7 @@ class ToolUseResult:
 
 
 # ── Implementation ────────────────────────────────────────────────────────────
+
 
 class ToolUseAgent:
     """

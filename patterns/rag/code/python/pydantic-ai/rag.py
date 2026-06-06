@@ -110,9 +110,7 @@ def retrieve_context(
     hits = ctx.deps.store.search(query, top_k=2)
     if not hits:
         return "(no relevant context)"
-    return "\n\n---\n\n".join(
-        f"[{doc_id} score={score:.2f}] {text}" for doc_id, score, text in hits
-    )
+    return "\n\n---\n\n".join(f"[{doc_id} score={score:.2f}] {text}" for doc_id, score, text in hits)
 
 
 def main() -> None:

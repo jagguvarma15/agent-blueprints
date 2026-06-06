@@ -16,14 +16,14 @@ emit). See ``../../overview.md`` and the recipe at
 from __future__ import annotations
 
 import logging
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from .schemas import (
     EligibilityDecision,
     NotificationDraft,
     Party,
-    Reservation,
     RebookingOutcome,
+    Reservation,
     Slot,
     SlotRanking,
     Tier,
@@ -94,8 +94,7 @@ def rank_slots(reservation: Reservation, resy: ResyAdapter, ot: OpenTableAdapter
     return SlotRanking(
         slots=ranked,
         ranking_rationale=(
-            f"Sorted by time delta to original ({reservation.starts_at.isoformat()}); "
-            f"{ranked[0].source} won."
+            f"Sorted by time delta to original ({reservation.starts_at.isoformat()}); {ranked[0].source} won."
         ),
     )
 
@@ -216,4 +215,4 @@ if __name__ == "__main__":
     for payload in examples:
         outcome = handle_event(payload)
         print(f"{payload['reservation_id']:10s} -> {outcome.action:18s} | {outcome.rationale}")
-    print(f"Run at {datetime.now(timezone.utc).isoformat()}")
+    print(f"Run at {datetime.now(UTC).isoformat()}")

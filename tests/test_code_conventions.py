@@ -72,9 +72,7 @@ def test_no_emoji_codepoints() -> None:
                     break
             if fails and fails[-1].startswith(str(path.relative_to(REPO_ROOT))):
                 break
-    assert not fails, "Emoji codepoints found — replace with plain text labels:\n" + "\n".join(
-        fails
-    )
+    assert not fails, "Emoji codepoints found — replace with plain text labels:\n" + "\n".join(fails)
 
 
 def test_python_files_ast_parse() -> None:
@@ -111,8 +109,5 @@ def test_typescript_brace_balance() -> None:
         rel = path.relative_to(REPO_ROOT)
         for opener, closer in [("{", "}"), ("(", ")"), ("[", "]")]:
             if text.count(opener) != text.count(closer):
-                fails.append(
-                    f"{rel}: {opener}{closer} imbalance "
-                    f"({text.count(opener)} vs {text.count(closer)})"
-                )
+                fails.append(f"{rel}: {opener}{closer} imbalance ({text.count(opener)} vs {text.count(closer)})")
     assert not fails, "TypeScript brace / paren / bracket imbalance:\n" + "\n".join(fails)
