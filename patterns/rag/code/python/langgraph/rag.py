@@ -33,6 +33,13 @@ from langchain_anthropic import ChatAnthropic
 from langchain_core.messages import HumanMessage, SystemMessage
 from langgraph.graph import END, START, StateGraph
 
+# LangGraph wants a TypedDict state shape, so this adapter inlines
+# ``RAGState`` below with field names that mirror the canonical
+# :class:`patterns.rag.schemas.state.RagState` (``question``,
+# ``documents``, ``chunks``, ``answer``) — the import documents the
+# contract recipes still bind to.
+from patterns.rag.schemas.state import Answer, Query, RagState, RetrievedDoc  # noqa: F401
+
 _SEED_DOCUMENTS: list[str] = [
     "ReAct is a prompting technique that combines chain-of-thought reasoning with action execution.",
     "RAG stands for Retrieval-Augmented Generation. It retrieves relevant documents before generating.",

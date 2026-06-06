@@ -32,6 +32,13 @@ from langchain_anthropic import ChatAnthropic
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.tools import tool
 
+# AgentExecutor owns its own loop state, so this adapter doesn't bind a
+# Python class to the canonical schema. The import documents the contract
+# any recipe targeting ReAct still resolves against — ``Observation`` /
+# ``ReActStep`` / ``ReActState`` — even when the framework hides the
+# per-step shape behind ``intermediate_steps`` tuples.
+from patterns.react.schemas.state import Observation, ReActState, ReActStep, ToolCall  # noqa: F401
+
 _MOCK_DICTIONARY: dict[str, str] = {
     "recursion": "A method of solving a problem where the solution depends on solutions to smaller instances of the same problem.",
     "monad": "A design pattern in functional programming that wraps values to chain operations while handling side effects.",

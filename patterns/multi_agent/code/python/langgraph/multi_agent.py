@@ -36,17 +36,43 @@ from langchain_core.messages import HumanMessage, SystemMessage
 from langgraph.graph import END, START, StateGraph
 from pydantic import BaseModel, Field
 
+# Canonical contract imports — the LangGraph nodes below operate on a
+# framework-flavoured TypedDict (``GraphState``) and a constrained
+# routing decision (``RouteToAgent``), but recipes targeting Multi-Agent
+# bind to the names below, so the file references the canonical shape.
+from patterns.multi_agent.schemas.state import (  # noqa: F401
+    AgentResult,
+    MultiAgentState,
+    SupervisorDecision,
+)
+
 _MAX_ROUNDS = 4
 
 
-class SupervisorDecision(BaseModel):
+class RouteToAgent(BaseModel):
+    """LangGraph-specific routing primitive.
+
+    Constrained ``next`` to a Literal so the graph's conditional edge can
+    dispatch directly. The canonical :class:`SupervisorDecision` carries
+    the same idea with an unconstrained ``next_agent`` string; recipes
+    bind to the canonical form, this adapter narrows it for the graph.
+    """
+
     next: Literal["researcher", "writer", "reviewer", "done"] = Field(
         description="Sub-agent to invoke next, or 'done' when the task is complete.",
     )
     sub_task: str = Field(default="", description="Sub-task description for the chosen agent.")
 
 
-class MultiAgentState(TypedDict):
+class GraphState(TypedDict):
+    """LangGraph TypedDict mirroring the canonical :class:`MultiAgentState`.
+
+    Field names map cleanly: ``task → user_goal``, ``delegations →
+    agent_results``, ``final_output → final_answer``, ``rounds`` stays.
+    The TypedDict shape is required by LangGraph's state-graph reducer;
+    the canonical Pydantic model is what recipes serialize.
+    """
+
     task: str
     delegations: list[dict]
     rounds: int
@@ -64,7 +90,7 @@ def _run_sub_agent(name: str, instructions: str, sub_task: str) -> str:
     return f"[{name}] {response.content}".strip()
 
 
-def researcher(state: MultiAgentState) -> MultiAgentState:
+def researcher(state: GraphState) -> GraphState:
     last = state["delegations"][-1] if state["delegations"] else {"sub_task": state["task"]}
     output = _run_sub_agent(
         "researcher",
@@ -74,7 +100,7 @@ def researcher(state: MultiAgentState) -> MultiAgentState:
     return {**state, "delegations": [*state["delegations"], {"agent": "researcher", "sub_task": last["sub_task"], "output": output}]}
 
 
-def writer(state: MultiAgentState) -> MultiAgentState:
+def writer(state: GraphState) -> GraphState:
     last = state["delegations"][-1] if state["delegations"] else {"sub_task": state["task"]}
     output = _run_sub_agent(
         "writer",
@@ -84,7 +110,7 @@ def writer(state: MultiAgentState) -> MultiAgentState:
     return {**state, "delegations": [*state["delegations"], {"agent": "writer", "sub_task": last["sub_task"], "output": output}]}
 
 
-def reviewer(state: MultiAgentState) -> MultiAgentState:
+def reviewer(state: GraphState) -> GraphState:
     last = state["delegations"][-1] if state["delegations"] else {"sub_task": state["task"]}
     output = _run_sub_agent(
         "reviewer",
@@ -94,10 +120,10 @@ def reviewer(state: MultiAgentState) -> MultiAgentState:
     return {**state, "delegations": [*state["delegations"], {"agent": "reviewer", "sub_task": last["sub_task"], "output": output}]}
 
 
-def supervisor(state: MultiAgentState) -> MultiAgentState:
+def supervisor(state: GraphState) -> GraphState:
     if state["rounds"] >= _MAX_ROUNDS:
         return {**state, "final_output": "Reached max rounds.", "rounds": state["rounds"] + 1}
-    structured = _model().with_structured_output(SupervisorDecision)
+    structured = _model().with_structured_output(RouteToAgent)
     log = "\n".join(f"[{d['agent']}] {d['output'][:100]}" for d in state["delegations"]) or "(none)"
     decision = structured.invoke(
         [
@@ -126,7 +152,7 @@ def supervisor(state: MultiAgentState) -> MultiAgentState:
     }
 
 
-def _route(state: MultiAgentState) -> str:
+def _route(state: GraphState) -> str:
     if state["final_output"]:
         return END
     last = state["delegations"][-1] if state["delegations"] else None
@@ -136,7 +162,7 @@ def _route(state: MultiAgentState) -> str:
 
 
 def build_graph() -> object:
-    g = StateGraph(MultiAgentState)
+    g = StateGraph(GraphState)
     g.add_node("supervisor", supervisor)
     g.add_node("researcher", researcher)
     g.add_node("writer", writer)
@@ -155,7 +181,7 @@ def main() -> None:
         return
 
     compiled = build_graph()
-    final_state: MultiAgentState = compiled.invoke(  # type: ignore[assignment, attr-defined]
+    final_state: GraphState = compiled.invoke(  # type: ignore[assignment, attr-defined]
         {
             "task": "Write a technical overview of LLM agent frameworks for a developer audience",
             "delegations": [],

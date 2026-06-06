@@ -29,6 +29,17 @@ import sys
 
 from crewai import Agent, Crew, Process, Task
 
+# CrewAI owns its own role / task primitives; this adapter doesn't bind
+# Python classes to the canonical schema. The import documents the
+# contract recipes targeting Multi-Agent still resolve against —
+# ``MultiAgentState`` / ``AgentResult`` / ``SupervisorDecision`` — even
+# when the framework hides the per-agent shape behind ``Crew.kickoff()``.
+from patterns.multi_agent.schemas.state import (  # noqa: F401
+    AgentResult,
+    MultiAgentState,
+    SupervisorDecision,
+)
+
 _MODEL = "anthropic/claude-haiku-4-5"
 
 

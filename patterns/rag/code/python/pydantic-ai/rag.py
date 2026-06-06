@@ -31,6 +31,12 @@ from typing import Annotated
 from pydantic import BaseModel, Field
 from pydantic_ai import Agent, RunContext
 
+# Pydantic AI's typed Agent binds its own result schema (``RAGAnswer``
+# below). The import documents the canonical contract recipes targeting
+# RAG resolve against — ``Query`` / ``RetrievedDoc`` / ``Answer`` /
+# ``RagState`` — even when the adapter exposes a richer domain shape.
+from patterns.rag.schemas.state import Answer, Query, RagState, RetrievedDoc  # noqa: F401
+
 _SEED_DOCUMENTS: list[str] = [
     "ReAct is a prompting technique that combines chain-of-thought reasoning with action execution.",
     "RAG stands for Retrieval-Augmented Generation. It retrieves relevant documents before generating.",
