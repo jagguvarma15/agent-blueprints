@@ -84,6 +84,10 @@ Step 5: Generate a README.md documenting setup and usage
 
 Both TS variants run the same three-step plan against the same enterprise-LLM-adoption report task as the Python sibling, so they're diff-friendly across stacks. The Mastra variant uses two `Agent` instances (planner + executor) over a plain TS execution loop; reach for `Workflow` instead when steps need branching, parallel fan-out, or durable resumption.
 
+## Examples
+
+- [Release checklist](examples/release-checklist.md) — concrete domain overlay for a release-orchestrator agent. Worked schemas for `ReleasePlan` / `ReleasePlanStep` / `ReleaseStepResult` / `ReplanDecision`, mock CI / smoke / deploy / verify adapters, role prompts for planner / executor / replanner, and an end-to-end walkthrough covering the three terminal paths (happy, smoke-failure-then-fix, verify-failure-aborts) with offline tests in [`examples/release_checklist/`](examples/release_checklist/).
+
 ## Input / Output
 
 - **Input:** A complex task that benefits from upfront strategic planning

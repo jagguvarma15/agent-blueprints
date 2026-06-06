@@ -96,6 +96,10 @@ result = saga.run(payload={"original_reservation_id": "res_42", "customer_id": "
 
 All three variants run the same three scenarios — happy path, mid-saga failure with clean compensation, and a compensator that itself fails leading to `partially_compensated`. The saga shape (do/undo step pairs, reverse compensation walk, three terminal states) is plain TS / Python in both languages; the agent framework's role is inside individual step bodies (e.g. an LLM call to choose a compensation strategy under uncertainty).
 
+## Examples
+
+- [Trip booking](examples/trip-booking.md) — concrete domain overlay for a three-leg itinerary saga (flight + hotel + car). Worked schemas for `Leg` / `Reservation` / `CompensationOutcome` / `TripResult`, mock booking adapters with `book` / `cancel` pairs, a coordinator prompt for the compensation-failure path, and an end-to-end walkthrough exercising all three terminal states (`completed`, `compensated`, `partially_compensated`) with offline tests in [`examples/trip_booking/`](examples/trip_booking/).
+
 ## Input / Output
 
 - **Input:** A payload + an ordered list of `(do, undo)` step pairs
