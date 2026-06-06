@@ -174,9 +174,7 @@ def _replan(failed: ReleaseStepResult, plan: ReleasePlan) -> ReplanDecision:
         )
     # Known smoke failure pattern -> insert a fix step.
     if failed.kind is ReleaseStepKind.smoke and failed.error == "missing_migration":
-        target = next(
-            step.target_service for step in plan.steps if step.id == failed.step_id
-        )
+        target = next(step.target_service for step in plan.steps if step.id == failed.step_id)
         return ReplanDecision(
             action="insert_fix",
             fix_step=ReleasePlanStep(
