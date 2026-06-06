@@ -249,4 +249,4 @@ See [evolution.md](./evolution.md) for the detailed step-by-step bridge.
 When tasks benefit from upfront planning:
 1. Add a planning phase before the ReAct loop
 2. Run a bounded ReAct loop per plan step
-3. See [Plan & Execute](../plan-and-execute/overview.md)
+3. See [Plan & Execute](../plan_and_execute/overview.md)

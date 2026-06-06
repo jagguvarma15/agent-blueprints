@@ -68,16 +68,16 @@ Green intensity indicates increasing complexity. Start as light as possible.
 | [Orchestrator-Worker](../workflows/orchestrator-worker/overview.md) | Workflow | Complex task needs decomposition into subtasks | Task is simple enough for one call |
 | [Evaluator-Optimizer](../workflows/evaluator-optimizer/overview.md) | Workflow | Output quality needs iterative refinement | First-pass quality is sufficient |
 | [ReAct](../patterns/react/overview.md) | Agent | Open-ended tasks with tool use | Steps are predictable in advance |
-| [Plan & Execute](../patterns/plan-and-execute/overview.md) | Agent | Complex tasks needing upfront strategy | Simple tasks with fewer than 3 steps |
-| [Tool Use](../patterns/tool-use/overview.md) | Agent | LLM needs to interact with external systems | No external actions needed |
+| [Plan & Execute](../patterns/plan_and_execute/overview.md) | Agent | Complex tasks needing upfront strategy | Simple tasks with fewer than 3 steps |
+| [Tool Use](../patterns/tool_use/overview.md) | Agent | LLM needs to interact with external systems | No external actions needed |
 | [Memory](../patterns/memory/overview.md) | Agent | Context must persist across conversations | Single-turn interactions |
 | [RAG](../patterns/rag/overview.md) | Agent | LLM needs external knowledge to answer | All needed knowledge fits in context |
 | [Reflection](../patterns/reflection/overview.md) | Agent | Output quality must exceed single-pass | Latency is more important than quality |
 | [Routing](../patterns/routing/overview.md) | Agent | Different inputs need different handling paths | All inputs follow the same process |
-| [Multi-Agent](../patterns/multi-agent/overview.md) | Agent | Task requires multiple specialized capabilities | Single agent can handle the scope |
-| [Event-Driven](../patterns/event-driven/overview.md) | Agent | Trigger is an external event (cancellation, status change, scheduled job) | User is waiting synchronously for a response |
+| [Multi-Agent](../patterns/multi_agent/overview.md) | Agent | Task requires multiple specialized capabilities | Single agent can handle the scope |
+| [Event-Driven](../patterns/event_driven/overview.md) | Agent | Trigger is an external event (cancellation, status change, scheduled job) | User is waiting synchronously for a response |
 | [Saga](../patterns/saga/overview.md) | Agent | Long-running multi-step process with steps that have to be undone on failure | All steps live in one DB that supports transactions |
-| [Human in the Loop](../patterns/human-in-the-loop/overview.md) | Agent | High-stakes action must not commit without human approval | Action is low-stakes and review would be a rubber-stamp |
+| [Human in the Loop](../patterns/human_in_the_loop/overview.md) | Agent | High-stakes action must not commit without human approval | Action is low-stakes and review would be a rubber-stamp |
 
 ## Decision Criteria
 

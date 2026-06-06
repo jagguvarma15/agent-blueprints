@@ -111,7 +111,7 @@ Orchestrator-Worker is the upgrade when splitting requires LLM reasoning instead
 
 ### As Agent Building Block
 - [RAG](../../patterns/rag/overview.md) — Parallel retrieval from multiple sources
-- [Multi-Agent](../../patterns/multi-agent/overview.md) — Worker agents run in parallel
+- [Multi-Agent](../../patterns/multi_agent/overview.md) — Worker agents run in parallel
 
 ## Decision Matrix: Splitting Strategy
 

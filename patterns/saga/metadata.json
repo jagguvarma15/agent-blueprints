@@ -13,12 +13,12 @@
     "cost-and-latency"
   ],
   "evolvesFrom": [
-    "tool-use",
+    "tool_use",
     "prompt-chaining"
   ],
   "composableWith": [
-    "event-driven",
-    "multi-agent"
+    "event_driven",
+    "multi_agent"
   ],
   "requires": [
     "storage",

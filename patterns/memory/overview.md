@@ -108,7 +108,7 @@ Both variants run the same two-turn smoke (user shares Python + agent project, a
 ## Related Patterns
 
 - **Evolves from:** [Prompt Chaining](../../workflows/prompt-chaining/overview.md) — see [evolution.md](./evolution.md)
-- **Combines with:** [ReAct](../react/overview.md) (agent loop + memory), [RAG](../rag/overview.md) (long-term memory can use the same vector store), [Multi-Agent](../multi-agent/overview.md) (shared memory between agents)
+- **Combines with:** [ReAct](../react/overview.md) (agent loop + memory), [RAG](../rag/overview.md) (long-term memory can use the same vector store), [Multi-Agent](../multi_agent/overview.md) (shared memory between agents)
 - **Related to:** [RAG](../rag/overview.md) — RAG retrieves from a document store; Memory retrieves from interaction history. The retrieval mechanism is similar but the data source is different.
 
 ## Deeper Dive

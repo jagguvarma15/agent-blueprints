@@ -14,6 +14,8 @@ import json
 from dataclasses import dataclass, field
 from typing import Callable, Protocol
 
+from patterns.routing.schemas.state import Route, RouteDecision, RoutingState
+
 
 # ── Interface ─────────────────────────────────────────────────────────────────
 
@@ -24,11 +26,25 @@ class LLM(Protocol):
 # ── Core types ────────────────────────────────────────────────────────────────
 
 @dataclass
-class Route:
+class RouteHandler:
+    """Runtime extension of the canonical :class:`Route`.
+
+    The canonical schema's :class:`Route` is the declarative pair (name +
+    description) that the router LLM picks from. ``RouteHandler`` wraps it
+    with the runtime concerns the sibling needs: the system prompt for the
+    specialist and an optional callable that overrides the default LLM
+    handler. Recipes referencing ``Route`` see the canonical declaration;
+    runtime code sees this richer form.
+    """
+
     name: str
     description: str            # Used by the classifier to decide routing
     system_prompt: str
     handler: Callable[[str, LLM], str] | None = None  # Custom handler, or default LLM call
+
+    def as_route(self) -> Route:
+        """Strip the runtime fields and return the canonical declaration."""
+        return Route(name=self.name, description=self.description)
 
 
 @dataclass
@@ -63,7 +79,7 @@ class Router:
 
     Usage:
         router = Router(classifier_llm)
-        router.add_route(Route(name="billing", ...))
+        router.add_route(RouteHandler(name="billing", ...))
         result = router.route("I need help with my invoice")
     """
 
@@ -76,9 +92,9 @@ class Router:
         self.classifier = classifier
         self.fallback_route = fallback_route
         self.confidence_threshold = confidence_threshold
-        self._routes: dict[str, Route] = {}
+        self._routes: dict[str, RouteHandler] = {}
 
-    def add_route(self, route: Route) -> None:
+    def add_route(self, route: RouteHandler) -> None:
         self._routes[route.name] = route
 
     def _classify(self, message: str) -> tuple[str, float]:
@@ -95,7 +111,7 @@ class Router:
         except (json.JSONDecodeError, ValueError):
             return "", 0.0
 
-    def _handle(self, route: Route, message: str, handler_llm: LLM) -> str:
+    def _handle(self, route: RouteHandler, message: str, handler_llm: LLM) -> str:
         if route.handler:
             return route.handler(message, handler_llm)
 
@@ -168,17 +184,17 @@ if __name__ == "__main__":
         confidence_threshold=0.5,
     )
 
-    router.add_route(Route(
+    router.add_route(RouteHandler(
         name="billing",
         description="Questions about invoices, payments, subscriptions, and pricing",
         system_prompt="You are a billing support specialist. Be precise about payment details.",
     ))
-    router.add_route(Route(
+    router.add_route(RouteHandler(
         name="technical",
         description="Bug reports, error messages, API issues, and technical troubleshooting",
         system_prompt="You are a technical support engineer. Ask for logs and reproduction steps.",
     ))
-    router.add_route(Route(
+    router.add_route(RouteHandler(
         name="general",
         description="General questions, product info, and anything else",
         system_prompt="You are a general support agent. Be helpful and friendly.",

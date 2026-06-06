@@ -50,7 +50,7 @@ Below: the specific anti-compositions worth naming. None are *always* wrong. The
 
 **Symptom:** Reflect on the plan *before* executing any step. The critic critiques the plan, the planner revises, eventually you execute.
 
-**Why it's nuanced:** This is actually a good idea — see the [Plan & Execute → Reflection composition pointer](../patterns/plan-and-execute/design.md). It fails when the critic has no execution feedback. A plan that *looks* good often fails at step 3 in ways the critic couldn't predict.
+**Why it's nuanced:** This is actually a good idea — see the [Plan & Execute → Reflection composition pointer](../patterns/plan_and_execute/design.md). It fails when the critic has no execution feedback. A plan that *looks* good often fails at step 3 in ways the critic couldn't predict.
 
 **When it's right:** Reflection on the plan + reflection on the executed result. Two reflection passes catch different failure modes.
 

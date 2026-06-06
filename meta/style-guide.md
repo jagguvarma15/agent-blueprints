@@ -2,7 +2,7 @@
 
 Rules for writing documentation in this repository. Consistency matters — every document should feel like it was written by the same team.
 
-> **Exemplar:** [`patterns/multi-agent/`](../patterns/multi-agent/) is the canonical reference. When in doubt about structure, depth, or section choice, match it.
+> **Exemplar:** [`patterns/multi_agent/`](../patterns/multi_agent/) is the canonical reference. When in doubt about structure, depth, or section choice, match it.
 
 ## Voice and Tone
 
@@ -114,9 +114,11 @@ Per-pattern code lives under `patterns/<name>/code/` in a three-tier structure:
 
 ```
 patterns/<name>/
+  schemas/
+    state.py                       # canonical Pydantic state schema (binding contract)
   code/
-    _reference.py                  # framework-agnostic MockLLM reference
     python/
+      <name>.py                    # framework-agnostic sibling (MockLLM, illustrative)
       pydantic-ai/<name>.py        # real Pydantic AI implementation
       langgraph/<name>.py          # real LangGraph implementation
       crewai/<name>.py             # only where idiomatic
@@ -125,9 +127,12 @@ patterns/<name>/
       mastra/<name>.ts             # only where idiomatic
 ```
 
+(ReAct keeps a `code/_reference.py` from its earlier shape; new patterns drop the top-level reference file and let the per-language sibling at `code/python/<name>.py` carry the framework-agnostic control flow.)
+
 Rules:
 
-- **`_reference.py` is the canonical control-flow doc.** It uses a `MockLLM` so the design docs (`design.md`, `implementation.md`) can read against it without depending on any framework. Keep it small and simple; don't optimize.
+- **`schemas/state.py` is the binding contract.** Recipes target the names declared there; every framework-agnostic sibling and adapter snippet MUST import its domain types via `from patterns.<name>.schemas.state import ...`. Inline re-declaration of a canonical type in pattern code is a style-guide violation — when the framework genuinely requires a different shape (e.g. LangGraph wants a TypedDict), the local wrapper inherits canonical field names and the file documents the divergence in the wrapper's docstring.
+- **The framework-agnostic sibling at `code/python/<name>.py` is the canonical control-flow doc.** It uses a `MockLLM` so the design docs (`design.md`, `implementation.md`) can read against it without depending on any framework. Keep it small and simple; don't optimize.
 - **Per-framework files run end-to-end against the real framework.** Pin imports to the versions in `agent-deployments/docs/frameworks/<framework>.md` frontmatter. Each file ships an `if __name__ == "__main__":` (Python) or top-level `import.meta.url` guard (TypeScript) that exercises the loop with a stubbed-or-real model.
 - **Skip a (language × framework) variant when it's not idiomatic.** CrewAI for ReAct, Mastra for RAG — not every cell in the matrix earns a file. Document the skip in the pattern's `overview.md` variants table.
 - **TypeScript files use ESM** (`"type": "module"` in `package.json`); the file header includes a 1-line `tsconfig` snippet showing the minimum config.

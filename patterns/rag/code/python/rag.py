@@ -13,8 +13,15 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Protocol
 
+from patterns.rag.schemas.state import Answer, Query, RagState, RetrievedDoc
+
 
 # ── Interfaces ────────────────────────────────────────────────────────────────
+#
+# Recipes targeting RAG bind to the canonical ``RagState`` / ``Query`` /
+# ``RetrievedDoc`` / ``Answer`` shapes imported above. This sibling's
+# ``Chunk`` / ``RAGResult`` dataclasses are illustrative in-memory
+# containers; an adapter pairs the two at the retrieval-result boundary.
 
 class LLM(Protocol):
     def generate(self, messages: list[dict]) -> str: ...

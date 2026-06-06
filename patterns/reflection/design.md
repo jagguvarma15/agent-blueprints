@@ -121,9 +121,9 @@ ReflectionState:
 ## Composition
 
 - **+ [ReAct](../react/overview.md):** Reflect on the agent's final output before returning. Adds a quality layer to open-ended tool-using tasks.
-- **+ [Plan & Execute](../plan-and-execute/overview.md):** Reflect on plan quality *before execution* — catches bad plans before spending step-by-step LLM cost.
+- **+ [Plan & Execute](../plan_and_execute/overview.md):** Reflect on plan quality *before execution* — catches bad plans before spending step-by-step LLM cost.
 - **+ [RAG](../rag/overview.md):** Reflect against retrieved sources — faithfulness check is the most valuable critique target.
-- **+ [Multi-Agent](../multi-agent/overview.md):** A critic worker reviews other workers' outputs; the supervisor decides whether to accept or revise.
+- **+ [Multi-Agent](../multi_agent/overview.md):** A critic worker reviews other workers' outputs; the supervisor decides whether to accept or revise.
 - **+ Any generator:** Reflection wraps any generation pattern as a quality layer — but check that the cost premium translates to measurable quality gain.
 
 ## Production concerns

@@ -28,6 +28,12 @@ from typing import Annotated
 from pydantic import BaseModel, Field
 from pydantic_ai import Agent, RunContext
 
+# Pydantic AI's Agent owns the ReAct loop internally; this adapter binds
+# its result_type to a domain ``Definition`` rather than the canonical
+# step-trail. The import documents the contract recipes targeting ReAct
+# still resolve against.
+from patterns.react.schemas.state import Observation, ReActState, ReActStep, ToolCall  # noqa: F401
+
 
 class Definition(BaseModel):
     """Result type — Pydantic AI validates the LLM's output against this."""

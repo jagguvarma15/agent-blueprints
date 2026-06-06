@@ -13,7 +13,7 @@
   ],
   "evolvesInto": [
     "react",
-    "tool-use",
+    "tool_use",
     "memory"
   ],
   "composableWith": [

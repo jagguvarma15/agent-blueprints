@@ -26,16 +26,16 @@ const PATTERN_DIRS = [
   'workflows/orchestrator-worker',
   'workflows/evaluator-optimizer',
   'patterns/react',
-  'patterns/plan-and-execute',
-  'patterns/tool-use',
+  'patterns/plan_and_execute',
+  'patterns/tool_use',
   'patterns/memory',
   'patterns/rag',
   'patterns/reflection',
   'patterns/routing',
-  'patterns/multi-agent',
-  'patterns/event-driven',
+  'patterns/multi_agent',
+  'patterns/event_driven',
   'patterns/saga',
-  'patterns/human-in-the-loop',
+  'patterns/human_in_the_loop',
 ];
 
 let errors = 0;

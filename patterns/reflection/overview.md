@@ -109,7 +109,7 @@ Both variants run the same draft → critique → revise loop with `max_iteratio
 ## Related Patterns
 
 - **Evolves from:** [Evaluator-Optimizer](../../workflows/evaluator-optimizer/overview.md) — see [evolution.md](./evolution.md)
-- **Combines with:** [ReAct](../react/overview.md) (reflect on tool call results), [Plan & Execute](../plan-and-execute/overview.md) (reflect on plan quality before execution)
+- **Combines with:** [ReAct](../react/overview.md) (reflect on tool call results), [Plan & Execute](../plan_and_execute/overview.md) (reflect on plan quality before execution)
 - **Simpler alternative:** [Evaluator-Optimizer](../../workflows/evaluator-optimizer/overview.md) (when a score + feedback loop is sufficient)
 
 ## Deeper Dive

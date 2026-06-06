@@ -132,7 +132,7 @@ The `saga.run.stuck` log line is what fires the page. Make sure the alerting rul
 - **Symptom**: `saga.compensation_rate` rising from steady-state ~0.5% to 5%+; clean compensations, not stuck ones.
 - **Log pattern**: A specific `step_id` shows up disproportionately in `saga.step.fail` lines.
 - **Diagnosis**: One downstream is degraded — the saga is correctly unwinding because the step is failing more often. The saga isn't broken; the downstream is.
-- **Fix**: Same as the consumer-lag-climbing case for [event-driven](../event-driven/observability.md): check the downstream's metrics; add a circuit breaker per dependency; the failing step's compensation rate falls back to baseline when the downstream recovers.
+- **Fix**: Same as the consumer-lag-climbing case for [event-driven](../event_driven/observability.md): check the downstream's metrics; add a circuit breaker per dependency; the failing step's compensation rate falls back to baseline when the downstream recovers.
 
 ### `partially_compensated` count nonzero
 

@@ -4,7 +4,7 @@ A saga is a long-running, multi-step process where each step's side effect must 
 
 > **Note on the running example.** This page uses **restaurant rebooking** as the worked example throughout — it makes the four-step / four-compensator shape concrete. The pattern itself is domain-neutral; the same structure applies to refunds + restocking, multi-leg trip booking, order fulfillment, payouts + ledger updates, and any other multi-step business process that must succeed or unwind as a whole.
 
-**Evolves from:** [Prompt Chaining](../../workflows/prompt-chaining/overview.md) + [Tool Use](../tool-use/overview.md) — adds explicit compensators per step and a state machine that knows how to unwind.
+**Evolves from:** [Prompt Chaining](../../workflows/prompt-chaining/overview.md) + [Tool Use](../tool_use/overview.md) — adds explicit compensators per step and a state machine that knows how to unwind.
 
 ## Architecture
 
@@ -124,14 +124,14 @@ All three variants run the same three scenarios — happy path, mid-saga failure
 
 - All steps live inside a single ACID transaction boundary — use the database's transaction. No saga overhead needed.
 - Steps don't need to unwind on failure (e.g., everything is best-effort logging). A simple [Prompt Chain](../../workflows/prompt-chaining/overview.md) is lighter.
-- The process is a single LLM-mediated tool call sequence with no durable side effects — use [Tool Use](../tool-use/overview.md) or [ReAct](../react/overview.md).
-- The process is event-driven and each step is independent (no cross-step rollback) — use [Event-Driven](../event-driven/overview.md) without saga.
+- The process is a single LLM-mediated tool call sequence with no durable side effects — use [Tool Use](../tool_use/overview.md) or [ReAct](../react/overview.md).
+- The process is event-driven and each step is independent (no cross-step rollback) — use [Event-Driven](../event_driven/overview.md) without saga.
 
 ## Related Patterns
 
-- **Evolves from:** [Prompt Chaining](../../workflows/prompt-chaining/overview.md) + [Tool Use](../tool-use/overview.md) — see [evolution.md](./evolution.md)
-- **Hosted on:** [Event-Driven](../event-driven/overview.md) — sagas commonly run as consumers triggered by an inbound event; each step result becomes an event
-- **Combines with:** Human-in-the-Loop (planned: `patterns/human-in-the-loop/`) for compensator-failure escalation; [Multi-Agent (Flat)](../multi-agent/overview.md) when individual steps delegate to specialized agents
+- **Evolves from:** [Prompt Chaining](../../workflows/prompt-chaining/overview.md) + [Tool Use](../tool_use/overview.md) — see [evolution.md](./evolution.md)
+- **Hosted on:** [Event-Driven](../event_driven/overview.md) — sagas commonly run as consumers triggered by an inbound event; each step result becomes an event
+- **Combines with:** Human-in-the-Loop (planned: `patterns/human_in_the_loop/`) for compensator-failure escalation; [Multi-Agent (Flat)](../multi_agent/overview.md) when individual steps delegate to specialized agents
 - **Contrast with:** Distributed transactions — sagas trade ACID atomicity for availability + eventual consistency
 
 ## Deeper Dive

@@ -28,6 +28,13 @@ from langchain_anthropic import ChatAnthropic
 from langchain_core.tools import tool
 from langgraph.prebuilt import create_react_agent
 
+# The prebuilt React agent owns its own message-graph state shape, so
+# this adapter doesn't construct an explicit ``ReActState``. The import
+# anchors the contract — recipes targeting ReAct still bind against
+# ``Observation`` / ``ReActStep`` / ``ReActState`` even when the
+# framework hides them.
+from patterns.react.schemas.state import Observation, ReActState, ReActStep, ToolCall  # noqa: F401
+
 _MOCK_DICTIONARY: dict[str, str] = {
     "recursion": "A method of solving a problem where the solution depends on solutions to smaller instances of the same problem.",
     "monad": "A design pattern in functional programming that wraps values to chain operations while handling side effects.",

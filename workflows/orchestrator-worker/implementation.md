@@ -365,4 +365,4 @@ When you need ordered execution and replanning:
 1. Make the orchestrator produce an ordered plan (not just parallel subtasks)
 2. Add a step tracker
 3. Add replanning on failure
-4. See [Plan & Execute evolution](../../patterns/plan-and-execute/evolution.md)
+4. See [Plan & Execute evolution](../../patterns/plan_and_execute/evolution.md)

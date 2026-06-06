@@ -33,7 +33,7 @@ export const WORKFLOWS: PatternMeta[] = [
     description: 'Sequential LLM calls with validation gates between steps.',
     complexity: 'Beginner',
     category: 'workflow',
-    evolvesInto: ['react', 'tool-use', 'memory'],
+    evolvesInto: ['react', 'tool_use', 'memory'],
   },
   {
     id: 'parallel-calls',
@@ -51,7 +51,7 @@ export const WORKFLOWS: PatternMeta[] = [
     description: 'LLM decomposes a task and delegates to specialized workers.',
     complexity: 'Intermediate',
     category: 'workflow',
-    evolvesInto: ['plan-and-execute', 'multi-agent'],
+    evolvesInto: ['plan_and_execute', 'multi_agent'],
   },
   {
     id: 'evaluator-optimizer',
@@ -75,7 +75,7 @@ export const AGENT_PATTERNS: PatternMeta[] = [
     evolvesFrom: ['prompt-chaining'],
   },
   {
-    id: 'plan-and-execute',
+    id: 'plan_and_execute',
     name: 'Plan & Execute',
     slug: 'plan-and-execute',
     description: 'LLM creates a full plan upfront, then executes each step sequentially.',
@@ -84,7 +84,7 @@ export const AGENT_PATTERNS: PatternMeta[] = [
     evolvesFrom: ['orchestrator-worker'],
   },
   {
-    id: 'tool-use',
+    id: 'tool_use',
     name: 'Tool Use',
     slug: 'tool-use',
     description: 'Structured function calling with schema-validated tool dispatch.',
@@ -129,7 +129,7 @@ export const AGENT_PATTERNS: PatternMeta[] = [
     evolvesFrom: ['parallel-calls'],
   },
   {
-    id: 'multi-agent',
+    id: 'multi_agent',
     name: 'Multi-Agent',
     slug: 'multi-agent',
     description: 'Supervisor-worker delegation across multiple autonomous agents.',
@@ -138,13 +138,13 @@ export const AGENT_PATTERNS: PatternMeta[] = [
     evolvesFrom: ['orchestrator-worker', 'routing'],
   },
   {
-    id: 'event-driven',
+    id: 'event_driven',
     name: 'Event-Driven',
     slug: 'event-driven',
     description: 'Agents triggered by queue or stream events rather than HTTP requests.',
     complexity: 'Advanced',
     category: 'agent',
-    evolvesFrom: ['tool-use'],
+    evolvesFrom: ['tool_use'],
   },
   {
     id: 'saga',
@@ -153,16 +153,16 @@ export const AGENT_PATTERNS: PatternMeta[] = [
     description: 'Long-running, multi-step processes with compensation when an intermediate step fails.',
     complexity: 'Advanced',
     category: 'agent',
-    evolvesFrom: ['tool-use', 'prompt-chaining'],
+    evolvesFrom: ['tool_use', 'prompt-chaining'],
   },
   {
-    id: 'human-in-the-loop',
+    id: 'human_in_the_loop',
     name: 'Human in the Loop',
     slug: 'human-in-the-loop',
     description: 'Agent proposes an action; a human approves, denies, or modifies before it commits.',
     complexity: 'Intermediate',
     category: 'agent',
-    evolvesFrom: ['tool-use'],
+    evolvesFrom: ['tool_use'],
   },
 ];
 
@@ -255,7 +255,7 @@ export const PATTERN_COMPARISONS: PatternComparison[] = [
     composableWith: ['memory', 'reflection'],
   },
   {
-    id: 'plan-and-execute',
+    id: 'plan_and_execute',
     name: 'Plan & Execute',
     category: 'agent',
     complexity: 'Intermediate',
@@ -263,10 +263,10 @@ export const PATTERN_COMPARISONS: PatternComparison[] = [
     cost: 'High',
     bestFor: 'Complex multi-step tasks needing upfront planning',
     requires: ['tools'],
-    composableWith: ['react', 'multi-agent'],
+    composableWith: ['react', 'multi_agent'],
   },
   {
-    id: 'tool-use',
+    id: 'tool_use',
     name: 'Tool Use',
     category: 'agent',
     complexity: 'Beginner',
@@ -285,7 +285,7 @@ export const PATTERN_COMPARISONS: PatternComparison[] = [
     cost: 'Medium',
     bestFor: 'Sessions requiring context persistence',
     requires: ['storage'],
-    composableWith: ['react', 'rag', 'multi-agent'],
+    composableWith: ['react', 'rag', 'multi_agent'],
   },
   {
     id: 'rag',
@@ -307,7 +307,7 @@ export const PATTERN_COMPARISONS: PatternComparison[] = [
     cost: 'High',
     bestFor: 'High-quality outputs needing self-critique',
     requires: [],
-    composableWith: ['react', 'rag', 'plan-and-execute'],
+    composableWith: ['react', 'rag', 'plan_and_execute'],
   },
   {
     id: 'routing',
@@ -318,10 +318,10 @@ export const PATTERN_COMPARISONS: PatternComparison[] = [
     cost: 'Low',
     bestFor: 'Multi-intent systems with specialized handlers',
     requires: [],
-    composableWith: ['react', 'rag', 'multi-agent'],
+    composableWith: ['react', 'rag', 'multi_agent'],
   },
   {
-    id: 'multi-agent',
+    id: 'multi_agent',
     name: 'Multi-Agent',
     category: 'agent',
     complexity: 'Advanced',
@@ -332,7 +332,7 @@ export const PATTERN_COMPARISONS: PatternComparison[] = [
     composableWith: ['react', 'routing', 'memory'],
   },
   {
-    id: 'event-driven',
+    id: 'event_driven',
     name: 'Event-Driven',
     category: 'agent',
     complexity: 'Advanced',
@@ -340,7 +340,7 @@ export const PATTERN_COMPARISONS: PatternComparison[] = [
     cost: 'Medium',
     bestFor: 'Async reactive systems on a queue or stream',
     requires: ['tools', 'event-source', 'idempotency-store'],
-    composableWith: ['multi-agent', 'routing', 'memory'],
+    composableWith: ['multi_agent', 'routing', 'memory'],
   },
   {
     id: 'saga',
@@ -351,10 +351,10 @@ export const PATTERN_COMPARISONS: PatternComparison[] = [
     cost: 'Medium',
     bestFor: 'Long-running workflows requiring compensation on failure',
     requires: ['storage', 'idempotency', 'compensation-handlers'],
-    composableWith: ['event-driven', 'multi-agent'],
+    composableWith: ['event_driven', 'multi_agent'],
   },
   {
-    id: 'human-in-the-loop',
+    id: 'human_in_the_loop',
     name: 'Human in the Loop',
     category: 'agent',
     complexity: 'Intermediate',
@@ -362,6 +362,6 @@ export const PATTERN_COMPARISONS: PatternComparison[] = [
     cost: 'Low',
     bestFor: 'High-stakes actions requiring human approval or correction',
     requires: ['pause-resume', 'approver-surface', 'audit'],
-    composableWith: ['saga', 'event-driven', 'tool-use'],
+    composableWith: ['saga', 'event_driven', 'tool_use'],
   },
 ];

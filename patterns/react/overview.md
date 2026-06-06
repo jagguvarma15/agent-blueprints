@@ -117,15 +117,15 @@ The reference file is the canonical control-flow doc — read it with `design.md
 ## When NOT to Use
 
 - When steps are known in advance — use [Prompt Chaining](../../workflows/prompt-chaining/overview.md)
-- When the task needs upfront strategic planning — use [Plan & Execute](../plan-and-execute/overview.md)
+- When the task needs upfront strategic planning — use [Plan & Execute](../plan_and_execute/overview.md)
 - When quality needs iterative self-improvement — use [Reflection](../reflection/overview.md)
-- When multiple specialized capabilities are needed — use [Multi-Agent](../multi-agent/overview.md)
+- When multiple specialized capabilities are needed — use [Multi-Agent](../multi_agent/overview.md)
 
 ## Related Patterns
 
 - **Evolves from:** [Prompt Chaining](../../workflows/prompt-chaining/overview.md) — see [evolution.md](./evolution.md)
-- **Builds on:** [Tool Use](../tool-use/overview.md) — ReAct requires tool use as a component
-- **Extends into:** [Plan & Execute](../plan-and-execute/overview.md) (add planning), [Reflection](../reflection/overview.md) (add self-critique), [RAG](../rag/overview.md) (add retrieval), [Memory](../memory/overview.md) (add persistence)
+- **Builds on:** [Tool Use](../tool_use/overview.md) — ReAct requires tool use as a component
+- **Extends into:** [Plan & Execute](../plan_and_execute/overview.md) (add planning), [Reflection](../reflection/overview.md) (add self-critique), [RAG](../rag/overview.md) (add retrieval), [Memory](../memory/overview.md) (add persistence)
 
 ## Deeper Dive
 

@@ -129,7 +129,7 @@ Wrap the chain or individual steps in an evaluation loop. See [Evaluator-Optimiz
 
 ### As Agent Building Block
 - [ReAct](../../patterns/react/overview.md) — each agent iteration is a mini-chain
-- [Plan & Execute](../../patterns/plan-and-execute/overview.md) — each plan step can be a chain
+- [Plan & Execute](../../patterns/plan_and_execute/overview.md) — each plan step can be a chain
 
 ## Decision Matrix: Step Granularity
 

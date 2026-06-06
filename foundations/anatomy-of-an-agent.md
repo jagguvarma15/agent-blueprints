@@ -151,9 +151,9 @@ Not all agents are equal. They range from simple to complex:
 | Level | Description | Example Pattern |
 |-------|-------------|-----------------|
 | **Single-loop agent** | One LLM, one tool set, one loop | [ReAct](../patterns/react/overview.md) |
-| **Planning agent** | Generates a plan then executes it step-by-step | [Plan & Execute](../patterns/plan-and-execute/overview.md) |
+| **Planning agent** | Generates a plan then executes it step-by-step | [Plan & Execute](../patterns/plan_and_execute/overview.md) |
 | **Reflective agent** | Evaluates its own output and iterates | [Reflection](../patterns/reflection/overview.md) |
 | **Stateful agent** | Maintains memory across conversations | [Memory](../patterns/memory/overview.md) |
-| **Multi-agent system** | Multiple agents collaborating | [Multi-Agent](../patterns/multi-agent/overview.md) |
+| **Multi-agent system** | Multiple agents collaborating | [Multi-Agent](../patterns/multi_agent/overview.md) |
 
 Each level adds capability but also adds complexity, cost, and failure modes. Choose the simplest level that solves your problem.

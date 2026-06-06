@@ -89,7 +89,7 @@ result = runner.run(
 
 - When subtasks depend on each other — use [Prompt Chaining](../prompt-chaining/overview.md)
 - When you need dynamic task breakdown — use [Orchestrator-Worker](../orchestrator-worker/overview.md)
-- When the LLM should decide how to split work — use [Plan & Execute](../../patterns/plan-and-execute/overview.md)
+- When the LLM should decide how to split work — use [Plan & Execute](../../patterns/plan_and_execute/overview.md)
 - When results must be generated iteratively based on feedback — use [Evaluator-Optimizer](../evaluator-optimizer/overview.md)
 
 ## Related Patterns

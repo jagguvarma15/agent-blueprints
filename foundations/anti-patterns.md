@@ -23,7 +23,7 @@ A task with a fixed, known structure — call this API, format the result, retur
 need for a reasoning loop. You are paying for multiple LLM calls, introducing unpredictability,
 and adding latency to a task that a single structured tool call handles.
 
-**Use instead:** [Tool Use](../patterns/tool-use/overview.md). Define the function schema,
+**Use instead:** [Tool Use](../patterns/tool_use/overview.md). Define the function schema,
 call the LLM once, dispatch the tool, inject the result, and return the final response.
 This is faster, cheaper, and more predictable.
 
@@ -49,7 +49,7 @@ parallel with genuine specialization. Using it for tasks a single agent can inte
 wastes tokens on supervisor calls, delegation overhead, and synthesis.
 
 **Use instead:** Start with a single [ReAct](../patterns/react/overview.md) agent with
-well-chosen tools. Upgrade to [Multi-Agent](../patterns/multi-agent/overview.md) only when
+well-chosen tools. Upgrade to [Multi-Agent](../patterns/multi_agent/overview.md) only when
 you hit a specific limit: context window overflow, a need for genuine parallel execution,
 or a sub-task that requires a fundamentally different model or toolset.
 
@@ -263,7 +263,7 @@ evidence that the additional iterations provide value.
 
 **The problem:** Polling adds a fixed latency floor regardless of load, costs query overhead even when there's no work, and scales poorly to multiple consumers — each consumer must independently track its watermark and dedupe results. Most importantly, the upstream system already knows when the state changed; the poller is reconstructing that signal after the fact, badly. When the producing system can emit an event (DB CDC, application-level publish, transactional outbox), reconstructing the signal via polling discards information that was already available.
 
-**Use instead:** [Event-Driven Agents](../patterns/event-driven/overview.md). Emit an event from the source-of-truth state change (transactional outbox keeps it atomic with the DB write). Subscribe agents to the stream. Latency drops from `poll_interval / 2` to milliseconds; multiple consumers attach without coordination; the event log becomes replay-able. Polling is the right answer only when (a) you can't modify the producer, and (b) events arrive at <1/minute so the latency penalty is irrelevant.
+**Use instead:** [Event-Driven Agents](../patterns/event_driven/overview.md). Emit an event from the source-of-truth state change (transactional outbox keeps it atomic with the DB write). Subscribe agents to the stream. Latency drops from `poll_interval / 2` to milliseconds; multiple consumers attach without coordination; the event log becomes replay-able. Polling is the right answer only when (a) you can't modify the producer, and (b) events arrive at <1/minute so the latency penalty is irrelevant.
 
 **Rule of thumb:** If the producer can emit, subscribe. Poll only legacy systems you can't change.
 

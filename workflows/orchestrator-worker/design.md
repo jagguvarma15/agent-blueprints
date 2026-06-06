@@ -99,10 +99,10 @@ orchestrator + max(parallel worker latencies) + synthesizer. Dependencies increa
 ## Composition Notes
 
 ### Evolving to Plan & Execute
-Add ordering, step tracking, replanning. See [Plan & Execute evolution](../../patterns/plan-and-execute/evolution.md).
+Add ordering, step tracking, replanning. See [Plan & Execute evolution](../../patterns/plan_and_execute/evolution.md).
 
 ### Evolving to Multi-Agent
-Give workers tools and agent loops. See [Multi-Agent evolution](../../patterns/multi-agent/evolution.md).
+Give workers tools and agent loops. See [Multi-Agent evolution](../../patterns/multi_agent/evolution.md).
 
 ### With Evaluator-Optimizer
 Evaluate synthesized output and re-run if quality is insufficient.
