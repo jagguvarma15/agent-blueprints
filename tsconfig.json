@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
+    "target": "ES2023",
+    "lib": ["ES2023"],
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "strict": true,
@@ -19,6 +20,7 @@
   "exclude": [
     "node_modules",
     "website",
-    "**/*.test.ts"
+    "**/*.test.ts",
+    "patterns/**/code/typescript/mastra/**"
   ]
 }
