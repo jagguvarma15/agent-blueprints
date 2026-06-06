@@ -134,16 +134,16 @@ Operational rule: a fix without an eval is incomplete. Block the PR.
 | [Orchestrator-Worker](../workflows/orchestrator-worker/overview.md) | Decomposition quality (does the plan cover the task?); worker output quality. |
 | [Evaluator-Optimizer](../workflows/evaluator-optimizer/overview.md) | The pattern includes its own evaluator — but that evaluator needs evals too. |
 | [ReAct](../patterns/react/overview.md) | Tool-call correctness; iteration count distribution; final answer quality. |
-| [Plan & Execute](../patterns/plan-and-execute/overview.md) | Plan quality; per-step execution fidelity. |
-| [Tool Use](../patterns/tool-use/overview.md) | Function selection accuracy; argument schema match; refusal of unknown tools. |
+| [Plan & Execute](../patterns/plan_and_execute/overview.md) | Plan quality; per-step execution fidelity. |
+| [Tool Use](../patterns/tool_use/overview.md) | Function selection accuracy; argument schema match; refusal of unknown tools. |
 | [Memory](../patterns/memory/overview.md) | Retrieval relevance over stored memories; consistency across sessions. |
 | [RAG](../patterns/rag/overview.md) | Retrieval recall; faithfulness to retrieved context; citation presence. |
 | [Reflection](../patterns/reflection/overview.md) | Critic accuracy; improvement rate per iteration. |
 | [Routing](../patterns/routing/overview.md) | Classification accuracy; `unknown`/`escalate` recall. |
-| [Multi-Agent](../patterns/multi-agent/overview.md) | Per-agent correctness; cross-agent consistency; orchestration overhead. |
-| [Event-Driven](../patterns/event-driven/overview.md) | Idempotency under replay; correctness over event order permutations. |
+| [Multi-Agent](../patterns/multi_agent/overview.md) | Per-agent correctness; cross-agent consistency; orchestration overhead. |
+| [Event-Driven](../patterns/event_driven/overview.md) | Idempotency under replay; correctness over event order permutations. |
 | [Saga](../patterns/saga/overview.md) | Compensation correctness under simulated failures at each step. |
-| [Human in the Loop](../patterns/human-in-the-loop/overview.md) | Approval-rate signal; correct routing of high-stakes cases to human review. |
+| [Human in the Loop](../patterns/human_in_the_loop/overview.md) | Approval-rate signal; correct routing of high-stakes cases to human review. |
 
 ## Related
 

@@ -54,9 +54,9 @@ Each workflow pattern has a natural evolutionary path to one or more agent patte
 
 | Workflow | Evolves Into | The Bridge |
 |----------|-------------|------------|
-| Prompt Chaining | [ReAct](../patterns/react/overview.md), [Tool Use](../patterns/tool-use/overview.md), [Memory](../patterns/memory/overview.md) | Add dynamic tool selection and LLM-controlled looping |
+| Prompt Chaining | [ReAct](../patterns/react/overview.md), [Tool Use](../patterns/tool_use/overview.md), [Memory](../patterns/memory/overview.md) | Add dynamic tool selection and LLM-controlled looping |
 | Parallel Calls | [RAG](../patterns/rag/overview.md), [Routing](../patterns/routing/overview.md) | Add retrieval-based context or LLM-driven classification |
-| Orchestrator-Worker | [Plan & Execute](../patterns/plan-and-execute/overview.md), [Multi-Agent](../patterns/multi-agent/overview.md) | Add LLM-generated plans and autonomous worker agents |
+| Orchestrator-Worker | [Plan & Execute](../patterns/plan_and_execute/overview.md), [Multi-Agent](../patterns/multi_agent/overview.md) | Add LLM-generated plans and autonomous worker agents |
 | Evaluator-Optimizer | [Reflection](../patterns/reflection/overview.md) | Add self-generated critique and adaptive refinement |
 
 Each agent pattern includes an `evolution.md` document that traces this bridge in detail.

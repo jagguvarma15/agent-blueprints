@@ -128,7 +128,7 @@ The test suite ([`ops_crew/test_walkthrough.py`](ops_crew/test_walkthrough.py)) 
 ## Run it
 
 ```bash
-cd patterns/multi-agent/examples/ops_crew
+cd patterns/multi_agent/examples/ops_crew
 uv run --with pydantic python -m patterns.multi-agent.examples.ops_crew.main
 # or
 uv run --with pydantic --with pytest python -m pytest test_walkthrough.py -v

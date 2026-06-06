@@ -58,7 +58,7 @@ flowchart LR
 | Are designing a production system | [Composition](./composition/README.md) — how patterns combine |
 | Want a production-shaped agent | [Blueprints → Deployments](./composition/blueprints-to-deployments.md) — which patterns power which deployments |
 | Want to generate a starter project | [Blueprint → Spec → Scaffold](./composition/blueprint-to-spec-to-scaffold.md) — end-to-end walkthrough |
-| Are building a reactive system on a queue or stream | [Event-Driven Agents](./patterns/event-driven/overview.md) — async triggers, idempotency, DLQ |
+| Are building a reactive system on a queue or stream | [Event-Driven Agents](./patterns/event_driven/overview.md) — async triggers, idempotency, DLQ |
 | Want to avoid common mistakes | [Anti-Patterns](./foundations/anti-patterns.md) — what not to build |
 | Need to test your agent system | [Testing Strategies](./foundations/testing-strategies.md) — mock LLMs, evaluation, regression |
 
@@ -80,16 +80,16 @@ Agents are systems where **the LLM controls the flow**. The developer provides t
 | Pattern | What It Does | Evolves From | Overview | Design | Implementation |
 |---------|-------------|-------------|----------|--------|----------------|
 | **ReAct** | Reason-act loop with tools | Prompt Chaining | [overview](./patterns/react/overview.md) | [design](./patterns/react/design.md) | [impl](./patterns/react/implementation.md) |
-| **Plan & Execute** | Plan first, then execute steps | Orchestrator-Worker | [overview](./patterns/plan-and-execute/overview.md) | [design](./patterns/plan-and-execute/design.md) | [impl](./patterns/plan-and-execute/implementation.md) |
-| **Tool Use** | Structured function calling | Prompt Chaining | [overview](./patterns/tool-use/overview.md) | [design](./patterns/tool-use/design.md) | [impl](./patterns/tool-use/implementation.md) |
+| **Plan & Execute** | Plan first, then execute steps | Orchestrator-Worker | [overview](./patterns/plan_and_execute/overview.md) | [design](./patterns/plan_and_execute/design.md) | [impl](./patterns/plan_and_execute/implementation.md) |
+| **Tool Use** | Structured function calling | Prompt Chaining | [overview](./patterns/tool_use/overview.md) | [design](./patterns/tool_use/design.md) | [impl](./patterns/tool_use/implementation.md) |
 | **Memory** | Persistent state across sessions | Prompt Chaining | [overview](./patterns/memory/overview.md) | [design](./patterns/memory/design.md) | [impl](./patterns/memory/implementation.md) |
 | **RAG** | Retrieval-augmented generation | Parallel Calls | [overview](./patterns/rag/overview.md) | [design](./patterns/rag/design.md) | [impl](./patterns/rag/implementation.md) |
 | **Reflection** | Self-critique and refinement | Evaluator-Optimizer | [overview](./patterns/reflection/overview.md) | [design](./patterns/reflection/design.md) | [impl](./patterns/reflection/implementation.md) |
 | **Routing** | Intent classification + dispatch | Parallel Calls | [overview](./patterns/routing/overview.md) | [design](./patterns/routing/design.md) | [impl](./patterns/routing/implementation.md) |
-| **Multi-Agent** | Supervisor-worker delegation | Orchestrator-Worker + Routing | [overview](./patterns/multi-agent/overview.md) | [design](./patterns/multi-agent/design.md) | [impl](./patterns/multi-agent/implementation.md) |
-| **Event-Driven** | Agents triggered by stream/queue events | Tool Use | [overview](./patterns/event-driven/overview.md) | [design](./patterns/event-driven/design.md) | [impl](./patterns/event-driven/implementation.md) |
+| **Multi-Agent** | Supervisor-worker delegation | Orchestrator-Worker + Routing | [overview](./patterns/multi_agent/overview.md) | [design](./patterns/multi_agent/design.md) | [impl](./patterns/multi_agent/implementation.md) |
+| **Event-Driven** | Agents triggered by stream/queue events | Tool Use | [overview](./patterns/event_driven/overview.md) | [design](./patterns/event_driven/design.md) | [impl](./patterns/event_driven/implementation.md) |
 | **Saga** | Long-running multi-step processes with compensation | Tool Use + Prompt Chaining | [overview](./patterns/saga/overview.md) | [design](./patterns/saga/design.md) | [impl](./patterns/saga/implementation.md) |
-| **Human in the Loop** | Agent proposes, human approves before commit | Tool Use | [overview](./patterns/human-in-the-loop/overview.md) | [design](./patterns/human-in-the-loop/design.md) | [impl](./patterns/human-in-the-loop/implementation.md) |
+| **Human in the Loop** | Agent proposes, human approves before commit | Tool Use | [overview](./patterns/human_in_the_loop/overview.md) | [design](./patterns/human_in_the_loop/design.md) | [impl](./patterns/human_in_the_loop/implementation.md) |
 
 ## How Workflows Become Agents
 

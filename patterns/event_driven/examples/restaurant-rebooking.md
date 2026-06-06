@@ -125,7 +125,7 @@ The walkthrough's test suite ([`restaurant_rebooking/test_walkthrough.py`](resta
 ## Run it
 
 ```bash
-cd patterns/event-driven/examples/restaurant_rebooking
+cd patterns/event_driven/examples/restaurant_rebooking
 uv run --with pydantic python -m patterns.event-driven.examples.restaurant_rebooking.main
 # or
 uv run --with pydantic --with pytest python -m pytest test_walkthrough.py -v

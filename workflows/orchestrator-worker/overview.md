@@ -100,12 +100,12 @@ result = system.run("Produce a market analysis report for enterprise AI tooling 
 
 - When the decomposition is known in advance — use [Parallel Calls](../parallel-calls/overview.md) or [Prompt Chaining](../prompt-chaining/overview.md)
 - When subtasks need iterative refinement — combine with [Evaluator-Optimizer](../evaluator-optimizer/overview.md)
-- When workers need to act autonomously with tools — evolve to [Multi-Agent](../../patterns/multi-agent/overview.md)
+- When workers need to act autonomously with tools — evolve to [Multi-Agent](../../patterns/multi_agent/overview.md)
 - When the task is simple enough for a single LLM call — don't over-engineer
 
 ## Related Patterns
 
-- **Evolves into:** [Plan & Execute](../../patterns/plan-and-execute/overview.md) (add step tracking, replanning on failure), [Multi-Agent](../../patterns/multi-agent/overview.md) (give workers tools and autonomy)
+- **Evolves into:** [Plan & Execute](../../patterns/plan_and_execute/overview.md) (add step tracking, replanning on failure), [Multi-Agent](../../patterns/multi_agent/overview.md) (give workers tools and autonomy)
 - **Combines with:** [Evaluator-Optimizer](../evaluator-optimizer/overview.md) (evaluate synthesized output), [Parallel Calls](../parallel-calls/overview.md) (for the worker execution phase)
 - **Simpler alternative:** [Parallel Calls](../parallel-calls/overview.md) (when decomposition is code-defined)
 

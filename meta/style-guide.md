@@ -2,7 +2,7 @@
 
 Rules for writing documentation in this repository. Consistency matters — every document should feel like it was written by the same team.
 
-> **Exemplar:** [`patterns/multi-agent/`](../patterns/multi-agent/) is the canonical reference. When in doubt about structure, depth, or section choice, match it.
+> **Exemplar:** [`patterns/multi_agent/`](../patterns/multi_agent/) is the canonical reference. When in doubt about structure, depth, or section choice, match it.
 
 ## Voice and Tone
 

@@ -8,7 +8,7 @@ We welcome contributions to agent-blueprints. This guide explains how to add new
 If you want to document a new workflow or agent pattern:
 
 1. **Open an issue first** — Use the [New Pattern Proposal](./../.github/ISSUE_TEMPLATE/blueprint-proposal.yml) template. Describe the pattern, its use cases, and how it relates to existing patterns. Get alignment before writing.
-2. **Mirror the exemplar.** [`patterns/multi-agent/`](../patterns/multi-agent/) is the canonical reference for new patterns. Match its structural sections in `design.md` (components, data flow, topology choices, failure modes, scaling considerations, observability hooks, composition) and its tier depth. New `design.md` files should land at or above the multi-agent line count when complete.
+2. **Mirror the exemplar.** [`patterns/multi_agent/`](../patterns/multi_agent/) is the canonical reference for new patterns. Match its structural sections in `design.md` (components, data flow, topology choices, failure modes, scaling considerations, observability hooks, composition) and its tier depth. New `design.md` files should land at or above the multi-agent line count when complete.
 3. **Follow the full structure** — Every pattern needs:
    - `overview.md` (Tier 1) — architecture diagram, how it works, minimal example, tradeoffs
    - `design.md` (Tier 2) — component breakdown, data flow, error handling, scaling
@@ -68,7 +68,7 @@ If this is your first contribution, these tasks are sized for one or two evening
 - **Add a framework column.** [`foundations/frameworks-and-integrations.md`](../foundations/frameworks-and-integrations.md) maps patterns to frameworks. If you've worked with a framework not on the table — or notice a cell that's wrong — that's a high-value, well-scoped contribution.
 - **Add a reference architecture.** [`composition/reference-architectures.md`](../composition/reference-architectures.md) collects example composed systems. A new architecture in the existing 10-section structure is a meaningful contribution that doesn't require touching the pattern docs themselves.
 - **Improve an anti-composition example.** [`composition/anti-compositions.md`](../composition/anti-compositions.md) names pattern pairs that fail together. If you've seen one of these in production, adding the concrete failure mode (carefully anonymized) makes the doc real.
-- **Expand a thin design doc.** Per-pattern observability or scaling sections vary in depth. [`patterns/multi-agent/design.md`](../patterns/multi-agent/design.md) is the canonical exemplar; bring another design doc closer to its structure.
+- **Expand a thin design doc.** Per-pattern observability or scaling sections vary in depth. [`patterns/multi_agent/design.md`](../patterns/multi_agent/design.md) is the canonical exemplar; bring another design doc closer to its structure.
 
 These are tracked with the `good first issue` label on GitHub. If you'd like to claim one, comment on the issue first to avoid duplicate work.
 

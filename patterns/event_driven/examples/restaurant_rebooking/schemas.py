@@ -1,7 +1,7 @@
 """Domain schemas for the restaurant-rebooking event-driven overlay.
 
 Extends the canonical Event-Driven state in
-``patterns/event-driven/schemas/state.py`` with restaurant-domain types:
+``patterns/event_driven/schemas/state.py`` with restaurant-domain types:
 ``Party``, ``Reservation``, ``Slot``, the agent's per-step decisions
 (``EligibilityDecision``, ``SlotRanking``, ``NotificationDraft``), and the
 terminal ``RebookingOutcome`` that the actor emits.

@@ -2,7 +2,7 @@
 
 Three roles — triage, runbook_executor, incident_writer — each consume
 typed inputs and produce typed outputs. The schemas here extend the
-canonical multi-agent state in ``patterns/multi-agent/schemas/state.py``:
+canonical multi-agent state in ``patterns/multi_agent/schemas/state.py``:
 the ``IncidentReport`` returned by the actor is what the supervisor
 hands the user when the crew finishes.
 
