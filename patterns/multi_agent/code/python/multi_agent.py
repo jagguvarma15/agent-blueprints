@@ -14,8 +14,20 @@ import json
 from dataclasses import dataclass, field
 from typing import Callable, Protocol
 
+from patterns.multi_agent.schemas.state import (
+    AgentResult,
+    MultiAgentState,
+    SupervisorDecision,
+)
+
 
 # ── Interface ─────────────────────────────────────────────────────────────────
+#
+# Local types (SubAgent, Delegation, AgentOutput, MultiAgentResult) wrap
+# the runtime concerns of an in-process supervisor; the canonical
+# ``MultiAgentState`` / ``AgentResult`` / ``SupervisorDecision`` contract
+# imported above is what recipes target and what framework adapters bind
+# their state graph to.
 
 class LLM(Protocol):
     def generate(self, messages: list[dict]) -> str: ...

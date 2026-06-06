@@ -14,6 +14,8 @@ import json
 from dataclasses import dataclass, field
 from typing import Any, Callable, Protocol
 
+from patterns.tool_use.schemas.state import ToolCall, ToolResult, ToolUseState
+
 
 # ── Interfaces ────────────────────────────────────────────────────────────────
 
@@ -44,12 +46,6 @@ class Tool:
     def run(self, arguments: dict) -> str:
         result = self.fn(**arguments)
         return json.dumps(result) if not isinstance(result, str) else result
-
-
-@dataclass
-class ToolCall:
-    name: str
-    arguments: dict
 
 
 @dataclass
@@ -93,14 +89,14 @@ class ToolUseAgent:
     def _parse_tool_call(self, response: str) -> ToolCall | None:
         """
         Parse a tool call from the LLM response.
-        Expects JSON: {"tool": "name", "arguments": {...}}
+        Expects JSON: {"tool": "name", "args": {...}}
         Real LLM providers return this in a structured field, not inline text.
         This parser handles the text-based fallback.
         """
         try:
             data = json.loads(response)
-            if "tool" in data and "arguments" in data:
-                return ToolCall(name=data["tool"], arguments=data["arguments"])
+            if "tool" in data and ("args" in data or "arguments" in data):
+                return ToolCall(tool=data["tool"], args=data.get("args") or data["arguments"])
         except (json.JSONDecodeError, KeyError):
             pass
         return None
@@ -128,16 +124,16 @@ class ToolUseAgent:
                 )
 
             # Execute tool
-            tool = self.tools.get(tool_call.name)
-            tool_result = tool.run(tool_call.arguments) if tool else f"Unknown tool: {tool_call.name}"
+            tool = self.tools.get(tool_call.tool)
+            tool_result = tool.run(tool_call.args) if tool else f"Unknown tool: {tool_call.tool}"
             tool_calls_made += 1
 
             turns.append(Turn(role="assistant", content=response, tool_call=tool_call))
-            turns.append(Turn(role="tool", content=tool_result, tool_name=tool_call.name))
+            turns.append(Turn(role="tool", content=tool_result, tool_name=tool_call.tool))
 
             # Inject result back into conversation
             messages.append({"role": "assistant", "content": response})
-            messages.append({"role": "tool", "content": tool_result, "name": tool_call.name})
+            messages.append({"role": "tool", "content": tool_result, "name": tool_call.tool})
 
         return ToolUseResult(
             final_response="Reached max tool call rounds.",
@@ -157,7 +153,7 @@ if __name__ == "__main__":
         def generate(self, messages: list[dict], tools: list[dict] | None = None) -> str:
             self._round += 1
             if self._round == 1:
-                return json.dumps({"tool": "get_weather", "arguments": {"city": "Tokyo"}})
+                return json.dumps({"tool": "get_weather", "args": {"city": "Tokyo"}})
             return "The current weather in Tokyo is 22°C and partly cloudy."
 
     agent = ToolUseAgent(

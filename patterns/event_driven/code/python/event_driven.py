@@ -16,6 +16,8 @@ import json
 from dataclasses import dataclass, field
 from typing import Any, Callable, Protocol
 
+from patterns.event_driven.schemas.state import Event, EventDrivenState, Outcome
+
 
 # ── Interfaces ────────────────────────────────────────────────────────────────
 
@@ -46,7 +48,15 @@ class Agent(Protocol):
 
 
 @dataclass
-class Outcome:
+class DeliveryOutcome:
+    """Per-delivery report from the consumer loop.
+
+    Distinct from the canonical :class:`patterns.event_driven.schemas.state.Outcome`,
+    which describes the agent's action on a Case. This dataclass reports
+    what happened to one delivery attempt (acked / deduped / dlq / retry_pending)
+    — the consumer-loop concern, not the agent-decision concern.
+    """
+
     event_id: str
     event_type: str
     status: str  # "acked" | "deduped" | "dlq" | "retry_pending"
@@ -107,7 +117,7 @@ class EventDrivenConsumer:
                 await self._handle_one(event_id, payload)
         return self.stats
 
-    async def _handle_one(self, event_id: str, payload: dict) -> Outcome:
+    async def _handle_one(self, event_id: str, payload: dict) -> DeliveryOutcome:
         self.stats.events_seen += 1
         event_type = payload.get("event_type", "unknown")
         idem_key = f"idemp:{self.handler_name}:{event_id}"
@@ -117,7 +127,7 @@ class EventDrivenConsumer:
         if not claimed:
             await self.source.ack(event_id)
             self.stats.events_deduped += 1
-            return Outcome(event_id=event_id, event_type=event_type, status="deduped")
+            return DeliveryOutcome(event_id=event_id, event_type=event_type, status="deduped")
 
         # Agent run.
         try:
@@ -127,20 +137,20 @@ class EventDrivenConsumer:
             self.stats.retries += 1
             self._bump_error(type(exc).__name__)
             # Don't ACK — broker redelivers after idle-ms.
-            return Outcome(event_id=event_id, event_type=event_type, status="retry_pending", error=str(exc))
+            return DeliveryOutcome(event_id=event_id, event_type=event_type, status="retry_pending", error=str(exc))
         except Exception as exc:  # permanent failure
             await self.store.release(idem_key)
             await self._route_to_dlq(event_id, payload, exc)
             await self.source.ack(event_id)  # ack after DLQ so source stops redelivering
             self.stats.events_dlq += 1
             self._bump_error(type(exc).__name__)
-            return Outcome(event_id=event_id, event_type=event_type, status="dlq", error=str(exc))
+            return DeliveryOutcome(event_id=event_id, event_type=event_type, status="dlq", error=str(exc))
 
         # Success — mark completed, persist, ACK.
         await self.store.mark_completed(idem_key, ttl_seconds=DONE_TTL_SECONDS)
         await self.source.ack(event_id)
         self.stats.events_acked += 1
-        return Outcome(event_id=event_id, event_type=event_type, status="acked", result=result)
+        return DeliveryOutcome(event_id=event_id, event_type=event_type, status="acked", result=result)
 
     async def _route_to_dlq(self, event_id: str, payload: dict, exc: Exception) -> None:
         envelope = {

@@ -15,8 +15,14 @@ import json
 from dataclasses import dataclass, field
 from typing import Protocol
 
+from patterns.memory.schemas.state import MemoryEntry, MemoryState, Recall
+
 
 # ── Interfaces ────────────────────────────────────────────────────────────────
+#
+# This sibling demonstrates an in-process working-memory + long-term-store
+# implementation; recipes target the canonical ``MemoryState`` / ``MemoryEntry``
+# / ``Recall`` contract imported above to bind retrieval-result shapes.
 
 class LLM(Protocol):
     def generate(self, messages: list[dict]) -> str: ...

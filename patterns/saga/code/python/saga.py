@@ -22,8 +22,17 @@ import time
 from dataclasses import dataclass, field
 from typing import Any, Callable, Literal
 
+from patterns.saga.schemas.state import Compensation, SagaState, SagaStep
+
 
 # ── Core types ────────────────────────────────────────────────────────────────
+#
+# The sibling's local ``Step`` dataclass wraps a ``(do, undo)`` callable
+# pair so the example coordinator can drive execution + compensation in
+# one process. The canonical contract recipes target is :class:`SagaStep`
+# (the declarative step record) plus :class:`Compensation` (per-step
+# compensation status) imported above — different shape because the
+# canonical schema is declarative, not call-bound.
 
 
 @dataclass

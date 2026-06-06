@@ -22,8 +22,17 @@ import uuid
 from dataclasses import dataclass, field
 from typing import Any, Callable, Literal, Protocol
 
+from patterns.human_in_the_loop.schemas.state import HitlState, HumanInput, Interrupt
+
 
 # ── Core types ────────────────────────────────────────────────────────────────
+#
+# The dataclasses below (Approval / Decision / AuditEntry) are local to
+# this sibling's illustrative gate API — the operational shape an in-
+# process approver workflow needs. The canonical contract recipes target
+# is ``HitlState`` / ``Interrupt`` / ``HumanInput`` imported above; an
+# adapter pairs the two by translating Approval ↔ Interrupt and Decision
+# ↔ HumanInput at the surface boundary.
 
 
 @dataclass

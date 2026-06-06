@@ -14,6 +14,13 @@ import json
 from dataclasses import dataclass, field
 from typing import Callable, Protocol
 
+from patterns.plan_and_execute.schemas.state import (
+    ExecutionResult,
+    Plan,
+    PlanExecuteState,
+    Step,
+)
+
 
 # ── Interfaces ────────────────────────────────────────────────────────────────
 
@@ -25,6 +32,14 @@ class LLM(Protocol):
 
 @dataclass
 class PlanStep:
+    """Runtime in-progress step used by the sibling's example executor.
+
+    The canonical declarative shape is :class:`Step` (imported above);
+    ``PlanStep`` adds mutable execution-tracking fields (``output``,
+    ``status``) that recipes don't bind to. Use ``Step`` for plan
+    contracts and ``PlanStep`` for in-flight bookkeeping.
+    """
+
     index: int
     description: str
     tool: str | None = None         # Optional tool name for this step
@@ -33,7 +48,14 @@ class PlanStep:
 
 
 @dataclass
-class ExecutionResult:
+class PlanRunResult:
+    """Wrap-up for one full Plan run.
+
+    Distinct from the canonical :class:`ExecutionResult`, which records
+    one step's outcome. ``PlanRunResult`` aggregates an entire execution
+    (final output + per-step trail + replan flag).
+    """
+
     final_output: str
     plan: list[PlanStep] = field(default_factory=list)
     replanned: bool = False
@@ -126,7 +148,7 @@ class PlanAndExecute:
         )}]
         return self.executor.generate(messages)
 
-    def run(self, task: str) -> ExecutionResult:
+    def run(self, task: str) -> PlanRunResult:
         steps = self._plan(task)
         context_parts: list[str] = []
         replanned = False
@@ -172,7 +194,7 @@ class PlanAndExecute:
                     break
 
         final = context_parts[-1] if context_parts else "No output produced."
-        return ExecutionResult(final_output=final, plan=steps, replanned=replanned)
+        return PlanRunResult(final_output=final, plan=steps, replanned=replanned)
 
 
 # ── Example ───────────────────────────────────────────────────────────────────

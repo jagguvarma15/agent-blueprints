@@ -13,8 +13,15 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Protocol
 
+from patterns.reflection.schemas.state import Critique, Draft, ReflectionState
+
 
 # ── Interface ─────────────────────────────────────────────────────────────────
+#
+# This sibling tracks per-iteration ``ReflectionStep`` / ``ReflectionResult``
+# state for an in-process self-critique loop; the canonical contract recipes
+# target is ``ReflectionState`` (with ``Draft`` + ``Critique`` building
+# blocks) imported above.
 
 class LLM(Protocol):
     def generate(self, messages: list[dict]) -> str: ...
