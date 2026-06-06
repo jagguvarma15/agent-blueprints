@@ -1,10 +1,12 @@
 """Domain schemas for the ops-crew multi-agent overlay.
 
 Three roles — triage, runbook_executor, incident_writer — each consume
-typed inputs and produce typed outputs. The schemas here extend the
-canonical multi-agent state in ``patterns/multi_agent/schemas/state.py``:
-the ``IncidentReport`` returned by the actor is what the supervisor
-hands the user when the crew finishes.
+typed inputs and produce typed outputs. Composes with the canonical
+multi-agent state in ``patterns/multi_agent/schemas/state.py``:
+:class:`IncidentReport` (the writer role's output) carries an
+``agent_results`` field of canonical :class:`AgentResult` so each crew
+member's contribution is visible end-to-end without the overlay having
+to re-derive a step trail.
 
 All Pydantic v2.
 """
@@ -15,6 +17,8 @@ from datetime import datetime
 from enum import Enum
 
 from pydantic import BaseModel, ConfigDict, Field
+
+from patterns.multi_agent.schemas.state import AgentResult, MultiAgentState  # noqa: F401
 
 
 class Severity(str, Enum):
@@ -91,6 +95,10 @@ class IncidentReport(BaseModel):
 
     What the crew hands back to the on-call when the flow finishes; gets
     posted to the incident's Slack channel and pasted into the post-mortem.
+
+    ``agent_results`` carries the canonical
+    :class:`patterns.multi_agent.schemas.state.AgentResult` for each crew
+    member so per-agent traces and token costs survive past the report.
     """
 
     incident_id: str
@@ -101,3 +109,7 @@ class IncidentReport(BaseModel):
     )
     follow_ups: list[str] = Field(default_factory=list)
     slack_channel: str
+    agent_results: list[AgentResult] = Field(
+        default_factory=list,
+        description="Per-crew-member contribution log in canonical AgentResult shape.",
+    )

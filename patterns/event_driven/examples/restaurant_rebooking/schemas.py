@@ -1,10 +1,13 @@
 """Domain schemas for the restaurant-rebooking event-driven overlay.
 
-Extends the canonical Event-Driven state in
-``patterns/event_driven/schemas/state.py`` with restaurant-domain types:
+Composes with the canonical Event-Driven state in
+``patterns/event_driven/schemas/state.py`` (see :class:`Case`,
+:class:`Event`) and adds the restaurant-domain types this overlay needs:
 ``Party``, ``Reservation``, ``Slot``, the agent's per-step decisions
 (``EligibilityDecision``, ``SlotRanking``, ``NotificationDraft``), and the
-terminal ``RebookingOutcome`` that the actor emits.
+terminal :class:`RebookingOutcome` the actor emits — which references the
+canonical :class:`Case` so the overlay outcome can be traced back to the
+event that drove it.
 
 All Pydantic v2. Field descriptions are user-visible to the LLM via the
 JSON Schemas generated for tool / structured-output calls.
@@ -16,6 +19,8 @@ from datetime import datetime
 from enum import Enum
 
 from pydantic import BaseModel, ConfigDict, Field
+
+from patterns.event_driven.schemas.state import Case, Event  # noqa: F401
 
 
 class Tier(str, Enum):
@@ -95,8 +100,18 @@ class NotificationDraft(BaseModel):
 
 
 class RebookingOutcome(BaseModel):
-    """Terminal outcome the actor persists + emits."""
+    """Terminal outcome the actor persists + emits.
 
+    Carries the originating canonical :class:`Case` so downstream
+    consumers (audit log, replay, DLQ tooling) can link this overlay-
+    specific outcome back to the event-driven contract without re-
+    parsing the original event payload.
+    """
+
+    case: Case | None = Field(
+        default=None,
+        description="The enriched Case this outcome was produced from.",
+    )
     action: str = Field(
         description=(
             "`rebooked` / `notify_host_only` / `declined` / `dlq` — the actor's "
