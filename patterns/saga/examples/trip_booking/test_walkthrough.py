@@ -56,32 +56,22 @@ def test_mid_saga_failure_compensates_cleanly() -> None:
 
 
 def test_compensation_failure_yields_partially_compensated() -> None:
-    """trip_003: flight booking succeeds, hotel booking is forced to fail;
-    cancelling the flight succeeds, BUT before that, the saga gets a far
-    enough into the cancellation chain that the hotel-side cancel raises
-    (the forced compensation failure pattern in the tools). The coordinator
-    stops early with `partially_compensated` and names the runbook."""
+    """trip_003: car booking fails after flight + hotel succeed; the
+    hotel cancel raises `vendor_timeout` (a recoverable failure); the
+    coordinator decides to continue compensating; the flight cancel
+    succeeds; one residual hotel booking remains -> the saga's terminal
+    state is `partially_compensated`.
 
-    # trip_003 is configured so the FLIGHT booking is forced to fail at
-    # book time (covered by tools._FORCE_FAILURE_LEG), but no legs have
-    # been booked yet -> compensations list is empty and the terminal
-    # state is `compensated` with no outcomes. To exercise the partial
-    # path we override the forcing here by using a saga id whose hotel
-    # cancel fails after the saga has booked flight + hotel.
-    #
-    # The mock table is fixed; use trip_003 which the tools module
-    # configures with a forced flight failure AND a hotel cancel failure
-    # so we get the partial path when manually overriding flight booking
-    # to succeed below.
-    #
-    # For a clean offline test we override the canned scenario by
-    # directly executing the compensation path on a hand-built failed
-    # booking. The full path is exercised by the script runner; this
-    # test pins the terminal state.
+    The full main-path is verified in the offline smoke run; this test
+    pins the contract by driving ``_compensate`` directly with a
+    hand-built ``completed`` list so the partial-compensation path is
+    independently verifiable.
+    """
+
+    from datetime import UTC, datetime
 
     from .main import _compensate, _SagaRuntime
     from .schemas import Leg, LegKind
-    from datetime import datetime, UTC
 
     base = datetime(2026, 7, 4, 9, 0, tzinfo=UTC)
     completed = [
