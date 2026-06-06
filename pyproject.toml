@@ -1,0 +1,99 @@
+[project]
+name = "agent-blueprints"
+version = "0.0.0"
+description = "Pattern + framework + workflow blueprints for AI agents."
+requires-python = ">=3.11"
+# Intentionally not published. The pyproject.toml exists so the repo can ship
+# a single ruff + mypy + pytest contract for the patterns/, workflows/, and
+# composition/ trees plus the tests/ harness. Dependencies the demo snippets
+# import are installed per-snippet via `uv run --with ...` rather than
+# pinned here — keeps the root contract small and avoids pulling LangGraph,
+# Pydantic AI, CrewAI, etc. into every contributor's local env.
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "pydantic>=2",
+    "pytest>=8",
+]
+
+# ---------------------------------------------------------------------------
+# ruff — lint + format. Same select set as the agent-scaffold repo so the
+# style contract is consistent across the three sister repos.
+# ---------------------------------------------------------------------------
+
+[tool.ruff]
+target-version = "py311"
+# 120 is the working line length for pattern code. The snippets carry long
+# inline literal lists (event payloads, mock dictionaries, role descriptions)
+# whose readability suffers from artificial wrapping; 120 hits the
+# practical width without softening the lint pass.
+line-length = 120
+extend-exclude = [
+    "website",
+    ".venv",
+    "**/__pycache__",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+# Demo-code-friendly carve-outs:
+# - E501 (line too long): the formatter handles routine cases; intentional
+#   long literals (mock dictionaries, role descriptions, prompt strings)
+#   are part of the illustrative shape. Lint over the 120 limit is noise.
+# - UP042 (str + Enum → StrEnum): the B5 overlay schemas inherit from
+#   ``(str, Enum)`` deliberately so the JSON dump shape stays the string
+#   variant the LLM emits. StrEnum is a 3.11 addition but the inheritance
+#   form is the documented Pydantic-friendly pattern.
+ignore = ["E501", "UP042"]
+
+[tool.ruff.lint.per-file-ignores]
+# Tool Use's calculator example deliberately demonstrates ``eval()`` as the
+# minimal arithmetic backend. The file carries an inline ``# noqa: S307``
+# already; the file-level pin keeps that exemption explicit at config level.
+"patterns/tool_use/code/python/tool_use.py" = ["S307"]
+# Framework-agnostic siblings and framework adapters carry canonical-state
+# imports the body doesn't reference directly — they document the binding
+# contract recipes still resolve against. Silence F401 there rather than
+# threading ``# noqa: F401`` across every import line.
+"patterns/*/code/python/*.py" = ["F401"]
+"patterns/*/code/python/*/*.py" = ["F401"]
+"patterns/*/examples/*/schemas.py" = ["F401"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+
+# ---------------------------------------------------------------------------
+# mypy — strict on the test harness, loose on demo snippets. The patterns
+# are illustrative, not production; demanding full typing on every closure
+# would force ceremony that obscures the pattern.
+# ---------------------------------------------------------------------------
+
+[tool.mypy]
+python_version = "3.11"
+strict = false
+ignore_missing_imports = true
+follow_imports = "silent"
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+strict = true
+
+[[tool.mypy.overrides]]
+# Demo snippets — typing is documentation, not contract. Loose checks here
+# preserve readability without sacrificing the convention test.
+module = ["patterns.*", "workflows.*", "composition.*"]
+ignore_errors = true
+
+# ---------------------------------------------------------------------------
+# pytest — same strict-markers discipline as the scaffold repo.
+# ---------------------------------------------------------------------------
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--strict-markers -ra"
+markers = [
+    "integration: opt-in tests that touch the network or require external services",
+]

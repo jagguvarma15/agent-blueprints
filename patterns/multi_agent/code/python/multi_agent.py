@@ -8,18 +8,19 @@ Sub-agents are themselves autonomous (each can use tools, have memory, etc.).
 Design doc:  ../../design.md
 Overview:    ../../overview.md
 """
+
 from __future__ import annotations
 
 import json
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Callable, Protocol
+from typing import Protocol
 
-from patterns.multi_agent.schemas.state import (
+from patterns.multi_agent.schemas.state import (  # noqa: F401
     AgentResult,
     MultiAgentState,
     SupervisorDecision,
 )
-
 
 # ── Interface ─────────────────────────────────────────────────────────────────
 #
@@ -29,17 +30,19 @@ from patterns.multi_agent.schemas.state import (
 # imported above is what recipes target and what framework adapters bind
 # their state graph to.
 
+
 class LLM(Protocol):
     def generate(self, messages: list[dict]) -> str: ...
 
 
 # ── Core types ────────────────────────────────────────────────────────────────
 
+
 @dataclass
 class SubAgent:
     name: str
-    description: str                  # What this agent specializes in
-    run: Callable[[str, str], str]    # fn(task, context) -> output
+    description: str  # What this agent specializes in
+    run: Callable[[str, str], str]  # fn(task, context) -> output
 
 
 @dataclass
@@ -97,6 +100,7 @@ Produce the complete, unified final output."""
 
 # ── Supervisor ────────────────────────────────────────────────────────────────
 
+
 class MultiAgentSystem:
     """
     A supervisor that orchestrates multiple specialized sub-agents.
@@ -122,12 +126,10 @@ class MultiAgentSystem:
 
     def _decide(self, task: str, context: str) -> list[Delegation] | None:
         """Returns list of delegations, or None if done."""
-        agent_list = "\n".join(
-            f"- {a.name}: {a.description}" for a in self.agents.values()
-        )
-        messages = [{"role": "user", "content": DELEGATE_PROMPT.format(
-            agents=agent_list, task=task, context=context or "None"
-        )}]
+        agent_list = "\n".join(f"- {a.name}: {a.description}" for a in self.agents.values())
+        messages = [
+            {"role": "user", "content": DELEGATE_PROMPT.format(agents=agent_list, task=task, context=context or "None")}
+        ]
         raw = self.supervisor.generate(messages)
         try:
             data = json.loads(raw)
@@ -155,13 +157,8 @@ class MultiAgentSystem:
         )
 
     def _synthesize(self, task: str, outputs: list[AgentOutput]) -> str:
-        formatted = "\n\n".join(
-            f"[{o.agent_name}]\nTask: {o.task}\nOutput: {o.output}"
-            for o in outputs
-        )
-        messages = [{"role": "user", "content": SYNTHESIZE_PROMPT.format(
-            task=task, outputs=formatted
-        )}]
+        formatted = "\n\n".join(f"[{o.agent_name}]\nTask: {o.task}\nOutput: {o.output}" for o in outputs)
+        messages = [{"role": "user", "content": SYNTHESIZE_PROMPT.format(task=task, outputs=formatted)}]
         return self.supervisor.generate(messages)
 
     def run(self, task: str) -> MultiAgentResult:
@@ -205,16 +202,19 @@ if __name__ == "__main__":
             content = messages[-1]["content"]
             if "Available agents" in content:
                 if self._round <= 1:
-                    return json.dumps([
-                        {"agent": "researcher", "task": "Research current LLM agent frameworks"},
-                        {"agent": "writer", "task": "Write a summary based on research"},
-                    ])
+                    return json.dumps(
+                        [
+                            {"agent": "researcher", "task": "Research current LLM agent frameworks"},
+                            {"agent": "writer", "task": "Write a summary based on research"},
+                        ]
+                    )
                 return json.dumps({"done": True, "reason": "All sub-tasks complete"})
             return f"[synthesized output from {len(messages)} messages]"
 
     def make_agent_fn(name: str) -> Callable[[str, str], str]:
         def fn(task: str, context: str) -> str:
             return f"[{name} output] Task: {task[:50]} | Context: {context[:30] or 'none'}"
+
         return fn
 
     system = MultiAgentSystem(

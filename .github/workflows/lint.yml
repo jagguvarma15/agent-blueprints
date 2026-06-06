@@ -1,0 +1,40 @@
+name: lint
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+      - name: ruff check
+        run: uv run --with 'ruff>=0.6' ruff check .
+      - name: ruff format --check
+        run: uv run --with 'ruff>=0.6' ruff format --check .
+      - name: mypy (tests/)
+        run: uv run --with 'mypy>=1.10' --with 'pydantic>=2' --with pytest mypy --config-file pyproject.toml tests/
+      - name: pytest
+        run: uv run --with 'pydantic>=2' --with pytest pytest tests/
+
+  typescript:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      # `cache: pnpm` requires a pre-existing pnpm-lock.yaml; enable it once
+      # the lockfile is committed alongside this PR or in a follow-up.
+      - name: pnpm install
+        run: pnpm install --no-frozen-lockfile
+      - name: pnpm typecheck
+        run: pnpm typecheck

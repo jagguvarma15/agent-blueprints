@@ -8,14 +8,16 @@ it has enough information to produce a final answer.
 Design doc:  ../../design.md
 Overview:    ../../overview.md
 """
+
 from __future__ import annotations
 
 import re
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Callable, Protocol
-
+from typing import Protocol
 
 # ── Interfaces ────────────────────────────────────────────────────────────────
+
 
 class LLM(Protocol):
     def generate(self, messages: list[dict]) -> str: ...
@@ -23,11 +25,12 @@ class LLM(Protocol):
 
 # ── Core types ────────────────────────────────────────────────────────────────
 
+
 @dataclass
 class Tool:
     name: str
     description: str
-    fn: Callable[..., str]          # Returns a string observation
+    fn: Callable[..., str]  # Returns a string observation
 
     def run(self, input: str) -> str:
         return self.fn(input)
@@ -36,7 +39,7 @@ class Tool:
 @dataclass
 class Step:
     thought: str
-    action: str | None              # None means final answer
+    action: str | None  # None means final answer
     action_input: str | None
     observation: str | None
 
@@ -89,9 +92,7 @@ class ReActAgent:
         self.system_prompt = system_prompt
 
     def _build_system(self) -> str:
-        tool_descriptions = "\n".join(
-            f"- {t.name}: {t.description}" for t in self.tools.values()
-        )
+        tool_descriptions = "\n".join(f"- {t.name}: {t.description}" for t in self.tools.values())
         return self.system_prompt.format(tool_descriptions=tool_descriptions)
 
     def _parse_response(self, text: str) -> tuple[str, str | None, str | None, str | None]:
@@ -133,12 +134,14 @@ class ReActAgent:
                 except Exception as exc:
                     observation = f"Error: {exc}"
 
-            steps.append(Step(
-                thought=thought,
-                action=action,
-                action_input=action_input,
-                observation=observation,
-            ))
+            steps.append(
+                Step(
+                    thought=thought,
+                    action=action,
+                    action_input=action_input,
+                    observation=observation,
+                )
+            )
 
             # Append assistant turn + observation to history
             messages.append({"role": "assistant", "content": response})
@@ -171,7 +174,9 @@ if __name__ == "__main__":
             Tool(
                 name="search",
                 description="Search the web for information",
-                fn=lambda q: f"Search results for '{q}': [ReAct: Synergizing Reasoning and Acting in Language Models, Yao et al. 2022]",
+                fn=lambda q: (
+                    f"Search results for '{q}': [ReAct: Synergizing Reasoning and Acting in Language Models, Yao et al. 2022]"
+                ),
             ),
             Tool(
                 name="calculator",

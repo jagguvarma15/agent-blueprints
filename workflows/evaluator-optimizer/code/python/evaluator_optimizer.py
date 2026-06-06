@@ -8,13 +8,14 @@ next generation. Loops until score meets threshold or max iterations.
 Design doc:  ../../design.md
 Overview:    ../../overview.md
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import Protocol
 
-
 # ── LLM interface ─────────────────────────────────────────────────────────────
+
 
 class LLM(Protocol):
     def generate(self, messages: list[dict]) -> str: ...
@@ -22,11 +23,12 @@ class LLM(Protocol):
 
 # ── Core types ────────────────────────────────────────────────────────────────
 
+
 @dataclass
 class Iteration:
     number: int
     output: str
-    score: float         # 0.0 – 1.0
+    score: float  # 0.0 – 1.0
     feedback: str
     passed: bool
 
@@ -40,6 +42,7 @@ class EvalResult:
 
 
 # ── Implementation ────────────────────────────────────────────────────────────
+
 
 class EvaluatorOptimizer:
     """
@@ -89,15 +92,13 @@ Produce an improved version that addresses all feedback points."""
         if previous is None:
             messages = [{"role": "user", "content": task}]
         else:
-            messages = [{"role": "user", "content": self.IMPROVE_PROMPT.format(
-                task=task, output=previous, feedback=feedback
-            )}]
+            messages = [
+                {"role": "user", "content": self.IMPROVE_PROMPT.format(task=task, output=previous, feedback=feedback)}
+            ]
         return self.generator.generate(messages)
 
     def _evaluate(self, output: str) -> tuple[float, str, bool]:
-        messages = [{"role": "user", "content": self.EVALUATE_PROMPT.format(
-            criteria=self.criteria, output=output
-        )}]
+        messages = [{"role": "user", "content": self.EVALUATE_PROMPT.format(criteria=self.criteria, output=output)}]
         raw = self.evaluator.generate(messages)
 
         # Parse structured response
@@ -124,13 +125,15 @@ Produce an improved version that addresses all feedback points."""
             output = self._generate(task, output, feedback)
             score, feedback, passed = self._evaluate(output)
 
-            iterations.append(Iteration(
-                number=i + 1,
-                output=output,
-                score=score,
-                feedback=feedback,
-                passed=passed,
-            ))
+            iterations.append(
+                Iteration(
+                    number=i + 1,
+                    output=output,
+                    score=score,
+                    feedback=feedback,
+                    passed=passed,
+                )
+            )
 
             if passed or score >= self.threshold:
                 return EvalResult(

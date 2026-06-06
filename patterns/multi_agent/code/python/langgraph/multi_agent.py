@@ -97,7 +97,10 @@ def researcher(state: GraphState) -> GraphState:
         "You find and summarize factual information from sources. Be concise.",
         last["sub_task"],
     )
-    return {**state, "delegations": [*state["delegations"], {"agent": "researcher", "sub_task": last["sub_task"], "output": output}]}
+    return {
+        **state,
+        "delegations": [*state["delegations"], {"agent": "researcher", "sub_task": last["sub_task"], "output": output}],
+    }
 
 
 def writer(state: GraphState) -> GraphState:
@@ -107,7 +110,10 @@ def writer(state: GraphState) -> GraphState:
         "You write clear, structured content based on provided research.",
         last["sub_task"],
     )
-    return {**state, "delegations": [*state["delegations"], {"agent": "writer", "sub_task": last["sub_task"], "output": output}]}
+    return {
+        **state,
+        "delegations": [*state["delegations"], {"agent": "writer", "sub_task": last["sub_task"], "output": output}],
+    }
 
 
 def reviewer(state: GraphState) -> GraphState:
@@ -117,7 +123,10 @@ def reviewer(state: GraphState) -> GraphState:
         "You review content for accuracy, clarity, and completeness. Return a short verdict.",
         last["sub_task"],
     )
-    return {**state, "delegations": [*state["delegations"], {"agent": "reviewer", "sub_task": last["sub_task"], "output": output}]}
+    return {
+        **state,
+        "delegations": [*state["delegations"], {"agent": "reviewer", "sub_task": last["sub_task"], "output": output}],
+    }
 
 
 def supervisor(state: GraphState) -> GraphState:
@@ -147,7 +156,10 @@ def supervisor(state: GraphState) -> GraphState:
         return {**state, "final_output": str(synthesis.content), "rounds": state["rounds"] + 1}
     return {
         **state,
-        "delegations": [*state["delegations"], {"agent": decision.next, "sub_task": decision.sub_task, "output": "<pending>"}],
+        "delegations": [
+            *state["delegations"],
+            {"agent": decision.next, "sub_task": decision.sub_task, "output": "<pending>"},
+        ],
         "rounds": state["rounds"] + 1,
     }
 
@@ -168,7 +180,9 @@ def build_graph() -> object:
     g.add_node("writer", writer)
     g.add_node("reviewer", reviewer)
     g.add_edge(START, "supervisor")
-    g.add_conditional_edges("supervisor", _route, {"researcher": "researcher", "writer": "writer", "reviewer": "reviewer", END: END})
+    g.add_conditional_edges(
+        "supervisor", _route, {"researcher": "researcher", "writer": "writer", "reviewer": "reviewer", END: END}
+    )
     g.add_edge("researcher", "supervisor")
     g.add_edge("writer", "supervisor")
     g.add_edge("reviewer", "supervisor")

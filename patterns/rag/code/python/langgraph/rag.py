@@ -86,9 +86,7 @@ def retrieve(state: RAGState) -> RAGState:
 def generate(state: RAGState) -> RAGState:
     """Inline the retrieved chunks into the prompt and call the model."""
     model = ChatAnthropic(model="claude-haiku-4-5", temperature=0)
-    context = "\n\n---\n\n".join(
-        f"[{c['doc_id']} score={c['score']:.2f}] {c['text']}" for c in state["chunks"]
-    )
+    context = "\n\n---\n\n".join(f"[{c['doc_id']} score={c['score']:.2f}] {c['text']}" for c in state["chunks"])
     response = model.invoke(
         [
             SystemMessage(

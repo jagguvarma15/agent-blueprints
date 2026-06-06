@@ -8,27 +8,30 @@ optionally replanning if a step fails or produces unexpected results.
 Design doc:  ../../design.md
 Overview:    ../../overview.md
 """
+
 from __future__ import annotations
 
 import json
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Callable, Protocol
+from typing import Protocol
 
-from patterns.plan_and_execute.schemas.state import (
+from patterns.plan_and_execute.schemas.state import (  # noqa: F401
     ExecutionResult,
     Plan,
     PlanExecuteState,
     Step,
 )
 
-
 # ── Interfaces ────────────────────────────────────────────────────────────────
+
 
 class LLM(Protocol):
     def generate(self, messages: list[dict]) -> str: ...
 
 
 # ── Core types ────────────────────────────────────────────────────────────────
+
 
 @dataclass
 class PlanStep:
@@ -42,9 +45,9 @@ class PlanStep:
 
     index: int
     description: str
-    tool: str | None = None         # Optional tool name for this step
+    tool: str | None = None  # Optional tool name for this step
     output: str | None = None
-    status: str = "pending"         # "pending" | "done" | "failed"
+    status: str = "pending"  # "pending" | "done" | "failed"
 
 
 @dataclass
@@ -128,14 +131,11 @@ class PlanAndExecute:
 
     def _plan(self, task: str, remaining_steps: list[PlanStep] | None = None) -> list[PlanStep]:
         tool_list = ", ".join(self.tools.keys()) if self.tools else "none"
-        messages = [{"role": "user", "content": PLAN_PROMPT.format(
-            task=task, tools=tool_list
-        )}]
+        messages = [{"role": "user", "content": PLAN_PROMPT.format(task=task, tools=tool_list)}]
         raw = self.planner.generate(messages)
         try:
             items = json.loads(raw)
-            return [PlanStep(index=i["step"], description=i["description"], tool=i.get("tool"))
-                    for i in items]
+            return [PlanStep(index=i["step"], description=i["description"], tool=i.get("tool")) for i in items]
         except (json.JSONDecodeError, KeyError):
             return [PlanStep(index=1, description=task, tool=None)]
 
@@ -143,9 +143,12 @@ class PlanAndExecute:
         if step.tool and step.tool in self.tools:
             return self.tools[step.tool](step.description)
 
-        messages = [{"role": "user", "content": EXECUTE_PROMPT.format(
-            task=task, step=step.description, context=context or "None"
-        )}]
+        messages = [
+            {
+                "role": "user",
+                "content": EXECUTE_PROMPT.format(task=task, step=step.description, context=context or "None"),
+            }
+        ]
         return self.executor.generate(messages)
 
     def run(self, task: str) -> PlanRunResult:
@@ -171,19 +174,25 @@ class PlanAndExecute:
                 if self.replan_on_failure and replan_count < self.max_replan_attempts:
                     # Replan remaining steps
                     completed = [s for s in steps if s.status == "done"]
-                    remaining = steps[i + 1:]
-                    messages = [{"role": "user", "content": REPLAN_PROMPT.format(
-                        task=task,
-                        completed="\n".join(f"- {s.description}" for s in completed),
-                        failed_step=step.description,
-                        reason=str(exc),
-                        remaining="\n".join(f"- {s.description}" for s in remaining),
-                    )}]
+                    remaining = steps[i + 1 :]
+                    messages = [
+                        {
+                            "role": "user",
+                            "content": REPLAN_PROMPT.format(
+                                task=task,
+                                completed="\n".join(f"- {s.description}" for s in completed),
+                                failed_step=step.description,
+                                reason=str(exc),
+                                remaining="\n".join(f"- {s.description}" for s in remaining),
+                            ),
+                        }
+                    ]
                     raw = self.planner.generate(messages)
                     try:
-                        new_steps = [PlanStep(index=j["step"], description=j["description"],
-                                              tool=j.get("tool"))
-                                     for j in json.loads(raw)]
+                        new_steps = [
+                            PlanStep(index=j["step"], description=j["description"], tool=j.get("tool"))
+                            for j in json.loads(raw)
+                        ]
                         steps = steps[:i] + new_steps
                         replanned = True
                         replan_count += 1
@@ -208,11 +217,13 @@ if __name__ == "__main__":
         def generate(self, messages: list[dict]) -> str:
             content = messages[-1]["content"]
             if "JSON array" in content:
-                return json.dumps([
-                    {"step": 1, "description": "Research the topic", "tool": "search"},
-                    {"step": 2, "description": "Analyze the findings", "tool": None},
-                    {"step": 3, "description": "Write the final report", "tool": None},
-                ])
+                return json.dumps(
+                    [
+                        {"step": 1, "description": "Research the topic", "tool": "search"},
+                        {"step": 2, "description": "Analyze the findings", "tool": None},
+                        {"step": 3, "description": "Write the final report", "tool": None},
+                    ]
+                )
             return f"[{self.name} output for: {content[:50]}]"
 
     agent = PlanAndExecute(

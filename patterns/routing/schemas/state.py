@@ -16,9 +16,7 @@ class Route(BaseModel):
     """One available specialist the router can dispatch to."""
 
     name: str = Field(description="Stable id (e.g. 'billing', 'tech_support').")
-    description: str = Field(
-        description="When to pick this route; shown to the router LLM in the prompt."
-    )
+    description: str = Field(description="When to pick this route; shown to the router LLM in the prompt.")
 
 
 class RouteDecision(BaseModel):

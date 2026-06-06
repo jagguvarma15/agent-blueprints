@@ -7,14 +7,16 @@ before proceeding; on failure the chain halts and returns the failing step.
 Design doc:  ../../design.md
 Overview:    ../../overview.md
 """
+
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Callable, Protocol
-
+from typing import Protocol
 
 # ── LLM interface ─────────────────────────────────────────────────────────────
 # Implement this with any provider: OpenAI, Anthropic, local model, etc.
+
 
 class LLM(Protocol):
     def generate(self, messages: list[dict]) -> str:
@@ -24,10 +26,11 @@ class LLM(Protocol):
 
 # ── Core types ────────────────────────────────────────────────────────────────
 
+
 @dataclass
 class ChainStep:
     name: str
-    prompt_template: str                          # Use {input} for previous output
+    prompt_template: str  # Use {input} for previous output
     validate: Callable[[str], bool] = lambda _: True  # Gate: return False to halt
 
 
@@ -40,6 +43,7 @@ class ChainResult:
 
 
 # ── Implementation ────────────────────────────────────────────────────────────
+
 
 class PromptChain:
     """
@@ -63,10 +67,12 @@ class PromptChain:
             messages: list[dict] = []
             if self.system:
                 messages.append({"role": "system", "content": self.system})
-            messages.append({
-                "role": "user",
-                "content": step.prompt_template.format(input=current),
-            })
+            messages.append(
+                {
+                    "role": "user",
+                    "content": step.prompt_template.format(input=current),
+                }
+            )
 
             output = self.llm.generate(messages)
 
@@ -90,6 +96,7 @@ if __name__ == "__main__":
 
     class MockLLM:
         """Stub — replace with your actual LLM client."""
+
         def generate(self, messages: list[dict]) -> str:
             content = messages[-1]["content"]
             return f"[step output from: {content[:50].strip()}]"

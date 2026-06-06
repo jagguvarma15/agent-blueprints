@@ -16,14 +16,15 @@ to focus on the core pattern.
 Design doc:  ../../design.md
 Overview:    ../../overview.md
 """
+
 from __future__ import annotations
 
 import time
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Any, Callable, Literal
+from typing import Any, Literal
 
-from patterns.saga.schemas.state import Compensation, SagaState, SagaStep
-
+from patterns.saga.schemas.state import Compensation, SagaState, SagaStep  # noqa: F401
 
 # ── Core types ────────────────────────────────────────────────────────────────
 #
@@ -127,8 +128,7 @@ class Saga:
             try:
                 output = step.do(ctx)
             except Exception as exc:
-                self._append(log, step.id, "failed",
-                             error_class=type(exc).__name__, error_message=str(exc))
+                self._append(log, step.id, "failed", error_class=type(exc).__name__, error_message=str(exc))
                 failed_step = step.id
                 break
             ctx.outputs[step.id] = output
@@ -152,8 +152,9 @@ class Saga:
             try:
                 step.undo(ctx, ctx.outputs.get(step.id))
             except Exception as exc:
-                self._append(log, step.id, "compensation_failed",
-                             error_class=type(exc).__name__, error_message=str(exc))
+                self._append(
+                    log, step.id, "compensation_failed", error_class=type(exc).__name__, error_message=str(exc)
+                )
                 failed_compensator = step.id
                 break
             compensations_run.append(step.id)
@@ -186,15 +187,17 @@ class Saga:
         error_class: str | None = None,
         error_message: str | None = None,
     ) -> None:
-        log.append(SagaLogEntry(
-            seq=len(log) + 1,
-            timestamp=time.time(),
-            step_id=step_id,
-            event=event,
-            output=output,
-            error_class=error_class,
-            error_message=error_message,
-        ))
+        log.append(
+            SagaLogEntry(
+                seq=len(log) + 1,
+                timestamp=time.time(),
+                step_id=step_id,
+                event=event,
+                output=output,
+                error_class=error_class,
+                error_message=error_message,
+            )
+        )
 
 
 # ── Example: rebooking saga ───────────────────────────────────────────────────
@@ -216,8 +219,9 @@ if __name__ == "__main__":
             self.cancelled_reservations: dict[str, dict] = {}
             self.sms_sent: list[dict] = []
 
-    def make_steps(world: World, *, simulate_failure_at: str | None = None,
-                   compensator_fails_at: str | None = None) -> list[Step]:
+    def make_steps(
+        world: World, *, simulate_failure_at: str | None = None, compensator_fails_at: str | None = None
+    ) -> list[Step]:
         def fail_if(step_id: str, where: dict[str, str | None]) -> None:
             if where.get("do") == step_id:
                 raise ValueError(f"injected forward failure at {step_id}")
@@ -275,11 +279,13 @@ if __name__ == "__main__":
         def undo_notify(ctx: StepContext, output: dict) -> None:
             # Forward recovery — the SMS is irreversible. Send a cancellation.
             fail_if("notify", backward_failures)
-            world.sms_sent.append({
-                "customer_id": output["customer_id"],
-                "kind": "rebook_cancellation",
-                "supersedes": output["reservation_id"],
-            })
+            world.sms_sent.append(
+                {
+                    "customer_id": output["customer_id"],
+                    "kind": "rebook_cancellation",
+                    "supersedes": output["reservation_id"],
+                }
+            )
 
         return [
             Step("search", do_search, undo_search),
@@ -291,38 +297,54 @@ if __name__ == "__main__":
     # Scenario 1: happy path
     world = World()
     saga = Saga("rebook", make_steps(world))
-    result = saga.run(payload={
-        "original_reservation_id": "res_42",
-        "customer_id": "cust_7",
-        "party_size": 4,
-    }, saga_id="sag_happy")
+    result = saga.run(
+        payload={
+            "original_reservation_id": "res_42",
+            "customer_id": "cust_7",
+            "party_size": 4,
+        },
+        saga_id="sag_happy",
+    )
     print("=== Scenario 1: happy path ===")
-    print(json.dumps({
-        "state": result.state,
-        "steps_executed": result.steps_executed,
-        "compensations_run": result.compensations_run,
-        "log_event_count": len(result.saga_log),
-        "world.sms_sent": world.sms_sent,
-    }, indent=2))
+    print(
+        json.dumps(
+            {
+                "state": result.state,
+                "steps_executed": result.steps_executed,
+                "compensations_run": result.compensations_run,
+                "log_event_count": len(result.saga_log),
+                "world.sms_sent": world.sms_sent,
+            },
+            indent=2,
+        )
+    )
 
     # Scenario 2: failure mid-saga → clean compensation
     world = World()
     saga = Saga("rebook", make_steps(world, simulate_failure_at="cancel_old"))
-    result = saga.run(payload={
-        "original_reservation_id": "res_42",
-        "customer_id": "cust_7",
-        "party_size": 4,
-    }, saga_id="sag_compensated")
+    result = saga.run(
+        payload={
+            "original_reservation_id": "res_42",
+            "customer_id": "cust_7",
+            "party_size": 4,
+        },
+        saga_id="sag_compensated",
+    )
     print("\n=== Scenario 2: forward failure at cancel_old → compensated ===")
-    print(json.dumps({
-        "state": result.state,
-        "failed_step": result.failed_step,
-        "steps_executed": result.steps_executed,
-        "compensations_run": result.compensations_run,
-        "world.search_locks": list(world.search_locks),
-        "world.reservations": list(world.reservations.keys()),
-        "world.sms_sent": world.sms_sent,
-    }, indent=2))
+    print(
+        json.dumps(
+            {
+                "state": result.state,
+                "failed_step": result.failed_step,
+                "steps_executed": result.steps_executed,
+                "compensations_run": result.compensations_run,
+                "world.search_locks": list(world.search_locks),
+                "world.reservations": list(world.reservations.keys()),
+                "world.sms_sent": world.sms_sent,
+            },
+            indent=2,
+        )
+    )
 
     # Scenario 3: compensator itself fails → partially_compensated (page!)
     world = World()
@@ -330,16 +352,24 @@ if __name__ == "__main__":
         "rebook",
         make_steps(world, simulate_failure_at="notify", compensator_fails_at="cancel_old"),
     )
-    result = saga.run(payload={
-        "original_reservation_id": "res_42",
-        "customer_id": "cust_7",
-        "party_size": 4,
-    }, saga_id="sag_stuck")
+    result = saga.run(
+        payload={
+            "original_reservation_id": "res_42",
+            "customer_id": "cust_7",
+            "party_size": 4,
+        },
+        saga_id="sag_stuck",
+    )
     print("\n=== Scenario 3: notify fails AND undo_cancel_old fails → partially_compensated ===")
-    print(json.dumps({
-        "state": result.state,
-        "failed_step": result.failed_step,
-        "failed_compensator": result.failed_compensator,
-        "compensations_run": result.compensations_run,
-        "world.reservations": list(world.reservations.keys()),
-    }, indent=2))
+    print(
+        json.dumps(
+            {
+                "state": result.state,
+                "failed_step": result.failed_step,
+                "failed_compensator": result.failed_compensator,
+                "compensations_run": result.compensations_run,
+                "world.reservations": list(world.reservations.keys()),
+            },
+            indent=2,
+        )
+    )

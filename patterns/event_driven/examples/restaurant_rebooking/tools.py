@@ -129,9 +129,7 @@ class OpenTableAdapter:
             and lower <= slot.starts_at <= upper
             and slot.capacity_for_party >= reservation.party_size
         ]
-        log.info(
-            "opentable.search_slots resv=%s -> %d slots", reservation.reservation_id, len(slots)
-        )
+        log.info("opentable.search_slots resv=%s -> %d slots", reservation.reservation_id, len(slots))
         return slots
 
 

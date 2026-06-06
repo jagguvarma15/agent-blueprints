@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "ES2023",
+    "lib": ["ES2023"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "types": ["node"]
+  },
+  "include": [
+    "patterns/**/*.ts",
+    "workflows/**/*.ts",
+    "composition/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "website",
+    "**/*.test.ts",
+    "patterns/**/code/typescript/mastra/**"
+  ]
+}

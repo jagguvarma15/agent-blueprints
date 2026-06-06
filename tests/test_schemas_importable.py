@@ -45,32 +45,42 @@ _CASES: list[tuple[str, str, dict[str, Any]]] = [
     ("tool_use", "ToolUseState", {"user_message": "hi"}),
     ("plan_and_execute", "PlanExecuteState", {"goal": "ship"}),
     ("reflection", "ReflectionState", {"goal": "write"}),
-    ("routing", "RoutingState", {
-        "request": "billing question",
-        "available_routes": [{"name": "billing", "description": "money stuff"}],
-    }),
+    (
+        "routing",
+        "RoutingState",
+        {
+            "request": "billing question",
+            "available_routes": [{"name": "billing", "description": "money stuff"}],
+        },
+    ),
     ("rag", "RagState", {"query": {"text": "what is x?"}}),
     ("memory", "MemoryState", {"user_id": "u1", "user_message": "hi"}),
     ("multi_agent", "MultiAgentState", {"user_goal": "ship"}),
-    ("event_driven", "EventDrivenState", {
-        "current_event": {
-            "event_id": "e1",
-            "event_type": "x.created",
-            "occurred_at": datetime(2026, 1, 1),
+    (
+        "event_driven",
+        "EventDrivenState",
+        {
+            "current_event": {
+                "event_id": "e1",
+                "event_type": "x.created",
+                "occurred_at": datetime(2026, 1, 1),
+            },
         },
-    }),
-    ("saga", "SagaState", {
-        "saga_id": "s1",
-        "steps": [{"id": "step-1", "name": "reserve"}],
-    }),
+    ),
+    (
+        "saga",
+        "SagaState",
+        {
+            "saga_id": "s1",
+            "steps": [{"id": "step-1", "name": "reserve"}],
+        },
+    ),
     ("human_in_the_loop", "HitlState", {"goal": "approve"}),
 ]
 
 
 @pytest.mark.parametrize(("pattern_dir", "model_name", "kwargs"), _CASES, ids=[c[0] for c in _CASES])
-def test_schema_imports_and_validates(
-    pattern_dir: str, model_name: str, kwargs: dict[str, Any]
-) -> None:
+def test_schema_imports_and_validates(pattern_dir: str, model_name: str, kwargs: dict[str, Any]) -> None:
     module = _load(pattern_dir)
     model_cls = getattr(module, model_name, None)
     assert model_cls is not None, f"{pattern_dir}: {model_name} not exported"
@@ -81,9 +91,7 @@ def test_schema_imports_and_validates(
 
 def test_every_pattern_has_a_schemas_dir() -> None:
     """Catches the case where a new pattern lands without a schema file."""
-    pattern_dirs = sorted(
-        p.name for p in PATTERNS_DIR.iterdir() if p.is_dir() and not p.name.startswith(".")
-    )
+    pattern_dirs = sorted(p.name for p in PATTERNS_DIR.iterdir() if p.is_dir() and not p.name.startswith("."))
     covered = {c[0] for c in _CASES}
     missing = [d for d in pattern_dirs if d not in covered]
     assert not missing, (
@@ -112,9 +120,7 @@ _SIBLING_CASES: list[tuple[str, str]] = [
 ]
 
 
-@pytest.mark.parametrize(
-    ("pattern", "relpath"), _SIBLING_CASES, ids=[c[0] for c in _SIBLING_CASES]
-)
+@pytest.mark.parametrize(("pattern", "relpath"), _SIBLING_CASES, ids=[c[0] for c in _SIBLING_CASES])
 def test_sibling_imports_canonical_state(pattern: str, relpath: str) -> None:
     """Each pattern's framework-agnostic sibling imports its canonical
     state schema rather than redeclaring it inline.

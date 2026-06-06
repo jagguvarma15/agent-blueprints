@@ -8,13 +8,13 @@ the output meets the criteria or max iterations is reached.
 Design doc:  ../../design.md
 Overview:    ../../overview.md
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
 from typing import Protocol
 
-from patterns.reflection.schemas.state import Critique, Draft, ReflectionState
-
+from patterns.reflection.schemas.state import Critique, Draft, ReflectionState  # noqa: F401
 
 # ── Interface ─────────────────────────────────────────────────────────────────
 #
@@ -23,11 +23,13 @@ from patterns.reflection.schemas.state import Critique, Draft, ReflectionState
 # target is ``ReflectionState`` (with ``Draft`` + ``Critique`` building
 # blocks) imported above.
 
+
 class LLM(Protocol):
     def generate(self, messages: list[dict]) -> str: ...
 
 
 # ── Core types ────────────────────────────────────────────────────────────────
+
 
 @dataclass
 class ReflectionStep:
@@ -71,6 +73,7 @@ Produce the revised output only."""
 
 # ── Implementation ────────────────────────────────────────────────────────────
 
+
 class ReflectionAgent:
     """
     Generates output, reflects on it with a critic prompt, then revises.
@@ -98,9 +101,7 @@ class ReflectionAgent:
 
     def _critique(self, draft: str) -> tuple[bool, str, str]:
         """Returns (passed, issues, suggestion)."""
-        messages = [{"role": "user", "content": CRITIC_PROMPT.format(
-            criteria=self.criteria, draft=draft
-        )}]
+        messages = [{"role": "user", "content": CRITIC_PROMPT.format(criteria=self.criteria, draft=draft)}]
         raw = self.llm.generate(messages)
 
         passed, issues, suggestion = False, "", ""
@@ -115,9 +116,12 @@ class ReflectionAgent:
         return passed, issues, suggestion
 
     def _revise(self, task: str, draft: str, issues: str, suggestion: str) -> str:
-        messages = [{"role": "user", "content": REVISE_PROMPT.format(
-            task=task, draft=draft, issues=issues, suggestion=suggestion
-        )}]
+        messages = [
+            {
+                "role": "user",
+                "content": REVISE_PROMPT.format(task=task, draft=draft, issues=issues, suggestion=suggestion),
+            }
+        ]
         return self.llm.generate(messages)
 
     def run(self, task: str) -> ReflectionResult:
@@ -126,12 +130,14 @@ class ReflectionAgent:
 
         for i in range(self.max_iterations):
             passed, issues, suggestion = self._critique(draft)
-            iterations.append(ReflectionStep(
-                iteration=i + 1,
-                draft=draft,
-                critique=f"Issues: {issues} | Suggestion: {suggestion}",
-                passed=passed,
-            ))
+            iterations.append(
+                ReflectionStep(
+                    iteration=i + 1,
+                    draft=draft,
+                    critique=f"Issues: {issues} | Suggestion: {suggestion}",
+                    passed=passed,
+                )
+            )
 
             if passed or issues.lower() in ("", "none"):
                 return ReflectionResult(
@@ -178,5 +184,5 @@ if __name__ == "__main__":
     print(f"Passed: {result.passed}")
     print(f"Iterations: {len(result.iterations)}")
     for step in result.iterations:
-        print(f"  Iter {step.iteration}: {'✓' if step.passed else '✗'}  {step.critique[:60]}")
+        print(f"  Iter {step.iteration}: {'ok' if step.passed else 'fail'}  {step.critique[:60]}")
     print(f"\nFinal output:\n{result.final_output}")

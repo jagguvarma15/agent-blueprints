@@ -9,15 +9,15 @@ backpressure on top; this example focuses on the core pattern:
 Design doc:  ../../design.md
 Overview:    ../../overview.md
 """
+
 from __future__ import annotations
 
 import asyncio
 import json
 from dataclasses import dataclass, field
-from typing import Any, Callable, Protocol
+from typing import Protocol
 
-from patterns.event_driven.schemas.state import Event, EventDrivenState, Outcome
-
+from patterns.event_driven.schemas.state import Event, EventDrivenState, Outcome  # noqa: F401
 
 # ── Interfaces ────────────────────────────────────────────────────────────────
 
@@ -238,9 +238,7 @@ if __name__ == "__main__":
         ]
         source = InMemorySource(events)
         store = InMemoryStore()
-        consumer = EventDrivenConsumer(
-            source, store, RebookingAgent(), handler_name="rebooker", block_ms=50
-        )
+        consumer = EventDrivenConsumer(source, store, RebookingAgent(), handler_name="rebooker", block_ms=50)
 
         # Stop after the queue drains.
         async def stopper():
@@ -249,13 +247,18 @@ if __name__ == "__main__":
 
         await asyncio.gather(consumer.run_until_stopped(), stopper())
 
-        print(json.dumps({
-            "seen": consumer.stats.events_seen,
-            "acked": consumer.stats.events_acked,
-            "deduped": consumer.stats.events_deduped,
-            "dlq": consumer.stats.events_dlq,
-            "errors_by_class": consumer.stats.errors_by_class,
-            "dlq_envelopes": source._dlq,
-        }, indent=2))
+        print(
+            json.dumps(
+                {
+                    "seen": consumer.stats.events_seen,
+                    "acked": consumer.stats.events_acked,
+                    "deduped": consumer.stats.events_deduped,
+                    "dlq": consumer.stats.events_dlq,
+                    "errors_by_class": consumer.stats.errors_by_class,
+                    "dlq_envelopes": source._dlq,
+                },
+                indent=2,
+            )
+        )
 
     asyncio.run(main())
