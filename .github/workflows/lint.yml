@@ -32,7 +32,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: pnpm
+      # `cache: pnpm` requires a pre-existing pnpm-lock.yaml; enable it once
+      # the lockfile is committed alongside this PR or in a follow-up.
       - name: pnpm install
         run: pnpm install --no-frozen-lockfile
       - name: pnpm typecheck
