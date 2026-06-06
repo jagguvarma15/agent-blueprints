@@ -1,0 +1,88 @@
+[project]
+name = "agent-blueprints"
+version = "0.0.0"
+description = "Pattern + framework + workflow blueprints for AI agents."
+requires-python = ">=3.11"
+# Intentionally not published. The pyproject.toml exists so the repo can ship
+# a single ruff + mypy + pytest contract for the patterns/, workflows/, and
+# composition/ trees plus the tests/ harness. Dependencies the demo snippets
+# import are installed per-snippet via `uv run --with ...` rather than
+# pinned here — keeps the root contract small and avoids pulling LangGraph,
+# Pydantic AI, CrewAI, etc. into every contributor's local env.
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "pydantic>=2",
+    "pytest>=8",
+]
+
+# ---------------------------------------------------------------------------
+# ruff — lint + format. Same select set as the agent-scaffold repo so the
+# style contract is consistent across the three sister repos.
+# ---------------------------------------------------------------------------
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+extend-exclude = [
+    "website",
+    ".venv",
+    "**/__pycache__",
+]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+# Demo-code-friendly: the patterns under patterns/*/code/python and
+# workflows/*/code/python are illustrative snippets, not library code.
+# E501 (line too long) and B008 (mutable default arg) trigger frequently
+# in the illustrative shape; opt out at file scope rather than silencing
+# in every body.
+ignore = []
+
+[tool.ruff.lint.per-file-ignores]
+# Tool Use's calculator example deliberately demonstrates `eval()` as the
+# minimal arithmetic backend. It carries an inline `# noqa: S307` already;
+# the file-level pin keeps that exemption explicit at config level too.
+"patterns/tool_use/code/python/tool_use.py" = ["S307"]
+# Convention test imports patterns by file path, not via the public package
+# surface — silence the test-side unused-import / typing nits.
+"tests/test_code_conventions.py" = ["E501"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+
+# ---------------------------------------------------------------------------
+# mypy — strict on the test harness, loose on demo snippets. The patterns
+# are illustrative, not production; demanding full typing on every closure
+# would force ceremony that obscures the pattern.
+# ---------------------------------------------------------------------------
+
+[tool.mypy]
+python_version = "3.11"
+strict = false
+ignore_missing_imports = true
+follow_imports = "silent"
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+strict = true
+
+[[tool.mypy.overrides]]
+# Demo snippets — typing is documentation, not contract. Loose checks here
+# preserve readability without sacrificing the convention test.
+module = ["patterns.*", "workflows.*", "composition.*"]
+ignore_errors = true
+
+# ---------------------------------------------------------------------------
+# pytest — same strict-markers discipline as the scaffold repo.
+# ---------------------------------------------------------------------------
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--strict-markers -ra"
+markers = [
+    "integration: opt-in tests that touch the network or require external services",
+]
