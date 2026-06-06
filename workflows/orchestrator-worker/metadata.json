@@ -12,8 +12,8 @@
     "cost-and-latency"
   ],
   "evolvesInto": [
-    "plan-and-execute",
-    "multi-agent"
+    "plan_and_execute",
+    "multi_agent"
   ],
   "composableWith": [
     "parallel-calls",

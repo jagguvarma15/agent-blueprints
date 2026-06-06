@@ -18,7 +18,7 @@
   "composableWith": [
     "react",
     "rag",
-    "multi-agent"
+    "multi_agent"
   ],
   "requires": [
     "storage"

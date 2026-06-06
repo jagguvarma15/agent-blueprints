@@ -1,5 +1,5 @@
 {
-  "id": "event-driven",
+  "id": "event_driven",
   "name": "Event-Driven",
   "category": "agent",
   "complexity": "Advanced",
@@ -13,10 +13,10 @@
     "cost-and-latency"
   ],
   "evolvesFrom": [
-    "tool-use"
+    "tool_use"
   ],
   "composableWith": [
-    "multi-agent",
+    "multi_agent",
     "routing",
     "memory"
   ],

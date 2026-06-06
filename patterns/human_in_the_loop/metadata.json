@@ -1,5 +1,5 @@
 {
-  "id": "human-in-the-loop",
+  "id": "human_in_the_loop",
   "name": "Human in the Loop",
   "category": "agent",
   "complexity": "Intermediate",
@@ -13,12 +13,12 @@
     "cost-and-latency"
   ],
   "evolvesFrom": [
-    "tool-use"
+    "tool_use"
   ],
   "composableWith": [
     "saga",
-    "event-driven",
-    "tool-use"
+    "event_driven",
+    "tool_use"
   ],
   "requires": [
     "pause-resume",

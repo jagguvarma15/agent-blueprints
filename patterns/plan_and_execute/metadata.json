@@ -1,5 +1,5 @@
 {
-  "id": "plan-and-execute",
+  "id": "plan_and_execute",
   "name": "Plan & Execute",
   "category": "agent",
   "complexity": "Intermediate",
@@ -17,7 +17,7 @@
   ],
   "composableWith": [
     "react",
-    "multi-agent"
+    "multi_agent"
   ],
   "requires": [
     "tools"

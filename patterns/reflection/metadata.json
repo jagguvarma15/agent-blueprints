@@ -18,7 +18,7 @@
   "composableWith": [
     "react",
     "rag",
-    "plan-and-execute"
+    "plan_and_execute"
   ],
   "requires": [],
   "tags": [
