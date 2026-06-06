@@ -2,7 +2,7 @@
 
 An agent that handles money, customer-visible changes, or policy decisions usually needs a human checkpoint before some actions commit. The Human-in-the-Loop (HITL) pattern formalises this: the agent **proposes** an action, **pauses** in a known state, surfaces the proposal to an approver, and **resumes** with the approver's decision (approve / deny / modify) before committing.
 
-**Evolves from:** [Tool Use](../tool-use/overview.md) — adds an explicit `approve_then_execute` step around tool calls flagged for human review.
+**Evolves from:** [Tool Use](../tool_use/overview.md) — adds an explicit `approve_then_execute` step around tool calls flagged for human review.
 
 ## Architecture
 
@@ -133,8 +133,8 @@ The Python sibling is the fuller example — three surface flavours, escalation 
 
 ## Related Patterns
 
-- **Evolves from:** [Tool Use](../tool-use/overview.md) — adds the propose-pause-resume gate around tool dispatch
-- **Composes with:** [Saga](../saga/overview.md) — gate the most irreversible step in a saga before its `do` runs; [Event-Driven](../event-driven/overview.md) — proposals become events on an "approval-pending" stream and decisions become events on a "approved/denied" stream
+- **Evolves from:** [Tool Use](../tool_use/overview.md) — adds the propose-pause-resume gate around tool dispatch
+- **Composes with:** [Saga](../saga/overview.md) — gate the most irreversible step in a saga before its `do` runs; [Event-Driven](../event_driven/overview.md) — proposals become events on an "approval-pending" stream and decisions become events on a "approved/denied" stream
 - **Contrast with:** Reflection — Reflection is the agent critiquing itself; HITL is a human critiquing the agent
 
 ## Deeper Dive

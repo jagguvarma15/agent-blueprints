@@ -63,32 +63,32 @@ graph TD
 | Pattern | Complexity | Evolves From (Workflow) | Best For |
 |---------|-----------|----------------------|----------|
 | [ReAct](./react/overview.md) | Intermediate | Prompt Chaining | Open-ended tasks with tool use |
-| [Tool Use](./tool-use/overview.md) | Beginner | Prompt Chaining | Structured function calling |
+| [Tool Use](./tool_use/overview.md) | Beginner | Prompt Chaining | Structured function calling |
 | [Memory](./memory/overview.md) | Intermediate | Prompt Chaining | Multi-session context |
 | [RAG](./rag/overview.md) | Intermediate | Parallel Calls | Knowledge-grounded generation |
 | [Reflection](./reflection/overview.md) | Intermediate | Evaluator-Optimizer | Self-improving output |
 | [Routing](./routing/overview.md) | Beginner | Parallel Calls | Intent-based dispatch |
-| [Plan & Execute](./plan-and-execute/overview.md) | Intermediate | Orchestrator-Worker | Complex multi-step tasks |
-| [Multi-Agent](./multi-agent/overview.md) | Advanced | Orchestrator-Worker + Routing | Collaborative task solving |
-| [Event-Driven](./event-driven/overview.md) | Advanced | Tool Use | Async reactive systems on a queue or stream |
+| [Plan & Execute](./plan_and_execute/overview.md) | Intermediate | Orchestrator-Worker | Complex multi-step tasks |
+| [Multi-Agent](./multi_agent/overview.md) | Advanced | Orchestrator-Worker + Routing | Collaborative task solving |
+| [Event-Driven](./event_driven/overview.md) | Advanced | Tool Use | Async reactive systems on a queue or stream |
 | [Saga](./saga/overview.md) | Advanced | Tool Use + Prompt Chaining | Long-running multi-step processes with compensation |
-| [Human in the Loop](./human-in-the-loop/overview.md) | Intermediate | Tool Use | High-stakes actions requiring approval |
+| [Human in the Loop](./human_in_the_loop/overview.md) | Intermediate | Tool Use | High-stakes actions requiring approval |
 
 ## Reading Order
 
 If you're new to agent patterns, start with **ReAct** — it's the simplest and most foundational. From there:
 
 1. **[ReAct](./react/overview.md)** — The core agent loop. Every other pattern builds on this.
-2. **[Tool Use](./tool-use/overview.md)** — How agents interact with external systems.
+2. **[Tool Use](./tool_use/overview.md)** — How agents interact with external systems.
 3. **[RAG](./rag/overview.md)** — Adding external knowledge to agent reasoning.
 4. **[Memory](./memory/overview.md)** — Persisting context across conversations.
 5. **[Reflection](./reflection/overview.md)** — Self-critique for higher quality output.
 6. **[Routing](./routing/overview.md)** — Directing inputs to specialized handlers.
-7. **[Plan & Execute](./plan-and-execute/overview.md)** — Strategic planning before execution.
-8. **[Multi-Agent](./multi-agent/overview.md)** — Multiple agents collaborating.
-9. **[Event-Driven](./event-driven/overview.md)** — Agents triggered by queue/stream events instead of synchronous requests.
+7. **[Plan & Execute](./plan_and_execute/overview.md)** — Strategic planning before execution.
+8. **[Multi-Agent](./multi_agent/overview.md)** — Multiple agents collaborating.
+9. **[Event-Driven](./event_driven/overview.md)** — Agents triggered by queue/stream events instead of synchronous requests.
 10. **[Saga](./saga/overview.md)** — Long-running, multi-step processes that need compensation when an intermediate step fails.
-11. **[Human in the Loop](./human-in-the-loop/overview.md)** — Gating high-stakes actions behind human approval.
+11. **[Human in the Loop](./human_in_the_loop/overview.md)** — Gating high-stakes actions behind human approval.
 
 ## Documentation Tiers
 

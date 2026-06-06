@@ -115,7 +115,7 @@ The framework-specific files share an identical task (ingest three short documen
 - When all needed information fits in the system prompt — just include it directly
 - When the task doesn't require external knowledge (creative writing, reasoning)
 - When real-time data is needed — RAG over a static index will be stale
-- When exact database queries would be more appropriate — use [Tool Use](../tool-use/overview.md) with a DB query tool
+- When exact database queries would be more appropriate — use [Tool Use](../tool_use/overview.md) with a DB query tool
 
 ## Related Patterns
 

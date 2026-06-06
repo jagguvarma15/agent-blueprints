@@ -131,8 +131,8 @@ All three variants run the same researcher → writer → reviewer delegation ag
 ## Related Patterns
 
 - **Evolves from:** [Orchestrator-Worker](../../workflows/orchestrator-worker/overview.md) + [Routing](../routing/overview.md) — see [evolution.md](./evolution.md)
-- **Workers use:** [ReAct](../react/overview.md) (each worker runs an agent loop), [Tool Use](../tool-use/overview.md)
-- **Combines with:** [Memory](../memory/overview.md) (shared memory across agents), [Plan & Execute](../plan-and-execute/overview.md) (supervisor generates a plan, workers execute steps)
+- **Workers use:** [ReAct](../react/overview.md) (each worker runs an agent loop), [Tool Use](../tool_use/overview.md)
+- **Combines with:** [Memory](../memory/overview.md) (shared memory across agents), [Plan & Execute](../plan_and_execute/overview.md) (supervisor generates a plan, workers execute steps)
 
 ## Deeper Dive
 

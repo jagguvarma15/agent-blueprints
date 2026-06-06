@@ -1,6 +1,6 @@
 # Evolution: Tool Use → Human in the Loop
 
-This document traces how the [Human in the Loop pattern](./overview.md) evolves from [Tool Use](../tool-use/overview.md) augmented with an approval flag.
+This document traces how the [Human in the Loop pattern](./overview.md) evolves from [Tool Use](../tool_use/overview.md) augmented with an approval flag.
 
 ## The Starting Point: Tool Use with a "needs review" flag
 
@@ -119,7 +119,7 @@ A timeout handler scans for expired pending proposals and applies the policy. Wi
 Once HITL is a first-class gate, it composes naturally:
 
 - **+ [Saga](../saga/overview.md)** — Gate the most irreversible step in a saga; if denied, the saga compensates the prior steps.
-- **+ [Event-Driven](../event-driven/overview.md)** — Proposals become events; decisions become events; the agent is a consumer like any other.
+- **+ [Event-Driven](../event_driven/overview.md)** — Proposals become events; decisions become events; the agent is a consumer like any other.
 - **+ Audit logging** (`agent-deployments/docs/cross-cutting/audit-logging.md`) — every decision is automatically an audit-log row.
 
 ## When to Make This Transition

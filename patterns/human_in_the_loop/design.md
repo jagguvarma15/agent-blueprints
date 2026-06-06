@@ -152,8 +152,8 @@ The combination is powerful: a refund saga can gate the `refund_step` behind HIT
 ## Composition
 
 - **+ [Saga](../saga/overview.md)** — Gate the highest-risk step in a saga; the gate happens before the step's `do` runs. If approval is denied or times out (deny policy), the saga compensates the prior completed steps.
-- **+ [Event-Driven](../event-driven/overview.md)** — A proposal-pending event is published to an approval stream; the surface consumer renders it; the decision is published back as an event the agent consumer reacts to.
-- **+ [Tool Use](../tool-use/overview.md)** — Tools can carry an `approval_required` flag; the tool dispatcher routes those through the gate before invoking the tool function.
+- **+ [Event-Driven](../event_driven/overview.md)** — A proposal-pending event is published to an approval stream; the surface consumer renders it; the decision is published back as an event the agent consumer reacts to.
+- **+ [Tool Use](../tool_use/overview.md)** — Tools can carry an `approval_required` flag; the tool dispatcher routes those through the gate before invoking the tool function.
 - **+ Audit logging** (cross-cutting `agent-deployments/docs/cross-cutting/audit-logging.md`) — every decision is an audit-log entry; mandatory for compliance use cases.
 - **+ Authorization** (cross-cutting `agent-deployments/docs/cross-cutting/authorization-rbac.md`) — the gate must verify the approver has the right role for the proposal class; otherwise any Slack user could approve anything.
 

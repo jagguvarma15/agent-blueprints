@@ -118,7 +118,7 @@ Both variants run the same three routes (billing / technical / general) against 
 ## Related Patterns
 
 - **Evolves from:** [Parallel Calls](../../workflows/parallel-calls/overview.md) — see [evolution.md](./evolution.md)
-- **Extends into:** [Multi-Agent](../multi-agent/overview.md) (route to specialized agents instead of workflows)
+- **Extends into:** [Multi-Agent](../multi_agent/overview.md) (route to specialized agents instead of workflows)
 - **Combines with:** Any pattern as a handler — [ReAct](../react/overview.md), [RAG](../rag/overview.md), [Prompt Chaining](../../workflows/prompt-chaining/overview.md), etc.
 
 ## Deeper Dive

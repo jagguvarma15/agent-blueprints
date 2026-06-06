@@ -125,7 +125,7 @@ The framework-specific files share an identical task (look up the weather for a 
 
 - When the task is purely text-to-text with no external actions needed
 - When actions are predetermined — just call the functions directly from code
-- When you need complex multi-step reasoning — compose with [ReAct](../react/overview.md) or [Plan & Execute](../plan-and-execute/overview.md)
+- When you need complex multi-step reasoning — compose with [ReAct](../react/overview.md) or [Plan & Execute](../plan_and_execute/overview.md)
 
 ## Related Patterns
 
@@ -142,7 +142,7 @@ The framework-specific files share an identical task (look up the weather for a 
 ## When NOT to use this pattern
 
 - The task is text-in, text-out with no external actions — Tool Use adds unnecessary structure.
-- The tools you'd expose are destructive without good guardrails — defer to a [HITL](../human-in-the-loop/overview.md) pattern.
+- The tools you'd expose are destructive without good guardrails — defer to a [HITL](../human_in_the_loop/overview.md) pattern.
 - You only have one tool that's always called — direct function-calling without the registry abstraction is simpler.
 
 ## Next steps

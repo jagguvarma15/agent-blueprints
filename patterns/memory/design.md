@@ -124,9 +124,9 @@ Memory:
 ## Composition
 
 - **+ [RAG](../rag/overview.md):** Share the same vector store — documents on one side, memories on the other. Different namespaces, same infrastructure.
-- **+ [Multi-Agent](../multi-agent/overview.md):** Shared memory enables agent collaboration across sessions. Scope writes per agent to prevent cross-agent poisoning.
+- **+ [Multi-Agent](../multi_agent/overview.md):** Shared memory enables agent collaboration across sessions. Scope writes per agent to prevent cross-agent poisoning.
 - **+ [Routing](../routing/overview.md):** Per-route memory keeps specialized handlers' context clean. A billing-route memory doesn't pollute the technical-support route.
-- **+ [Human in the Loop](../human-in-the-loop/overview.md):** Human-approved memories carry higher trust scores; unapproved ones decay faster.
+- **+ [Human in the Loop](../human_in_the_loop/overview.md):** Human-approved memories carry higher trust scores; unapproved ones decay faster.
 
 ## Production concerns
 

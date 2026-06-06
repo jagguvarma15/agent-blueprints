@@ -114,13 +114,13 @@ Both TS variants run the same three-step plan against the same enterprise-LLM-ad
 - Simple tasks with fewer than 3 steps — use [ReAct](../react/overview.md)
 - When steps are known at design time — use [Orchestrator-Worker](../../workflows/orchestrator-worker/overview.md)
 - When the task is exploratory with no clear end goal — use [ReAct](../react/overview.md)
-- When each step needs deep specialization — use [Multi-Agent](../multi-agent/overview.md)
+- When each step needs deep specialization — use [Multi-Agent](../multi_agent/overview.md)
 
 ## Related Patterns
 
 - **Evolves from:** [Orchestrator-Worker](../../workflows/orchestrator-worker/overview.md) — see [evolution.md](./evolution.md)
-- **Uses internally:** [ReAct](../react/overview.md) (each plan step runs a bounded ReAct loop), [Tool Use](../tool-use/overview.md)
-- **Extends into:** [Multi-Agent](../multi-agent/overview.md) (delegate steps to specialized agents)
+- **Uses internally:** [ReAct](../react/overview.md) (each plan step runs a bounded ReAct loop), [Tool Use](../tool_use/overview.md)
+- **Extends into:** [Multi-Agent](../multi_agent/overview.md) (delegate steps to specialized agents)
 
 ## Deeper Dive
 
