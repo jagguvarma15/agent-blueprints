@@ -83,8 +83,11 @@ jobs:
           node meta/validate-metadata.js
 
       - name: Lint markdown (style guide enforcement)
+        # Exclusions (gitignored trees, website/, legacy/) live in
+        # .markdownlint-cli2.yaml so local runs match CI without duplicating
+        # the glob list here.
         run: |
-          npx --yes markdownlint-cli2 "**/*.md" "#legacy/**" "#node_modules/**" "#website/**"
+          npx --yes markdownlint-cli2 "**/*.md"
 
       - name: Set up Node for website build
         uses: actions/setup-node@v6
