@@ -30,6 +30,7 @@ Complete this section when adding or significantly updating a pattern.
 - [ ] `observability.md` — key metrics, trace structure, failure signatures
 - [ ] `cost-and-latency.md` — token budget, latency profile, cost control knobs
 - [ ] `metadata.json` — pattern ID, complexity, evolution relationships, composability
+- [ ] `patterns-catalog.yaml` regenerated (`node meta/validate-metadata.js --emit patterns-catalog.yaml`) — drift-check CI fails otherwise
 - [ ] Internal cross-references added (related patterns linked with relative paths)
 - [ ] Pattern added to `README.md` tables
 
