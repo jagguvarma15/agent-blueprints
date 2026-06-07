@@ -1,0 +1,15 @@
+# Mirrors gitignored cache/build trees so local markdownlint runs match CI.
+# CI's exclusions (legacy/, node_modules/, website/) are kept inline in
+# .github/workflows/docs.yml; this file only adds the locally-generated
+# directories that don't exist on the runner.
+
+.venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+node_modules/
+dist/
+.next/
+out/
+website/
+.claude/
