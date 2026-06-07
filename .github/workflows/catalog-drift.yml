@@ -1,0 +1,40 @@
+name: Catalog Drift Check
+
+# Regenerates patterns-catalog.yaml on every PR and push and fails if the
+# committed file diverges from what the generator produces. Forces authors
+# who edit any metadata.json (or the composition matrix) to also commit the
+# regenerated catalog. agent-deployments CI consumes this file at build time
+# so drift here would silently break downstream catalog assembly.
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  drift-check:
+    name: patterns-catalog.yaml is up to date
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+
+      - name: Regenerate catalog
+        run: node meta/validate-metadata.js --emit /tmp/patterns-catalog.yaml
+
+      - name: Diff against committed file
+        run: |
+          if ! diff -u patterns-catalog.yaml /tmp/patterns-catalog.yaml; then
+            echo "::error::patterns-catalog.yaml is stale."
+            echo "::error::Run: node meta/validate-metadata.js --emit patterns-catalog.yaml"
+            echo "::error::Then commit the result."
+            exit 1
+          fi
+          echo "patterns-catalog.yaml matches generator output"
