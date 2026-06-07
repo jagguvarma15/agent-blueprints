@@ -7,6 +7,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ## [Unreleased]
 
 ### Added
+- `patterns-catalog.yaml` — top-level machine-readable index aggregating every pattern + workflow + composition edge into one file. Generated from `metadata.json` + tier-file presence + the composition matrix by `node meta/validate-metadata.js --emit patterns-catalog.yaml`. Primary downstream consumer is the `agent-deployments` CI generator, which embeds it into the deployments catalog so `agent-scaffold` only needs to read one URL. See [`PATTERNS_CATALOG_SCHEMA.md`](../PATTERNS_CATALOG_SCHEMA.md).
+- `meta/validate-metadata.js --emit <path>` flag — aggregates validated metadata into the catalog. Without the flag, validator behavior is unchanged.
+- `.github/workflows/catalog-drift.yml` — hard CI gate that regenerates the catalog on every PR and fails if the committed file diverges.
 - `composition/anti-compositions.md` — standalone reference for pattern pairs that fight, overlap, or leak state, with concrete what-to-use-instead guidance.
 - Two new reference architectures in `composition/reference-architectures.md`: high-stakes content moderation pipeline (Routing + Tool Use + Reflection + HITL) and event-driven ingestion + RAG enrichment (Event-Driven + Tool Use + RAG + Memory).
 - `meta/contributing.md` — "Good first contributions" section listing newcomer-friendly tasks.

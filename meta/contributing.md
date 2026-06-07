@@ -20,6 +20,7 @@ If you want to document a new workflow or agent pattern:
 4. **Include diagrams** — Every overview must have at least one Mermaid architecture diagram.
 5. **Cross-reference** — Link to related patterns, workflows, and the choosing-a-pattern guide using relative paths.
 6. **Follow the style guide** — See [style-guide.md](./style-guide.md).
+7. **Regenerate the catalog** — After editing any `metadata.json` or tier files, run `node meta/validate-metadata.js --emit patterns-catalog.yaml` and commit the regenerated file. The drift-check CI gate (`.github/workflows/catalog-drift.yml`) fails any PR whose committed catalog doesn't match a fresh regen. See [`PATTERNS_CATALOG_SCHEMA.md`](../PATTERNS_CATALOG_SCHEMA.md).
 
 ### Improving Existing Documentation
 - Fix errors, improve clarity, add missing cross-references
@@ -91,3 +92,4 @@ Before submitting, verify:
 - [ ] Maximum 3 heading levels (##, ###, ####)
 - [ ] Cross-references to related patterns are included
 - [ ] If adding a new pattern: all required files are present and `metadata.json` is valid (`node meta/validate-metadata.js`)
+- [ ] If you edited any `metadata.json` or tier file: regenerated `patterns-catalog.yaml` (`node meta/validate-metadata.js --emit patterns-catalog.yaml`) and committed the result
