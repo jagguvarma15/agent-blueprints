@@ -1,0 +1,13 @@
+# markdownlint-cli2 runtime config. The rule set still lives in
+# .markdownlint.yml; this file only governs which files cli2 walks.
+#
+# `gitignore: true` makes cli2 skip anything in .gitignore — covers the
+# locally-generated cache trees (.venv, .pytest_cache, .mypy_cache,
+# .ruff_cache, node_modules, dist, .claude, …) without having to keep a
+# parallel list in sync. `ignores` adds the in-repo trees that aren't
+# gitignored but shouldn't be linted from this config (the docs site has
+# its own Astro/Pagefind ecosystem; `legacy/` is a defensive future stub).
+gitignore: true
+ignores:
+  - "website/**"
+  - "legacy/**"
