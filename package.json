@@ -1,6 +1,7 @@
 {
   "name": "agent-blueprints-patterns",
   "private": true,
+  "type": "module",
   "description": "TypeScript pattern code typecheck-only workspace. Not published.",
   "scripts": {
     "typecheck": "tsc --noEmit"
