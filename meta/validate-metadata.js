@@ -67,6 +67,10 @@ const EXTRA_SUBDIRS = ['prompts', 'schemas', 'code', 'examples'];
 const SCHEMA_VERSION = 1;
 const GENERATOR_VERSION = '1.0.0';
 const COMPOSITION_MATRIX_PATH = 'composition/combination-matrix.md';
+// YAML emitter constants — same TDZ rationale; quoteString runs deep inside
+// the emitCatalog call chain.
+const YAML_RESERVED = new Set(['true', 'false', 'null', 'yes', 'no', 'on', 'off', '~']);
+const SAFE_BARE_RE = /^[A-Za-z_][A-Za-z0-9_.\-/]*$/;
 
 let errors = 0;
 // Map of dir → parsed metadata. Populated as we validate; consumed by --emit.
@@ -508,9 +512,9 @@ function renderInlineScalar(value) {
 
 // String quoting. Quote when the value contains chars that would confuse the
 // YAML parser, when it parses as a reserved word, or when it starts with a
-// character YAML interprets specially.
-const YAML_RESERVED = new Set(['true', 'false', 'null', 'yes', 'no', 'on', 'off', '~']);
-const SAFE_BARE_RE = /^[A-Za-z_][A-Za-z0-9_.\-/]*$/;
+// character YAML interprets specially. (YAML_RESERVED + SAFE_BARE_RE are
+// declared near the top of the file so they're initialized before
+// emitCatalog runs.)
 function quoteString(s, inline) {
   if (s === '') return "''";
   if (YAML_RESERVED.has(s.toLowerCase())) return JSON.stringify(s);
