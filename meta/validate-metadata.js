@@ -1,24 +1,24 @@
 #!/usr/bin/env node
 /**
- * Validates that every pattern and workflow directory has a valid metadata.json,
- * and that the key fields match the patterns.ts data file in the website.
+ * Validates every cohort entry's metadata.json against the contract declared
+ * in `taxonomy.yaml`, and emits `patterns-catalog.yaml` from the validated
+ * data when `--emit <path>` is supplied.
+ *
+ * Cohorts are NOT hardcoded — they're read from `taxonomy.yaml`. Adding a new
+ * cohort means adding one entry to taxonomy.yaml + creating its directory; no
+ * code change here.
  *
  * Run from the repo root:
  *   node meta/validate-metadata.js
  *   node meta/validate-metadata.js --emit patterns-catalog.yaml
  *
- * `--emit <path>` aggregates the validated metadata + resolved tier-file
- * paths + parsed composition matrix into a single machine-readable catalog
- * consumed by agent-deployments CI. See PATTERNS_CATALOG_SCHEMA.md.
- *
- * Used in CI to catch sync issues between metadata.json files and patterns.ts,
- * and (with --emit) to gate drift between the per-pattern metadata and the
- * aggregated catalog.
+ * See meta/HOW_TO_ADD_AN_ENTRY.md for the contributor walkthrough.
  */
 
-import { readFileSync, existsSync, writeFileSync, statSync } from 'fs';
+import { readFileSync, existsSync, readdirSync, writeFileSync, statSync } from 'fs';
 import { join, resolve } from 'path';
 import { fileURLToPath } from 'url';
+import yaml from 'js-yaml';
 
 const __dirname = resolve(fileURLToPath(import.meta.url), '..');
 const ROOT = resolve(__dirname, '..');
@@ -31,51 +31,28 @@ if (EMIT_FLAG_INDEX !== -1 && !EMIT_PATH) {
   process.exit(2);
 }
 
+// ---------------------------------------------------------------------------
+// Taxonomy load — single source of truth for which cohorts exist.
+// ---------------------------------------------------------------------------
+
+const TAXONOMY_PATH = join(ROOT, 'taxonomy.yaml');
+if (!existsSync(TAXONOMY_PATH)) {
+  console.error(`MISSING: ${TAXONOMY_PATH}`);
+  process.exit(2);
+}
+const TAXONOMY = yaml.load(readFileSync(TAXONOMY_PATH, 'utf-8'));
+
+if (!TAXONOMY || typeof TAXONOMY !== 'object') {
+  console.error(`INVALID: taxonomy.yaml did not parse to an object`);
+  process.exit(2);
+}
+if (!Array.isArray(TAXONOMY.cohorts) || TAXONOMY.cohorts.length === 0) {
+  console.error(`INVALID: taxonomy.yaml must declare at least one cohort under 'cohorts:'`);
+  process.exit(2);
+}
+
 const REQUIRED_FIELDS = ['id', 'name', 'category', 'complexity', 'description', 'tiers'];
-const VALID_CATEGORIES = ['workflow', 'agent', 'primitive', 'modifier'];
 const VALID_COMPLEXITIES = ['Beginner', 'Intermediate', 'Advanced'];
-
-// Three-tier taxonomy (catalog v2):
-//   patterns/    — flow shapes (LLM-controlled or code-controlled). Each
-//                  entry's metadata.json category is 'agent' or 'workflow'.
-//   primitives/  — orthogonal building blocks the agent uses (tool_use,
-//                  memory, skills). category='primitive'.
-//   modifiers/   — transformations layered on a pattern (human_in_the_loop).
-//                  category='modifier'.
-const PATTERN_DIRS = [
-  'patterns/prompt-chaining',
-  'patterns/parallel-calls',
-  'patterns/orchestrator-worker',
-  'patterns/evaluator-optimizer',
-  'patterns/react',
-  'patterns/plan_and_execute',
-  'patterns/rag',
-  'patterns/reflection',
-  'patterns/routing',
-  'patterns/multi_agent',
-  'patterns/event_driven',
-  'patterns/saga',
-];
-const PRIMITIVE_DIRS = [
-  'primitives/tool_use',
-  'primitives/memory',
-  'primitives/skills',
-];
-const MODIFIER_DIRS = [
-  'modifiers/human_in_the_loop',
-];
-const ALL_DIRS = [...PATTERN_DIRS, ...PRIMITIVE_DIRS, ...MODIFIER_DIRS];
-
-// Per-tier expected metadata.category values. Used to flag mis-tagged
-// entries (e.g. a primitive that still says category: 'agent').
-const EXPECTED_CATEGORY_BY_DIR = new Map([
-  ...PATTERN_DIRS.map((d) => [d, ['agent', 'workflow']]),
-  ...PRIMITIVE_DIRS.map((d) => [d, ['primitive']]),
-  ...MODIFIER_DIRS.map((d) => [d, ['modifier']]),
-]);
-
-// Catalog emission constants — declared up here so they're outside the
-// temporal dead zone when emitCatalog() runs at the validator's success path.
 const TIER_FILE_NAMES = [
   'overview',
   'design',
@@ -85,32 +62,62 @@ const TIER_FILE_NAMES = [
   'cost-and-latency',
 ];
 const EXTRA_SUBDIRS = ['prompts', 'schemas', 'code', 'examples'];
-const SCHEMA_VERSION = 2;
-const GENERATOR_VERSION = '2.0.0';
 const COMPOSITION_MATRIX_PATH = 'composition/combination-matrix.md';
-// YAML emitter constants — same TDZ rationale; quoteString runs deep inside
-// the emitCatalog call chain.
+// YAML emitter constants — hoisted here so they're outside the temporal dead
+// zone when emitCatalog() runs from the validator's success path.
 const YAML_RESERVED = new Set(['true', 'false', 'null', 'yes', 'no', 'on', 'off', '~']);
 const SAFE_BARE_RE = /^[A-Za-z_][A-Za-z0-9_.\-/]*$/;
 
-let errors = 0;
-// Map of dir → parsed metadata. Populated as we validate; consumed by --emit.
-const PARSED = new Map();
+// Catalog top-level constants — read from taxonomy so a single bump there
+// flows everywhere.
+const SCHEMA_VERSION = TAXONOMY.catalog_schema_version;
+const GENERATOR_VERSION = TAXONOMY.generator_version;
 
-// Cache the id-set across all three tiers so cross-references (evolvesFrom,
-// composableWith, etc.) can resolve to any cohort — a pattern can compose
-// with a primitive (e.g. react ↔ memory) and vice versa.
-const ALL_IDS = new Set(ALL_DIRS.map((d) => d.split('/')[1]));
+// Discover each cohort's entry directories by walking taxonomy.cohorts[].dir.
+// An entry is any non-hidden subdirectory containing a metadata.json.
+function discoverEntries(cohort) {
+  const dir = cohort.dir;
+  const abs = join(ROOT, dir);
+  if (!existsSync(abs)) return [];
+  return readdirSync(abs, { withFileTypes: true })
+    .filter((e) => e.isDirectory() && !e.name.startsWith('.'))
+    .filter((e) => existsSync(join(abs, e.name, 'metadata.json')))
+    .map((e) => `${dir}/${e.name}`)
+    .sort();
+}
+
+// `cohorts` is the in-memory join of taxonomy.cohorts[] + discovered entry
+// directories. Each element is { cohort: <taxonomyEntry>, entries: [dir, ...] }.
+const COHORTS = TAXONOMY.cohorts.map((cohort) => ({
+  cohort,
+  entries: discoverEntries(cohort),
+}));
+
+const ALL_DIRS = COHORTS.flatMap((c) => c.entries);
+const ALL_IDS = new Set(ALL_DIRS.map((d) => d.split('/').pop()));
+
+// Per-dir expected category list (sourced from the cohort declaration).
+const EXPECTED_CATEGORY_BY_DIR = new Map();
+for (const { cohort, entries } of COHORTS) {
+  for (const dir of entries) {
+    EXPECTED_CATEGORY_BY_DIR.set(dir, cohort.category_values);
+  }
+}
+
+// Per-entry valid category set (any cohort's allowed values).
+const ALL_VALID_CATEGORIES = new Set(
+  TAXONOMY.cohorts.flatMap((c) => c.category_values),
+);
+
+// ---------------------------------------------------------------------------
+// Validation loop
+// ---------------------------------------------------------------------------
+
+let errors = 0;
+const PARSED = new Map();
 
 for (const dir of ALL_DIRS) {
   const metaPath = join(ROOT, dir, 'metadata.json');
-
-  if (!existsSync(metaPath)) {
-    console.error(`MISSING: ${dir}/metadata.json`);
-    errors++;
-    continue;
-  }
-
   let meta;
   try {
     meta = JSON.parse(readFileSync(metaPath, 'utf-8'));
@@ -121,7 +128,7 @@ for (const dir of ALL_DIRS) {
   }
   PARSED.set(dir, meta);
 
-  // Check required fields
+  // Required-field check.
   for (const field of REQUIRED_FIELDS) {
     if (!(field in meta)) {
       console.error(`MISSING FIELD "${field}": ${dir}/metadata.json`);
@@ -129,15 +136,11 @@ for (const dir of ALL_DIRS) {
     }
   }
 
-  // Check field values
-  if (meta.category && !VALID_CATEGORIES.includes(meta.category)) {
+  // Category value check (global set + per-cohort set).
+  if (meta.category && !ALL_VALID_CATEGORIES.has(meta.category)) {
     console.error(`INVALID category "${meta.category}": ${dir}/metadata.json`);
     errors++;
   }
-
-  // Tier ↔ category coherence: a directory's expected category list must
-  // contain the metadata.category value. Catches a primitive that still
-  // says category: 'agent', or a pattern accidentally marked 'modifier'.
   const expectedCats = EXPECTED_CATEGORY_BY_DIR.get(dir);
   if (expectedCats && meta.category && !expectedCats.includes(meta.category)) {
     console.error(
@@ -151,19 +154,18 @@ for (const dir of ALL_DIRS) {
     errors++;
   }
 
-  // Check that id matches directory name
-  const expectedId = dir.split('/')[1];
+  // ID ↔ directory-name coherence.
+  const expectedId = dir.split('/').pop();
   if (meta.id !== expectedId) {
     console.error(`ID MISMATCH: expected "${expectedId}", got "${meta.id}" in ${dir}/metadata.json`);
     errors++;
   }
 
-  // Check that referenced patterns exist — cross-cohort refs are allowed.
+  // Cross-cohort reference check (evolvesFrom, composableWith, appliesTo).
   for (const field of ['evolvesFrom', 'evolvesInto', 'composableWith', 'appliesTo']) {
     if (meta[field]) {
       for (const refId of meta[field]) {
-        // 'any' is the wildcard for modifier.appliesTo — accept it.
-        if (refId === 'any') continue;
+        if (refId === 'any') continue; // wildcard for modifier.appliesTo
         if (!ALL_IDS.has(refId)) {
           console.error(`UNKNOWN REF "${refId}" in ${field}: ${dir}/metadata.json`);
           errors++;
@@ -172,7 +174,7 @@ for (const dir of ALL_DIRS) {
     }
   }
 
-  // Check that tier files exist
+  // Tier-file presence.
   if (meta.tiers) {
     for (const tier of meta.tiers) {
       const tierFile = join(ROOT, dir, `${tier}.md`);
@@ -184,19 +186,19 @@ for (const dir of ALL_DIRS) {
   }
 }
 
-// Cross-check that every id is registered in the website data file.
-// Without this, a new pattern / primitive / modifier can ship to the repo
-// with all its docs and metadata, pass CI, and still be invisible on the
-// deployed site.
+// Cross-check that every entry id is registered in the website data file.
+// website/src/data/patterns.ts is a generated artifact (see
+// meta/generate-website-data.js), so this catches a forgotten regen as well
+// as a hand-edit that diverges.
 const SITE_DATA_PATH = join(ROOT, 'website/src/data/patterns.ts');
 if (existsSync(SITE_DATA_PATH)) {
   const siteData = readFileSync(SITE_DATA_PATH, 'utf-8');
   for (const dir of ALL_DIRS) {
-    const id = dir.split('/')[1];
-    // Match either single or double quoted id literals.
+    const id = dir.split('/').pop();
     if (!siteData.includes(`id: '${id}'`) && !siteData.includes(`id: "${id}"`)) {
       console.error(
-        `MISSING FROM SITE DATA: "${id}" is in metadata but not registered in website/src/data/patterns.ts`,
+        `MISSING FROM SITE DATA: "${id}" is in metadata but not registered in website/src/data/patterns.ts ` +
+          `(run: node meta/generate-website-data.js)`,
       );
       errors++;
     }
@@ -207,10 +209,8 @@ if (existsSync(SITE_DATA_PATH)) {
 }
 
 if (errors === 0) {
-  console.log(
-    `All ${ALL_DIRS.length} metadata.json files are valid ` +
-      `(${PATTERN_DIRS.length} patterns + ${PRIMITIVE_DIRS.length} primitives + ${MODIFIER_DIRS.length} modifiers).`,
-  );
+  const counts = COHORTS.map((c) => `${c.entries.length} ${c.cohort.label_plural || c.cohort.id}`).join(' + ');
+  console.log(`All ${ALL_DIRS.length} metadata.json files are valid (${counts}).`);
   if (EMIT_PATH) {
     emitCatalog(EMIT_PATH);
   }
@@ -225,17 +225,12 @@ if (errors === 0) {
 // ---------------------------------------------------------------------------
 
 /**
- * Aggregate per-tier metadata + tier-file paths + composition matrix into
- * a deterministic YAML catalog. No timestamps, no commit SHAs — the output is
- * a pure function of the source files, so the drift CI can byte-diff.
+ * Aggregate per-entry metadata + tier-file paths + composition matrix into
+ * a deterministic YAML catalog. No timestamps, no commit SHAs — output is a
+ * pure function of the source files so drift CI can byte-diff.
  *
- * Catalog v2 shape:
- *   patterns[]    — 12 entries; agent + workflow categories interleaved.
- *   workflows[]   — derived view (patterns[] filtered to category=workflow).
- *                   Kept for one release as a backward-compat affordance.
- *   primitives[]  — 3 entries (tool_use, memory, skills).
- *   modifiers[]   — 1 entry (human_in_the_loop), with appliesTo list.
- *   compositions[] — unchanged shape; cross-cohort edges allowed.
+ * Catalog shape is taxonomy-driven: one top-level key per cohort (using the
+ * cohort's `catalog_key`), plus derived views per `taxonomy.derived_views`.
  */
 function emitCatalog(outPath) {
   function buildEntry(dir) {
@@ -252,8 +247,7 @@ function emitCatalog(outPath) {
       tier_files: resolveTierFiles(dir, meta),
     };
 
-    // Optional pass-through fields. Preserve order: evolution chain, composition,
-    // prerequisites, tags, then cost/latency tiers (matches the README ordering).
+    // Optional pass-through fields. Order matches the README convention.
     if (meta.evolvesFrom) entry.evolvesFrom = meta.evolvesFrom;
     if (meta.evolvesInto) entry.evolvesInto = meta.evolvesInto;
     if (meta.composableWith) entry.composableWith = meta.composableWith;
@@ -269,44 +263,85 @@ function emitCatalog(outPath) {
     return entry;
   }
 
-  const patterns = PATTERN_DIRS.map(buildEntry).filter(Boolean);
-  const primitives = PRIMITIVE_DIRS.map(buildEntry).filter(Boolean);
-  const modifiers = MODIFIER_DIRS.map(buildEntry).filter(Boolean);
+  // Build per-cohort buckets indexed by catalog_key.
+  const cohortBuckets = {};
+  for (const { cohort, entries } of COHORTS) {
+    const items = entries.map(buildEntry).filter(Boolean);
+    items.sort((a, b) => a.id.localeCompare(b.id));
+    cohortBuckets[cohort.catalog_key] = items;
+  }
 
-  // Sort for determinism within each cohort.
-  patterns.sort((a, b) => a.id.localeCompare(b.id));
-  primitives.sort((a, b) => a.id.localeCompare(b.id));
-  modifiers.sort((a, b) => a.id.localeCompare(b.id));
-
-  // Derived workflows[] view: patterns[] entries whose category is 'workflow'.
-  // Kept under its own top-level key so existing consumers (older
-  // agent-deployments / agent-scaffold builds) keep reading what they expect
-  // while they migrate to walking patterns[] + filtering by category.
-  const workflows = patterns.filter((p) => p.category === 'workflow');
+  // Derived views: filter another cohort by a predicate.
+  const derivedViews = TAXONOMY.derived_views || [];
+  for (const view of derivedViews) {
+    const sourceCohort = TAXONOMY.cohorts.find((c) => c.id === view.source);
+    if (!sourceCohort) {
+      console.warn(`warning: derived_views[].source "${view.source}" matches no cohort id; skipping`);
+      continue;
+    }
+    const source = cohortBuckets[sourceCohort.catalog_key] || [];
+    cohortBuckets[view.catalog_key] = source.filter((entry) => evaluatePredicate(view.filter, entry));
+  }
 
   const compositions = parseCompositionMatrix();
 
+  // Assemble catalog in declaration order: schema_version first, then each
+  // cohort's catalog_key, then derived views' catalog_keys, then compositions.
   const catalog = {
     schema_version: SCHEMA_VERSION,
     generator_version: GENERATOR_VERSION,
-    patterns,
-    workflows,
-    primitives,
-    modifiers,
-    compositions,
   };
+  for (const { cohort } of COHORTS) {
+    catalog[cohort.catalog_key] = cohortBuckets[cohort.catalog_key];
+  }
+  for (const view of derivedViews) {
+    catalog[view.catalog_key] = cohortBuckets[view.catalog_key];
+  }
+  catalog.compositions = compositions;
 
   writeFileSync(outPath, renderYaml(catalog) + '\n', 'utf-8');
-  console.log(
-    `Wrote ${outPath} (${patterns.length} patterns including ${workflows.length} workflows, ` +
-      `${primitives.length} primitives, ${modifiers.length} modifiers, ${compositions.length} compositions)`,
-  );
+
+  // Summary log mirrors the validator's count line for readability.
+  const summary = COHORTS.map((c) => {
+    const items = cohortBuckets[c.cohort.catalog_key];
+    return `${items.length} ${c.cohort.label_plural || c.cohort.id}`;
+  }).join(', ');
+  const derivedSummary = derivedViews.length
+    ? `, derived: ${derivedViews
+        .map((v) => `${v.catalog_key}=${(cohortBuckets[v.catalog_key] || []).length}`)
+        .join(', ')}`
+    : '';
+  console.log(`Wrote ${outPath} (${summary}${derivedSummary}, ${compositions.length} compositions)`);
 }
 
 /**
- * Resolve which tier files actually exist for this pattern. We start from the
- * `tiers` array in metadata.json (declarative source of truth) and check disk
- * presence to catch drift between metadata and filesystem.
+ * Tiny predicate evaluator for `requires_state_schema.when` and
+ * `derived_views[].filter` expressions. Supported forms:
+ *   - "true"
+ *   - "false"
+ *   - "category == 'X'"
+ *   - "category != 'X'"
+ *
+ * Extend here as new shapes are needed; keep the grammar minimal so the
+ * taxonomy.schema.json regex doesn't get unwieldy.
+ */
+function evaluatePredicate(expr, entry) {
+  const trimmed = (expr || '').trim();
+  if (trimmed === 'true') return true;
+  if (trimmed === 'false') return false;
+  const m = trimmed.match(/^category\s*(==|!=)\s*'([a-zA-Z][a-zA-Z0-9_-]*)'$/);
+  if (m) {
+    const op = m[1];
+    const value = m[2];
+    if (op === '==') return entry.category === value;
+    return entry.category !== value;
+  }
+  throw new Error(`unsupported expression: ${expr}`);
+}
+
+/**
+ * Resolve which tier files actually exist for this entry. Starts from the
+ * declarative `tiers` array in metadata.json and checks disk presence.
  */
 function resolveTierFiles(dir, meta) {
   const result = {};
@@ -325,7 +360,7 @@ function resolveTierFiles(dir, meta) {
  * Detect which optional companion subdirs exist (prompts/, schemas/, code/,
  * examples/). Reported as `extras: {prompts: <rel>, ...}` — best-effort
  * presence reporting; consumers must not assume an extra exists from one
- * pattern just because a sibling has it.
+ * entry just because a sibling has it.
  */
 function detectExtras(dir) {
   const result = {};
@@ -343,11 +378,6 @@ function detectExtras(dir) {
 // Composition matrix parser
 // ---------------------------------------------------------------------------
 
-/**
- * Build a name → id map from the parsed metadata. The combination matrix uses
- * display names ("Prompt Chaining", "Plan & Execute"); the catalog uses ids
- * ("prompt-chaining", "plan_and_execute"). This is the bridge.
- */
 function buildNameToIdMap() {
   const map = new Map();
   for (const meta of PARSED.values()) {
@@ -358,21 +388,6 @@ function buildNameToIdMap() {
   return map;
 }
 
-/**
- * Parse the combination matrix markdown into a flat list of composition edges.
- *
- * The matrix has three tables — Workflow+Workflow, Workflow+Agent, Agent+Agent.
- * Each cell is one of:
- *   - "N/A"             — self-pair, skip
- *   - "—"               — no relationship, skip
- *   - "Evolves into"    — evolution edge, already in metadata.evolvesFrom/Into; skip
- *   - "**<Kind>** — <rationale>" — composition edge, emit
- *   - "**<Kind>**"      — composition edge with no rationale, emit
- *
- * Kinds map to lowercase ids: natural, useful, complex, redundant, anti.
- * "Anti" doesn't appear in the matrix itself but in the "Combinations to Avoid"
- * section. v1 only parses the three tables; the avoid-section is a future PR.
- */
 function parseCompositionMatrix() {
   const path = join(ROOT, COMPOSITION_MATRIX_PATH);
   if (!existsSync(path)) {
@@ -382,11 +397,8 @@ function parseCompositionMatrix() {
   const text = readFileSync(path, 'utf-8');
   const nameToId = buildNameToIdMap();
   const edges = [];
-  const seen = new Set(); // dedupe undirected pairs
+  const seen = new Set();
 
-  // Split into sections at H2 headers; only parse sections whose heading
-  // contains "Combinations". This skips the "Reading the Matrix" intro,
-  // "Top Recommended Combinations" prose, and the avoid section.
   const sections = text.split(/^## /m).slice(1);
   for (const section of sections) {
     const firstNewline = section.indexOf('\n');
@@ -398,8 +410,6 @@ function parseCompositionMatrix() {
       const rows = parseMarkdownTable(table);
       if (rows.length < 2) continue;
       const header = rows[0];
-      // Header[0] is empty (the corner cell). Columns 1..N are pattern names
-      // (possibly wrapped in **bold** or with arrows like "Workflow ↓ / Agent →").
       const colNames = header.slice(1).map(cleanHeaderName);
       for (const row of rows.slice(1)) {
         const rowName = cleanHeaderName(row[0]);
@@ -412,7 +422,6 @@ function parseCompositionMatrix() {
           const cell = (row[i + 1] || '').trim();
           const edge = parseCell(cell);
           if (!edge) continue;
-          // Dedupe undirected pair — keep first encountered.
           const key = [rowId, colId].sort().join('|');
           if (seen.has(key)) continue;
           seen.add(key);
@@ -438,7 +447,6 @@ function extractTables(section) {
     }
   }
   if (current.length > 0) tables.push(current.join('\n'));
-  // A valid table has at least a header row + separator + 1 data row.
   return tables.filter((t) => t.split('\n').length >= 3);
 }
 
@@ -446,7 +454,6 @@ function parseMarkdownTable(text) {
   const rows = [];
   for (const line of text.split('\n')) {
     if (!line.trim().startsWith('|')) continue;
-    // Skip the separator row (|---|---|).
     if (/^\s*\|[\s|:-]+\|\s*$/.test(line)) continue;
     const cells = line
       .replace(/^\s*\|/, '')
@@ -461,15 +468,14 @@ function parseMarkdownTable(text) {
 function cleanHeaderName(raw) {
   return raw
     .replace(/\*\*/g, '')
-    .replace(/[↓→].*$/, '') // strip directional annotations like "Workflow ↓ / Agent →"
-    .replace(/^.*\//, '') // if "X / Y" remains, take the second half
+    .replace(/[↓→].*$/, '')
+    .replace(/^.*\//, '')
     .trim();
 }
 
 function parseCell(cell) {
   if (!cell || cell === '—' || cell === '-' || /^N\/A$/i.test(cell)) return null;
-  if (/^Evolves into$/i.test(cell)) return null; // captured in metadata.evolvesFrom/Into
-  // Match "**Kind**" optionally followed by " — rationale" or " - rationale".
+  if (/^Evolves into$/i.test(cell)) return null;
   const m = cell.match(/^\*\*([A-Za-z]+)\*\*\s*(?:[—-]\s*(.+))?$/);
   if (!m) return null;
   const kind = m[1].toLowerCase();
@@ -479,13 +485,12 @@ function parseCell(cell) {
 }
 
 // ---------------------------------------------------------------------------
-// Tiny YAML emitter
+// Tiny YAML emitter — handles strings, numbers, booleans, null, arrays
+// (block style), maps (block style), and inline objects. Output is
+// line-stable so the drift CI can byte-diff.
+// YAML_RESERVED + SAFE_BARE_RE are declared near the top of the file (TDZ
+// avoidance — emitCatalog runs before this section is reached).
 // ---------------------------------------------------------------------------
-//
-// Handles: strings (quoted only when ambiguous), numbers, booleans, null,
-// arrays (block style), maps (block style), and inline objects for the
-// compositions block. Deliberately not a full YAML 1.2 implementation —
-// only the subset this generator produces. Output is line-stable.
 
 function renderYaml(obj) {
   return renderMap(obj, 0);
@@ -508,17 +513,11 @@ function renderEntry(key, value, depth) {
   if (value === null || value === undefined) {
     return `${indent(depth)}${key}: null`;
   }
-  if (typeof value === 'string') {
-    return `${indent(depth)}${key}: ${quoteString(value)}`;
-  }
-  if (typeof value === 'number' || typeof value === 'boolean') {
-    return `${indent(depth)}${key}: ${value}`;
-  }
   if (Array.isArray(value)) {
     if (value.length === 0) {
       return `${indent(depth)}${key}: []`;
     }
-    return `${indent(depth)}${key}:\n${renderArray(value, depth + 1)}`;
+    return `${indent(depth)}${key}:\n${renderArray(value, depth)}`;
   }
   if (typeof value === 'object') {
     if (Object.keys(value).length === 0) {
@@ -526,65 +525,81 @@ function renderEntry(key, value, depth) {
     }
     return `${indent(depth)}${key}:\n${renderMap(value, depth + 1)}`;
   }
-  throw new Error(`unsupported value type for ${key}: ${typeof value}`);
+  return `${indent(depth)}${key}: ${renderScalar(value)}`;
 }
 
 function renderArray(arr, depth) {
-  return arr
-    .map((item) => {
-      if (item !== null && typeof item === 'object' && !Array.isArray(item)) {
-        // Inline flow style if the object has only scalar values; this keeps
-        // composition edges compact: `- {a: rag, b: react, kind: natural, ...}`.
-        if (canRenderInline(item)) {
-          return `${indent(depth)}- ${renderInlineMap(item)}`;
+  const lines = [];
+  for (const item of arr) {
+    if (item === null || item === undefined) {
+      lines.push(`${indent(depth)}- null`);
+    } else if (Array.isArray(item)) {
+      // Nested arrays — not used today, but render block-style for safety.
+      lines.push(`${indent(depth)}-`);
+      lines.push(renderArray(item, depth + 1));
+    } else if (typeof item === 'object') {
+      // For the compositions block, render inline {a: x, b: y, kind: z, rationale: "..."}
+      if (isFlatScalarObject(item)) {
+        lines.push(`${indent(depth)}- ${renderInlineObject(item)}`);
+      } else {
+        const entries = Object.entries(item);
+        const [firstKey, firstVal] = entries[0];
+        const firstLine = renderFirstObjectEntry(firstKey, firstVal, depth + 1);
+        lines.push(`${indent(depth)}- ${firstLine}`);
+        for (let i = 1; i < entries.length; i++) {
+          const [k, v] = entries[i];
+          lines.push(renderEntry(k, v, depth + 1));
         }
-        const inner = renderMap(item, depth + 1);
-        // The first key replaces the `- ` prefix; subsequent keys nest under it.
-        const innerLines = inner.split('\n');
-        innerLines[0] = innerLines[0].replace(indent(depth + 1), `${indent(depth)}- `);
-        return innerLines.join('\n');
       }
-      if (typeof item === 'string') {
-        return `${indent(depth)}- ${quoteString(item)}`;
-      }
-      return `${indent(depth)}- ${item}`;
-    })
-    .join('\n');
+    } else {
+      lines.push(`${indent(depth)}- ${renderScalar(item)}`);
+    }
+  }
+  return lines.join('\n');
 }
 
-function canRenderInline(obj) {
-  for (const v of Object.values(obj)) {
-    if (v !== null && typeof v === 'object') return false;
+function renderFirstObjectEntry(key, value, depth) {
+  if (value === null || value === undefined) return `${key}: null`;
+  if (Array.isArray(value)) {
+    if (value.length === 0) return `${key}: []`;
+    return `${key}:\n${renderArray(value, depth)}`;
   }
-  return true;
+  if (typeof value === 'object') {
+    if (Object.keys(value).length === 0) return `${key}: {}`;
+    return `${key}:\n${renderMap(value, depth + 1)}`;
+  }
+  return `${key}: ${renderScalar(value)}`;
 }
 
-function renderInlineMap(obj) {
-  const parts = [];
-  for (const key of Object.keys(obj)) {
-    parts.push(`${key}: ${renderInlineScalar(obj[key])}`);
-  }
+function isFlatScalarObject(obj) {
+  return Object.values(obj).every(
+    (v) => v === null || ['string', 'number', 'boolean'].includes(typeof v),
+  );
+}
+
+function renderInlineObject(obj) {
+  const parts = Object.entries(obj).map(([k, v]) => `${k}: ${renderScalar(v)}`);
   return `{${parts.join(', ')}}`;
 }
 
-function renderInlineScalar(value) {
-  if (value === null) return 'null';
-  if (typeof value === 'string') return quoteString(value, true);
-  return String(value);
+function renderScalar(v) {
+  if (typeof v === 'string') return quoteString(v);
+  if (typeof v === 'number') return String(v);
+  if (typeof v === 'boolean') return v ? 'true' : 'false';
+  return JSON.stringify(v);
 }
 
-// String quoting. Quote when the value contains chars that would confuse the
-// YAML parser, when it parses as a reserved word, or when it starts with a
-// character YAML interprets specially. (YAML_RESERVED + SAFE_BARE_RE are
-// declared near the top of the file so they're initialized before
-// emitCatalog runs.)
-function quoteString(s, inline) {
-  if (s === '') return "''";
-  if (YAML_RESERVED.has(s.toLowerCase())) return JSON.stringify(s);
-  if (/^[-0-9]/.test(s) && !isNaN(Number(s))) return JSON.stringify(s);
-  if (inline && s.includes(',')) return JSON.stringify(s);
-  if (inline && s.includes('}')) return JSON.stringify(s);
-  if (SAFE_BARE_RE.test(s)) return s;
-  // JSON quoting handles backslashes, quotes, control chars correctly.
-  return JSON.stringify(s);
+function quoteString(s) {
+  if (s === '') return '""';
+  if (
+    SAFE_BARE_RE.test(s) &&
+    !YAML_RESERVED.has(s.toLowerCase()) &&
+    !/^-?\d+(\.\d+)?$/.test(s) &&
+    !s.startsWith(' ') &&
+    !s.endsWith(' ')
+  ) {
+    return s;
+  }
+  // Use double quotes; escape backslashes and double-quotes only.
+  return `"${s.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`;
 }
