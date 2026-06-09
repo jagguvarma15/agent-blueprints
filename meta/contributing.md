@@ -89,6 +89,10 @@ If this is your first contribution, these tasks are sized for one or two evening
 
 These are tracked with the `good first issue` label on GitHub. If you'd like to claim one, comment on the issue first to avoid duplicate work.
 
+## Commit message convention
+
+We use [Conventional Commits](https://www.conventionalcommits.org/): `feat:`, `fix:`, `docs:`, `chore:`, `refactor:`, `test:`, `ci:`. Not CI-enforced, but it keeps the git log scannable and leaves room to adopt automated release notes later. See [`../CONTRIBUTING.md#commit-message-convention`](../CONTRIBUTING.md#commit-message-convention) for the full table and the opt-in `.gitmessage` template.
+
 ## Pull Request Process
 
 1. Fork the repository
