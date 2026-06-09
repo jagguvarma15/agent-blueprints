@@ -1,16 +1,25 @@
 /**
  * Pattern metadata for the website.
  *
- * Each pattern's authoritative machine-readable metadata lives in:
- *   workflows/{id}/metadata.json
- *   patterns/{id}/metadata.json
+ * Each entry's authoritative machine-readable metadata lives in:
+ *   patterns/{id}/metadata.json     (12 entries — category is 'agent' or 'workflow')
+ *   primitives/{id}/metadata.json   (3 entries — category is 'primitive')
+ *   modifiers/{id}/metadata.json    (1 entry — category is 'modifier')
  *
- * The data in this file mirrors those JSON files. If you add a new pattern,
- * update both the JSON file in the repo and the arrays below.
+ * The data in this file mirrors those JSON files. If you add a new entry,
+ * update both the JSON file in the repo and the matching array below.
+ *
+ * Catalog v2 (the three-tier taxonomy):
+ *   - patterns/    flow shapes (a beginning/middle/end, LLM-controlled or
+ *                  code-controlled). Workflows fold in here with
+ *                  category='workflow'.
+ *   - primitives/  building blocks the agent uses (tool_use, memory, skills).
+ *   - modifiers/   transformations layered on a pattern (HITL).
  */
 
 export type Complexity = 'Beginner' | 'Intermediate' | 'Advanced';
-export type Category = 'workflow' | 'agent';
+export type Category = 'workflow' | 'agent' | 'primitive' | 'modifier';
+export type Kind = 'pattern' | 'primitive' | 'modifier';
 
 export interface PatternMeta {
   id: string;
@@ -19,11 +28,20 @@ export interface PatternMeta {
   description: string;
   complexity: Complexity;
   category: Category;
+  /** Which cohort this entry belongs to — drives website routing. */
+  kind: Kind;
   /** For agent patterns: the workflow(s) this evolves from */
   evolvesFrom?: string[];
   /** Agent patterns that evolve FROM this workflow (for workflow patterns) */
   evolvesInto?: string[];
+  /** For modifiers: which patterns this can be layered on (or ['any']) */
+  appliesTo?: string[];
 }
+
+// ---------------------------------------------------------------------------
+// Workflows (kept as a named subset of patterns for backward compat — same
+// entries also appear in the unified patterns/ catalog directory).
+// ---------------------------------------------------------------------------
 
 export const WORKFLOWS: PatternMeta[] = [
   {
@@ -33,6 +51,7 @@ export const WORKFLOWS: PatternMeta[] = [
     description: 'Sequential LLM calls with validation gates between steps.',
     complexity: 'Beginner',
     category: 'workflow',
+    kind: 'pattern',
     evolvesInto: ['react', 'tool_use', 'memory'],
   },
   {
@@ -42,6 +61,7 @@ export const WORKFLOWS: PatternMeta[] = [
     description: 'Concurrent LLM calls on independent inputs, aggregated at the end.',
     complexity: 'Beginner',
     category: 'workflow',
+    kind: 'pattern',
     evolvesInto: ['rag', 'routing'],
   },
   {
@@ -51,6 +71,7 @@ export const WORKFLOWS: PatternMeta[] = [
     description: 'LLM decomposes a task and delegates to specialized workers.',
     complexity: 'Intermediate',
     category: 'workflow',
+    kind: 'pattern',
     evolvesInto: ['plan_and_execute', 'multi_agent'],
   },
   {
@@ -60,9 +81,14 @@ export const WORKFLOWS: PatternMeta[] = [
     description: 'Generate-evaluate feedback loop that iteratively improves output.',
     complexity: 'Intermediate',
     category: 'workflow',
+    kind: 'pattern',
     evolvesInto: ['reflection'],
   },
 ];
+
+// ---------------------------------------------------------------------------
+// Agent patterns — LLM-controlled flow shapes.
+// ---------------------------------------------------------------------------
 
 export const AGENT_PATTERNS: PatternMeta[] = [
   {
@@ -72,6 +98,7 @@ export const AGENT_PATTERNS: PatternMeta[] = [
     description: 'Reason-act loop: the LLM reasons, calls a tool, observes, and repeats until done.',
     complexity: 'Intermediate',
     category: 'agent',
+    kind: 'pattern',
     evolvesFrom: ['prompt-chaining'],
   },
   {
@@ -81,25 +108,8 @@ export const AGENT_PATTERNS: PatternMeta[] = [
     description: 'LLM creates a full plan upfront, then executes each step sequentially.',
     complexity: 'Intermediate',
     category: 'agent',
+    kind: 'pattern',
     evolvesFrom: ['orchestrator-worker'],
-  },
-  {
-    id: 'tool_use',
-    name: 'Tool Use',
-    slug: 'tool-use',
-    description: 'Structured function calling with schema-validated tool dispatch.',
-    complexity: 'Beginner',
-    category: 'agent',
-    evolvesFrom: ['prompt-chaining'],
-  },
-  {
-    id: 'memory',
-    name: 'Memory',
-    slug: 'memory',
-    description: 'Persistent state across sessions: short-term, long-term, and semantic memory.',
-    complexity: 'Intermediate',
-    category: 'agent',
-    evolvesFrom: ['prompt-chaining'],
   },
   {
     id: 'rag',
@@ -108,6 +118,7 @@ export const AGENT_PATTERNS: PatternMeta[] = [
     description: 'Retrieval-augmented generation: retrieve relevant context before generating.',
     complexity: 'Intermediate',
     category: 'agent',
+    kind: 'pattern',
     evolvesFrom: ['parallel-calls'],
   },
   {
@@ -117,6 +128,7 @@ export const AGENT_PATTERNS: PatternMeta[] = [
     description: 'LLM critiques its own output and self-improves through structured feedback.',
     complexity: 'Intermediate',
     category: 'agent',
+    kind: 'pattern',
     evolvesFrom: ['evaluator-optimizer'],
   },
   {
@@ -126,6 +138,7 @@ export const AGENT_PATTERNS: PatternMeta[] = [
     description: 'Intent classification dispatches inputs to specialized handlers.',
     complexity: 'Beginner',
     category: 'agent',
+    kind: 'pattern',
     evolvesFrom: ['parallel-calls'],
   },
   {
@@ -135,6 +148,7 @@ export const AGENT_PATTERNS: PatternMeta[] = [
     description: 'Supervisor-worker delegation across multiple autonomous agents.',
     complexity: 'Advanced',
     category: 'agent',
+    kind: 'pattern',
     evolvesFrom: ['orchestrator-worker', 'routing'],
   },
   {
@@ -144,6 +158,7 @@ export const AGENT_PATTERNS: PatternMeta[] = [
     description: 'Agents triggered by queue or stream events rather than HTTP requests.',
     complexity: 'Advanced',
     category: 'agent',
+    kind: 'pattern',
     evolvesFrom: ['tool_use'],
   },
   {
@@ -153,16 +168,35 @@ export const AGENT_PATTERNS: PatternMeta[] = [
     description: 'Long-running, multi-step processes with compensation when an intermediate step fails.',
     complexity: 'Advanced',
     category: 'agent',
+    kind: 'pattern',
     evolvesFrom: ['tool_use', 'prompt-chaining'],
   },
+];
+
+// ---------------------------------------------------------------------------
+// Primitives — building blocks the agent uses. Orthogonal to patterns.
+// ---------------------------------------------------------------------------
+
+export const PRIMITIVES: PatternMeta[] = [
   {
-    id: 'human_in_the_loop',
-    name: 'Human in the Loop',
-    slug: 'human-in-the-loop',
-    description: 'Agent proposes an action; a human approves, denies, or modifies before it commits.',
+    id: 'tool_use',
+    name: 'Tool Use',
+    slug: 'tool-use',
+    description: 'Structured function calling with schema-validated tool dispatch.',
+    complexity: 'Beginner',
+    category: 'primitive',
+    kind: 'primitive',
+    evolvesFrom: ['prompt-chaining'],
+  },
+  {
+    id: 'memory',
+    name: 'Memory',
+    slug: 'memory',
+    description: 'Persistent state across sessions: short-term, long-term, and semantic memory.',
     complexity: 'Intermediate',
-    category: 'agent',
-    evolvesFrom: ['tool_use'],
+    category: 'primitive',
+    kind: 'primitive',
+    evolvesFrom: ['prompt-chaining'],
   },
   {
     id: 'skills',
@@ -170,12 +204,40 @@ export const AGENT_PATTERNS: PatternMeta[] = [
     slug: 'skills',
     description: 'File-based, agent-discovered procedural modules. Cheap to ship many; loaded on demand at runtime.',
     complexity: 'Intermediate',
-    category: 'agent',
+    category: 'primitive',
+    kind: 'primitive',
     evolvesFrom: ['tool_use'],
   },
 ];
 
-export const ALL_PATTERNS: PatternMeta[] = [...WORKFLOWS, ...AGENT_PATTERNS];
+// ---------------------------------------------------------------------------
+// Modifiers — transformations layered on a pattern.
+// ---------------------------------------------------------------------------
+
+export const MODIFIERS: PatternMeta[] = [
+  {
+    id: 'human_in_the_loop',
+    name: 'Human in the Loop',
+    slug: 'human-in-the-loop',
+    description: 'Agent proposes an action; a human approves, denies, or modifies before it commits.',
+    complexity: 'Intermediate',
+    category: 'modifier',
+    kind: 'modifier',
+    evolvesFrom: ['tool_use'],
+    appliesTo: ['any'],
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Lookups (any of patterns + primitives + modifiers).
+// ---------------------------------------------------------------------------
+
+export const ALL_PATTERNS: PatternMeta[] = [
+  ...WORKFLOWS,
+  ...AGENT_PATTERNS,
+  ...PRIMITIVES,
+  ...MODIFIERS,
+];
 
 export function getPatternById(id: string): PatternMeta | undefined {
   return ALL_PATTERNS.find((p) => p.id === id);
@@ -189,7 +251,15 @@ export function getAgentPatternById(id: string): PatternMeta | undefined {
   return AGENT_PATTERNS.find((p) => p.id === id);
 }
 
-/** Evolution edges: workflow → agent patterns */
+export function getPrimitiveById(id: string): PatternMeta | undefined {
+  return PRIMITIVES.find((p) => p.id === id);
+}
+
+export function getModifierById(id: string): PatternMeta | undefined {
+  return MODIFIERS.find((p) => p.id === id);
+}
+
+/** Evolution edges: workflow → agent patterns (only) */
 export const EVOLUTION_EDGES = AGENT_PATTERNS.flatMap((ap) =>
   (ap.evolvesFrom ?? []).map((wfId) => ({ source: wfId, target: ap.id })),
 );
@@ -277,7 +347,7 @@ export const PATTERN_COMPARISONS: PatternComparison[] = [
   {
     id: 'tool_use',
     name: 'Tool Use',
-    category: 'agent',
+    category: 'primitive',
     complexity: 'Beginner',
     latency: 'Low',
     cost: 'Low',
@@ -288,7 +358,7 @@ export const PATTERN_COMPARISONS: PatternComparison[] = [
   {
     id: 'memory',
     name: 'Memory',
-    category: 'agent',
+    category: 'primitive',
     complexity: 'Intermediate',
     latency: 'Medium',
     cost: 'Medium',
@@ -365,7 +435,7 @@ export const PATTERN_COMPARISONS: PatternComparison[] = [
   {
     id: 'human_in_the_loop',
     name: 'Human in the Loop',
-    category: 'agent',
+    category: 'modifier',
     complexity: 'Intermediate',
     latency: 'Variable',
     cost: 'Low',
@@ -376,7 +446,7 @@ export const PATTERN_COMPARISONS: PatternComparison[] = [
   {
     id: 'skills',
     name: 'Skills',
-    category: 'agent',
+    category: 'primitive',
     complexity: 'Intermediate',
     latency: 'Low',
     cost: 'Low',
