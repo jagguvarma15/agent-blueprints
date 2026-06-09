@@ -188,7 +188,7 @@ See the [Contributing Guide](./meta/contributing.md) and [Style Guide](./meta/st
 
 ## Roadmap
 
-This is Phase 1 (documentation). Code implementations, advanced patterns, and tooling are planned for future phases. See the [full roadmap](./meta/roadmap.md).
+This is Phase 1 (documentation). Code implementations, advanced patterns, and tooling are planned for future phases. See the [full roadmap](./ROADMAP.md).
 
 ## License
 
