@@ -1,6 +1,24 @@
 # Contributing
 
-Thanks for adding to this repo. Patterns, framework guides, workflows, and composition docs all live under their respective top-level directories; see [`meta/style-guide.md`](meta/style-guide.md) for the body conventions and [`patterns/README.md`](patterns/README.md) for the per-pattern doc set.
+Thanks for adding to this repo.
+
+## TL;DR — adding a pattern, primitive, or modifier
+
+Three steps:
+
+1. **Pick a cohort.** Patterns, primitives, modifiers (or [a new cohort entirely](meta/HOW_TO_ADD_AN_ENTRY.md#adding-a-brand-new-cohort)).
+2. **Create the entry directory** with `metadata.json` + the tier markdown files it declares.
+3. **Run the generators:**
+   ```bash
+   node meta/validate-metadata.js --emit patterns-catalog.yaml
+   node meta/generate-docs.js
+   node meta/generate-website-data.js
+   ```
+   …then commit metadata + tier files + the regenerated `patterns-catalog.yaml`, `website/src/data/patterns.ts`, and any docs the generators touched.
+
+**The full walkthrough** — including per-cohort examples, prompts for AI tools (Claude Code / Cursor / Copilot), and the post-AI verification checklist — lives in [`meta/HOW_TO_ADD_AN_ENTRY.md`](meta/HOW_TO_ADD_AN_ENTRY.md).
+
+For the style conventions per tier file, see [`meta/style-guide.md`](meta/style-guide.md). For the per-cohort doc set, see [`patterns/README.md`](patterns/README.md), [`primitives/README.md`](primitives/README.md), and [`modifiers/README.md`](modifiers/README.md).
 
 ## How to run the gate locally
 

@@ -1,26 +1,42 @@
 # Contributing
 
-We welcome contributions to agent-blueprints. This guide explains how to add new patterns, improve existing documentation, contribute reference implementations, and work with the website locally.
+We welcome contributions to agent-blueprints. This guide explains how to add new entries (patterns, primitives, modifiers — or a brand-new cohort), improve existing documentation, contribute reference implementations, and work with the website locally.
+
+> **First-timer landing page:** [`HOW_TO_ADD_AN_ENTRY.md`](./HOW_TO_ADD_AN_ENTRY.md) is the recommended starting point. It has copy-pasteable quick-start commands, per-cohort recipes, suggested prompts for Claude Code / Cursor / Copilot, and the post-AI verification checklist.
 
 ## Types of Contributions
 
-### Adding a New Pattern
-If you want to document a new workflow or agent pattern:
+### Adding a new entry (pattern, primitive, modifier)
 
-1. **Open an issue first** — Use the [New Pattern Proposal](./../.github/ISSUE_TEMPLATE/blueprint-proposal.yml) template. Describe the pattern, its use cases, and how it relates to existing patterns. Get alignment before writing.
-2. **Mirror the exemplar.** [`patterns/multi_agent/`](../patterns/multi_agent/) is the canonical reference for new patterns. Match its structural sections in `design.md` (components, data flow, topology choices, failure modes, scaling considerations, observability hooks, composition) and its tier depth. New `design.md` files should land at or above the multi-agent line count when complete.
-3. **Follow the full structure** — Every pattern needs:
+The repo's three-tier taxonomy (patterns / primitives / modifiers) is declared in [`../taxonomy.yaml`](../taxonomy.yaml). Adding a new entry to any cohort follows the same three-step flow:
+
+1. **Open an issue first** — Use the [New Pattern Proposal](./../.github/ISSUE_TEMPLATE/blueprint-proposal.yml) template. Describe what you're adding, its use case, and how it relates to existing entries. Get alignment before writing.
+2. **Mirror an exemplar.** For patterns, [`../patterns/multi_agent/`](../patterns/multi_agent/) is the canonical reference. For primitives, [`../primitives/skills/`](../primitives/skills/). For modifiers, [`../modifiers/human_in_the_loop/`](../modifiers/human_in_the_loop/). Match the structural sections in `design.md` and the tier depth.
+3. **Follow the full tier structure** — Every entry needs:
    - `overview.md` (Tier 1) — architecture diagram, how it works, minimal example, tradeoffs
    - `design.md` (Tier 2) — component breakdown, data flow, error handling, scaling
    - `implementation.md` (Tier 3) — pseudocode, interfaces, testing strategy, pitfalls
-   - `evolution.md` — bridge from parent workflow (agent patterns only)
+   - `evolution.md` — bridge from the entry this evolves from
    - `observability.md` — key metrics, trace format, failure signatures
-   - `cost-and-latency.md` — token budget, latency profile, cost control knobs
-   - `metadata.json` — pattern ID, complexity, evolution and composability relationships
+   - `cost-and-latency.md` — token / runtime budget, latency profile, cost control knobs
+   - `metadata.json` — id, name, category, complexity, evolution and composability relationships
+   - `schemas/state.py` — Pydantic state model (required for every cohort except workflow-category patterns; see [`../taxonomy.yaml`](../taxonomy.yaml) for the per-cohort rule)
 4. **Include diagrams** — Every overview must have at least one Mermaid architecture diagram.
-5. **Cross-reference** — Link to related patterns, workflows, and the choosing-a-pattern guide using relative paths.
+5. **Cross-reference** — Link to related entries and the choosing-a-pattern guide using relative paths.
 6. **Follow the style guide** — See [style-guide.md](./style-guide.md).
-7. **Regenerate the catalog** — After editing any `metadata.json` or tier files, run `node meta/validate-metadata.js --emit patterns-catalog.yaml` and commit the regenerated file. The drift-check CI gate (`.github/workflows/catalog-drift.yml`) fails any PR whose committed catalog doesn't match a fresh regen. See [`PATTERNS_CATALOG_SCHEMA.md`](../PATTERNS_CATALOG_SCHEMA.md).
+7. **Regenerate the catalog + docs + website data** — After editing any `metadata.json` or tier files, run:
+
+   ```bash
+   node meta/validate-metadata.js --emit patterns-catalog.yaml
+   node meta/generate-docs.js
+   node meta/generate-website-data.js
+   ```
+
+   Commit the regenerated files alongside your source changes. The drift-check CI gate (`.github/workflows/catalog-drift.yml`) fails any PR whose committed artifacts don't match a fresh regen. See [`../PATTERNS_CATALOG_SCHEMA.md`](../PATTERNS_CATALOG_SCHEMA.md) for the catalog shape.
+
+### Adding a brand-new cohort
+
+If you think a fourth category is needed (e.g. `guardrails/`, `evaluators/`, `memory_providers/`), add one entry to [`../taxonomy.yaml`](../taxonomy.yaml)'s `cohorts:` list and create the directory. The validator, catalog emitter, schemas test, docs generator, and website data generator all read `taxonomy.yaml` — no other code change is required. See [`HOW_TO_ADD_AN_ENTRY.md#adding-a-brand-new-cohort`](./HOW_TO_ADD_AN_ENTRY.md#adding-a-brand-new-cohort).
 
 ### Improving Existing Documentation
 - Fix errors, improve clarity, add missing cross-references

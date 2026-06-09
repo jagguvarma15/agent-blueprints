@@ -79,7 +79,7 @@ Whichever you choose, the principle is the same: the agent runtime never holds p
 
 ### Where MCP fits in the agent loop
 
-MCP slots cleanly into the [Tool Use](../patterns/tool_use/overview.md) and [ReAct](../patterns/react/overview.md) patterns. The pattern handles the reasoning loop; MCP handles the tool boundary:
+MCP slots cleanly into the [Tool Use](../primitives/tool_use/overview.md) and [ReAct](../patterns/react/overview.md) patterns. The pattern handles the reasoning loop; MCP handles the tool boundary:
 
 ```
 Pattern (ReAct):              MCP integration:
@@ -130,7 +130,7 @@ Three things matter conceptually:
 
 ### Where A2A fits in patterns
 
-A2A slots into the [Multi-Agent](../patterns/multi_agent/overview.md) and [Orchestrator-Worker](../workflows/orchestrator-worker/overview.md) patterns. The pattern decides *what* coordination shape to use (flat peers vs hierarchical supervisor); A2A is the *wire* the coordination flows over.
+A2A slots into the [Multi-Agent](../patterns/multi_agent/overview.md) and [Orchestrator-Worker](../patterns/orchestrator-worker/overview.md) patterns. The pattern decides *what* coordination shape to use (flat peers vs hierarchical supervisor); A2A is the *wire* the coordination flows over.
 
 ```
 Pattern (Multi-Agent hierarchical):    A2A integration:
@@ -179,13 +179,13 @@ Mitigations live in [`security-and-safety.md`](./security-and-safety.md) and (fo
 - **Reasoning quality.** MCP gives you a clean tool boundary; A2A gives you delegation. Neither fixes a bad prompt, a wrong pattern choice, or an LLM that hallucinates tool calls.
 - **Cost / latency.** Both protocols add round trips. A network-transported MCP server is slower than an in-process function; A2A delegation is slower than a same-process call. Use [`cost-and-model-selection.md`](./cost-and-model-selection.md) and per-pattern `cost-and-latency.md` to size budgets.
 - **Idempotency.** A2A's task lifecycle includes retry semantics, but the worker's tools must be idempotent for retries to be safe. Same applies to MCP write tools.
-- **State coordination.** Neither protocol prescribes how agents share state. Use [Memory](../patterns/memory/overview.md) for cross-session state, [Saga](../patterns/saga/overview.md) for distributed-transaction-style state, an external store for shared state.
+- **State coordination.** Neither protocol prescribes how agents share state. Use [Memory](../primitives/memory/overview.md) for cross-session state, [Saga](../patterns/saga/overview.md) for distributed-transaction-style state, an external store for shared state.
 
 ## See also
 
-- [`patterns/tool_use/overview.md`](../patterns/tool_use/overview.md) — the cognitive pattern MCP plugs into.
+- [`patterns/tool_use/overview.md`](../primitives/tool_use/overview.md) — the cognitive pattern MCP plugs into.
 - [`patterns/multi_agent/overview.md`](../patterns/multi_agent/overview.md) — the cognitive pattern A2A plugs into.
-- [`patterns/skills/overview.md`](../patterns/skills/overview.md) — the third connectivity primitive (skills are procedural knowledge, MCP is access, A2A is delegation).
+- [`patterns/skills/overview.md`](../primitives/skills/overview.md) — the third connectivity primitive (skills are procedural knowledge, MCP is access, A2A is delegation).
 - [`foundations/security-and-safety.md`](./security-and-safety.md) — the broader threat model these protocols inherit from.
 - [`foundations/sandboxed-execution.md`](./sandboxed-execution.md) — what to do when a tool execution itself is untrusted.
 - [`composition/blueprints-to-deployments.md`](../composition/blueprints-to-deployments.md) — how cognitive patterns + protocols compose into production recipes.

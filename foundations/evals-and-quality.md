@@ -129,27 +129,27 @@ Operational rule: a fix without an eval is incomplete. Block the PR.
 
 | Pattern | Primary eval signal |
 |---|---|
-| [Prompt Chaining](../workflows/prompt-chaining/overview.md) | Per-step schema validity; end-to-end correctness. |
-| [Parallel Calls](../workflows/parallel-calls/overview.md) | Per-branch correctness; aggregation faithfulness. |
-| [Orchestrator-Worker](../workflows/orchestrator-worker/overview.md) | Decomposition quality (does the plan cover the task?); worker output quality. |
-| [Evaluator-Optimizer](../workflows/evaluator-optimizer/overview.md) | The pattern includes its own evaluator — but that evaluator needs evals too. |
+| [Prompt Chaining](../patterns/prompt-chaining/overview.md) | Per-step schema validity; end-to-end correctness. |
+| [Parallel Calls](../patterns/parallel-calls/overview.md) | Per-branch correctness; aggregation faithfulness. |
+| [Orchestrator-Worker](../patterns/orchestrator-worker/overview.md) | Decomposition quality (does the plan cover the task?); worker output quality. |
+| [Evaluator-Optimizer](../patterns/evaluator-optimizer/overview.md) | The pattern includes its own evaluator — but that evaluator needs evals too. |
 | [ReAct](../patterns/react/overview.md) | Tool-call correctness; iteration count distribution; final answer quality. |
 | [Plan & Execute](../patterns/plan_and_execute/overview.md) | Plan quality; per-step execution fidelity. |
-| [Tool Use](../patterns/tool_use/overview.md) | Function selection accuracy; argument schema match; refusal of unknown tools. |
-| [Memory](../patterns/memory/overview.md) | Retrieval relevance over stored memories; consistency across sessions. |
+| [Tool Use](../primitives/tool_use/overview.md) | Function selection accuracy; argument schema match; refusal of unknown tools. |
+| [Memory](../primitives/memory/overview.md) | Retrieval relevance over stored memories; consistency across sessions. |
 | [RAG](../patterns/rag/overview.md) | Retrieval recall; faithfulness to retrieved context; citation presence. |
 | [Reflection](../patterns/reflection/overview.md) | Critic accuracy; improvement rate per iteration. |
 | [Routing](../patterns/routing/overview.md) | Classification accuracy; `unknown`/`escalate` recall. |
 | [Multi-Agent](../patterns/multi_agent/overview.md) | Per-agent correctness; cross-agent consistency; orchestration overhead. |
 | [Event-Driven](../patterns/event_driven/overview.md) | Idempotency under replay; correctness over event order permutations. |
 | [Saga](../patterns/saga/overview.md) | Compensation correctness under simulated failures at each step. |
-| [Human in the Loop](../patterns/human_in_the_loop/overview.md) | Approval-rate signal; correct routing of high-stakes cases to human review. |
+| [Human in the Loop](../modifiers/human_in_the_loop/overview.md) | Approval-rate signal; correct routing of high-stakes cases to human review. |
 
 ## Related
 
 - [Testing Strategies](./testing-strategies.md) — the test pyramid this layer sits in.
 - [Hallucination & Grounding](./hallucination-and-grounding.md) — what to evaluate for; abstention is a positive signal, not a failure.
-- [Evaluator-Optimizer](../workflows/evaluator-optimizer/overview.md), [Reflection](../patterns/reflection/overview.md) — patterns that embed evaluation as part of generation.
+- [Evaluator-Optimizer](../patterns/evaluator-optimizer/overview.md), [Reflection](../patterns/reflection/overview.md) — patterns that embed evaluation as part of generation.
 - [Security & Safety](./security-and-safety.md) — adversarial eval cases.
 
 ## What this guide deliberately doesn't cover
