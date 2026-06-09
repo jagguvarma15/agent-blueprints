@@ -236,6 +236,26 @@ Whichever path you take, before committing:
 
 ---
 
+## Recommended GitHub Topics
+
+For repo discoverability, the GitHub Topics on the repository's settings page should include (at minimum):
+
+```
+ai-agents
+agent-patterns
+llm-patterns
+cognitive-patterns
+claude
+anthropic
+mcp
+workflows
+agent-blueprints
+```
+
+Topics are set on the repo's web settings page (not via a file in the repo). Maintainers: keep this list in sync there when adding a new significant capability (e.g. if a future cohort like `guardrails/` lands, add `guardrails` here and on the settings page).
+
+---
+
 ## See also
 
 - [`../taxonomy.yaml`](../taxonomy.yaml) — the cohort declaration that drives every generator.
