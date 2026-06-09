@@ -164,6 +164,15 @@ export const AGENT_PATTERNS: PatternMeta[] = [
     category: 'agent',
     evolvesFrom: ['tool_use'],
   },
+  {
+    id: 'skills',
+    name: 'Skills',
+    slug: 'skills',
+    description: 'File-based, agent-discovered procedural modules. Cheap to ship many; loaded on demand at runtime.',
+    complexity: 'Intermediate',
+    category: 'agent',
+    evolvesFrom: ['tool_use'],
+  },
 ];
 
 export const ALL_PATTERNS: PatternMeta[] = [...WORKFLOWS, ...AGENT_PATTERNS];
