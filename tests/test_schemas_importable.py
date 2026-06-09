@@ -95,9 +95,7 @@ _CASES: list[tuple[str, str, str, dict[str, Any]]] = [
     _CASES,
     ids=[f"{c[0]}/{c[1]}" for c in _CASES],
 )
-def test_schema_imports_and_validates(
-    cohort: str, entry_dir: str, model_name: str, kwargs: dict[str, Any]
-) -> None:
+def test_schema_imports_and_validates(cohort: str, entry_dir: str, model_name: str, kwargs: dict[str, Any]) -> None:
     module = _load(cohort, entry_dir)
     model_cls = getattr(module, model_name, None)
     assert model_cls is not None, f"{cohort}/{entry_dir}: {model_name} not exported"
