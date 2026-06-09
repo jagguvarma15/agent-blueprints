@@ -1,0 +1,96 @@
+---
+import { antiCompositionsFor } from '../data/anti-compositions';
+import { getPatternById } from '../data/patterns';
+
+interface Props {
+  /** The on-disk id of the current entry (e.g. `multi_agent`, `react`). */
+  entryId: string;
+}
+
+const { entryId } = Astro.props;
+const base = import.meta.env.BASE_URL || '/agent-blueprints';
+const warnings = antiCompositionsFor(entryId);
+
+const SEVERITY_STYLE = {
+  avoid: {
+    label: 'avoid',
+    accent: 'bg-rose-50 border-rose-200 text-rose-900',
+    dot: 'bg-rose-500',
+  },
+  redundant: {
+    label: 'redundant',
+    accent: 'bg-amber-50 border-amber-200 text-amber-900',
+    dot: 'bg-amber-500',
+  },
+  caution: {
+    label: 'caution',
+    accent: 'bg-yellow-50 border-yellow-200 text-yellow-900',
+    dot: 'bg-yellow-500',
+  },
+};
+
+function otherSide(pair: [string, string]): { id: string; href: string; name: string } | null {
+  const otherId = pair[0] === entryId ? pair[1] : pair[0];
+  const meta = getPatternById(otherId);
+  if (!meta) return null;
+  let href: string;
+  if (meta.kind === 'primitive') href = `${base}/primitives/${meta.slug}/`;
+  else if (meta.kind === 'modifier') href = `${base}/modifiers/${meta.slug}/`;
+  else if (meta.category === 'workflow') href = `${base}/workflows/${meta.slug}/`;
+  else href = `${base}/patterns/${meta.slug}/`;
+  return { id: otherId, href, name: meta.name };
+}
+---
+
+{warnings.length > 0 && (
+  <section class="mt-12 mb-8">
+    <div class="flex items-center gap-2 mb-1">
+      <div class="w-2 h-2 rounded-full bg-rose-400"></div>
+      <h2 class="font-display font-bold text-xl tracking-display text-text">
+        Anti-compositions to watch for
+      </h2>
+    </div>
+    <p class="text-sm text-text-secondary mb-5">
+      Documented pairings where this pattern often fails in production. Source:
+      <a href={`${base}/composition/anti-compositions/`} class="text-accent hover:text-accent-hover transition-colors">composition/anti-compositions</a>.
+    </p>
+
+    <div class="space-y-3">
+      {warnings.map((w) => {
+        const other = otherSide(w.pair);
+        const style = SEVERITY_STYLE[w.severity];
+        return (
+          <div class={`border rounded-xl p-4 ${style.accent}`}>
+            <div class="flex items-start gap-3">
+              <div class={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${style.dot}`}></div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-2 flex-wrap">
+                  <span class="text-xs font-mono uppercase tracking-wider opacity-70">
+                    {style.label}
+                  </span>
+                  {other && (
+                    <>
+                      <span class="opacity-50">·</span>
+                      <span class="text-xs font-mono">
+                        paired with
+                        {' '}
+                        <a href={other.href} class="underline hover:no-underline">
+                          {other.name}
+                        </a>
+                      </span>
+                    </>
+                  )}
+                </div>
+                <h3 class="font-display font-semibold text-base mb-2">{w.headline}</h3>
+                <p class="text-sm leading-relaxed mb-3 opacity-90">{w.rationale}</p>
+                <p class="text-sm leading-relaxed">
+                  <span class="font-semibold">Instead:</span> {w.recommend}
+                </p>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  </section>
+)}

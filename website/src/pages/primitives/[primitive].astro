@@ -6,6 +6,7 @@ import TableOfContents from '../../components/TableOfContents';
 import { PRIMITIVES, getPatternById } from '../../data/patterns';
 import { readMarkdown, extractHeadings } from '../../utils/content';
 import { renderMarkdown } from '../../utils/markdown';
+import AntiCompositionWarning from '../../components/AntiCompositionWarning.astro';
 
 export async function getStaticPaths() {
   return PRIMITIVES.map((p) => ({
@@ -106,6 +107,8 @@ const parents = (pattern.evolvesFrom ?? [])
           'cost-latency': costLatencyHtml ?? undefined,
         }}
       />
+
+      <AntiCompositionWarning entryId={pattern.id} />
     </div>
 
     <div class="w-toc flex-shrink-0 hidden xl:block">

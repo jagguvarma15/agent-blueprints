@@ -4,6 +4,7 @@ import ComplexityBadge from '../../components/ComplexityBadge.astro';
 import TierTabs from '../../components/TierTabs';
 import TableOfContents from '../../components/TableOfContents';
 import RelatedPatterns from '../../components/RelatedPatterns.astro';
+import AntiCompositionWarning from '../../components/AntiCompositionWarning.astro';
 import { AGENT_PATTERNS, getWorkflowById } from '../../data/patterns';
 import { readMarkdown, extractHeadings } from '../../utils/content';
 import { renderMarkdown } from '../../utils/markdown';
@@ -117,6 +118,9 @@ const parentWorkflows = (pattern.evolvesFrom ?? [])
           'cost-latency': costLatencyHtml ?? undefined,
         }}
       />
+
+      <!-- Anti-composition warnings -->
+      <AntiCompositionWarning entryId={pattern.id} />
 
       <!-- Related patterns -->
       <RelatedPatterns pattern={pattern} />
