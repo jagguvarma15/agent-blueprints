@@ -373,4 +373,15 @@ export const PATTERN_COMPARISONS: PatternComparison[] = [
     requires: ['pause-resume', 'approver-surface', 'audit'],
     composableWith: ['saga', 'event_driven', 'tool_use'],
   },
+  {
+    id: 'skills',
+    name: 'Skills',
+    category: 'agent',
+    complexity: 'Intermediate',
+    latency: 'Low',
+    cost: 'Low',
+    bestFor: 'Repeatable in-context procedures the agent should perform consistently across runs',
+    requires: ['skill-registry', 'trigger-matcher'],
+    composableWith: ['react', 'tool_use', 'plan_and_execute', 'multi_agent', 'routing'],
+  },
 ];
