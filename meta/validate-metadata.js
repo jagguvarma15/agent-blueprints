@@ -51,6 +51,7 @@ const PATTERN_DIRS = [
   'patterns/event_driven',
   'patterns/saga',
   'patterns/human_in_the_loop',
+  'patterns/skills',
 ];
 
 // Catalog emission constants — declared up here so they're outside the

@@ -76,6 +76,7 @@ _CASES: list[tuple[str, str, dict[str, Any]]] = [
         },
     ),
     ("human_in_the_loop", "HitlState", {"goal": "approve"}),
+    ("skills", "SkillsState", {"user_message": "hi"}),
 ]
 
 

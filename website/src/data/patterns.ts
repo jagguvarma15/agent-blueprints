@@ -164,6 +164,15 @@ export const AGENT_PATTERNS: PatternMeta[] = [
     category: 'agent',
     evolvesFrom: ['tool_use'],
   },
+  {
+    id: 'skills',
+    name: 'Skills',
+    slug: 'skills',
+    description: 'File-based, agent-discovered procedural modules. Cheap to ship many; loaded on demand at runtime.',
+    complexity: 'Intermediate',
+    category: 'agent',
+    evolvesFrom: ['tool_use'],
+  },
 ];
 
 export const ALL_PATTERNS: PatternMeta[] = [...WORKFLOWS, ...AGENT_PATTERNS];
@@ -363,5 +372,16 @@ export const PATTERN_COMPARISONS: PatternComparison[] = [
     bestFor: 'High-stakes actions requiring human approval or correction',
     requires: ['pause-resume', 'approver-surface', 'audit'],
     composableWith: ['saga', 'event_driven', 'tool_use'],
+  },
+  {
+    id: 'skills',
+    name: 'Skills',
+    category: 'agent',
+    complexity: 'Intermediate',
+    latency: 'Low',
+    cost: 'Low',
+    bestFor: 'Repeatable in-context procedures the agent should perform consistently across runs',
+    requires: ['skill-registry', 'trigger-matcher'],
+    composableWith: ['react', 'tool_use', 'plan_and_execute', 'multi_agent', 'routing'],
   },
 ];
