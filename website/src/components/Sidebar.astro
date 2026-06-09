@@ -1,9 +1,9 @@
 ---
-import { WORKFLOWS, AGENT_PATTERNS } from '../data/patterns';
+import { WORKFLOWS, AGENT_PATTERNS, PRIMITIVES, MODIFIERS } from '../data/patterns';
 
 interface Props {
   currentPattern?: string;
-  currentCategory?: 'workflow' | 'agent';
+  currentCategory?: 'workflow' | 'agent' | 'primitive' | 'modifier';
 }
 
 const { currentPattern, currentCategory } = Astro.props;
@@ -67,6 +67,60 @@ function isActive(href: string) {
       <ul class="space-y-0.5">
         {AGENT_PATTERNS.map((p) => {
           const href = `${base}/patterns/${p.slug}/`;
+          const active = isActive(href);
+          return (
+            <li>
+              <a
+                href={href}
+                class={`flex items-center px-3 py-1.5 text-sm rounded-md transition-all border-l-2 ${
+                  active
+                    ? 'border-accent text-accent bg-accent-light font-medium'
+                    : 'border-transparent text-text-secondary hover:text-text hover:bg-surface hover:border-surface-border'
+                }`}
+              >
+                {p.name}
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+
+    <!-- Primitives -->
+    <div class="mb-6">
+      <p class="px-3 mb-2 text-2xs font-semibold font-mono uppercase tracking-widest text-text-tertiary">
+        Primitives
+      </p>
+      <ul class="space-y-0.5">
+        {PRIMITIVES.map((p) => {
+          const href = `${base}/primitives/${p.slug}/`;
+          const active = isActive(href);
+          return (
+            <li>
+              <a
+                href={href}
+                class={`flex items-center px-3 py-1.5 text-sm rounded-md transition-all border-l-2 ${
+                  active
+                    ? 'border-accent text-accent bg-accent-light font-medium'
+                    : 'border-transparent text-text-secondary hover:text-text hover:bg-surface hover:border-surface-border'
+                }`}
+              >
+                {p.name}
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+
+    <!-- Modifiers -->
+    <div class="mb-6">
+      <p class="px-3 mb-2 text-2xs font-semibold font-mono uppercase tracking-widest text-text-tertiary">
+        Modifiers
+      </p>
+      <ul class="space-y-0.5">
+        {MODIFIERS.map((p) => {
+          const href = `${base}/modifiers/${p.slug}/`;
           const active = isActive(href);
           return (
             <li>

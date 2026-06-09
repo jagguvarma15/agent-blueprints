@@ -3,14 +3,13 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
 import ComplexityBadge from '../../components/ComplexityBadge.astro';
 import TierTabs from '../../components/TierTabs';
 import TableOfContents from '../../components/TableOfContents';
-import RelatedPatterns from '../../components/RelatedPatterns.astro';
-import { AGENT_PATTERNS, getWorkflowById } from '../../data/patterns';
+import { PRIMITIVES, getPatternById } from '../../data/patterns';
 import { readMarkdown, extractHeadings } from '../../utils/content';
 import { renderMarkdown } from '../../utils/markdown';
 
 export async function getStaticPaths() {
-  return AGENT_PATTERNS.map((p) => ({
-    params: { pattern: p.slug },
+  return PRIMITIVES.map((p) => ({
+    params: { primitive: p.slug },
     props: { pattern: p },
   }));
 }
@@ -18,15 +17,13 @@ export async function getStaticPaths() {
 const { pattern } = Astro.props;
 const base = import.meta.env.BASE_URL || '/agent-blueprints';
 
-// Read all tier files. The on-disk directory name uses pattern.id (raw,
-// underscores allowed), while pattern.slug is the dashed URL form. Mixing
-// them silently breaks file reads for underscored IDs.
-const overviewMd = readMarkdown(`patterns/${pattern.id}/overview.md`);
-const designMd = readMarkdown(`patterns/${pattern.id}/design.md`);
-const implMd = readMarkdown(`patterns/${pattern.id}/implementation.md`);
-const evolutionMd = readMarkdown(`patterns/${pattern.id}/evolution.md`);
-const observabilityMd = readMarkdown(`patterns/${pattern.id}/observability.md`);
-const costLatencyMd = readMarkdown(`patterns/${pattern.id}/cost-and-latency.md`);
+// pattern.id is the on-disk directory name; pattern.slug is the dashed URL.
+const overviewMd = readMarkdown(`primitives/${pattern.id}/overview.md`);
+const designMd = readMarkdown(`primitives/${pattern.id}/design.md`);
+const implMd = readMarkdown(`primitives/${pattern.id}/implementation.md`);
+const evolutionMd = readMarkdown(`primitives/${pattern.id}/evolution.md`);
+const observabilityMd = readMarkdown(`primitives/${pattern.id}/observability.md`);
+const costLatencyMd = readMarkdown(`primitives/${pattern.id}/cost-and-latency.md`);
 
 const overviewHtml = overviewMd ? renderMarkdown(overviewMd) : null;
 const designHtml = designMd ? renderMarkdown(designMd) : null;
@@ -44,9 +41,6 @@ const allHeadings = {
   'cost-latency': costLatencyMd ? extractHeadings(costLatencyMd) : [],
 };
 
-// Only show tabs for tiers that have content. Patterns shipped without
-// optional tiers (e.g. event-driven, which defers evolution / observability /
-// cost-and-latency to follow-up PRs) should not surface empty placeholders.
 const ALL_TABS = [
   { id: 'overview' as const, label: 'Overview', html: overviewHtml },
   { id: 'design' as const, label: 'Design', html: designHtml },
@@ -57,9 +51,8 @@ const ALL_TABS = [
 ];
 const tabs = ALL_TABS.filter((t) => t.html).map(({ id, label }) => ({ id, label }));
 
-// Resolve parent workflows
-const parentWorkflows = (pattern.evolvesFrom ?? [])
-  .map((id) => getWorkflowById(id))
+const parents = (pattern.evolvesFrom ?? [])
+  .map((id) => getPatternById(id))
   .filter(Boolean);
 ---
 
@@ -67,16 +60,14 @@ const parentWorkflows = (pattern.evolvesFrom ?? [])
   title={pattern.name}
   description={pattern.description}
   currentPattern={pattern.slug}
-  currentCategory="agent"
+  currentCategory="primitive"
 >
   <div class="flex gap-8">
-    <!-- Main content -->
     <div class="flex-1 min-w-0">
-      <!-- Pattern header -->
       <div class="mb-8">
         <div class="flex items-center gap-2 mb-3">
-          <div class="w-2 h-2 rounded-full bg-amber-400"></div>
-          <span class="text-xs font-mono text-text-tertiary uppercase tracking-wider">Agent Pattern</span>
+          <div class="w-2 h-2 rounded-full bg-sky-400"></div>
+          <span class="text-xs font-mono text-text-tertiary uppercase tracking-wider">Primitive</span>
         </div>
         <h1 class="font-display font-bold text-4xl tracking-display text-text mb-3">
           {pattern.name}
@@ -86,24 +77,22 @@ const parentWorkflows = (pattern.evolvesFrom ?? [])
         <div class="flex flex-wrap items-center gap-3">
           <ComplexityBadge complexity={pattern.complexity} />
 
-          {parentWorkflows.length > 0 && (
+          {parents.length > 0 && (
             <span class="flex items-center gap-1.5 text-sm text-text-secondary font-mono">
               <span class="text-text-tertiary">Evolves from:</span>
-              {parentWorkflows.map((wf, i) => (
+              {parents.map((p, i) => (
                 <>
-                  <a href={`${base}/workflows/${wf!.slug}/`} class="text-accent hover:text-accent-hover transition-colors">
-                    {wf!.name}
+                  <a href={`${base}/patterns/${p!.slug}/`} class="text-accent hover:text-accent-hover transition-colors">
+                    {p!.name}
                   </a>
-                  {i < parentWorkflows.length - 1 && <span class="text-text-tertiary">+</span>}
+                  {i < parents.length - 1 && <span class="text-text-tertiary">+</span>}
                 </>
               ))}
-              <a href={`${base}/explorer/`} class="text-text-tertiary hover:text-accent transition-colors text-xs">→</a>
             </span>
           )}
         </div>
       </div>
 
-      <!-- 4-Tier Tabs -->
       <TierTabs
         client:load
         tabs={tabs}
@@ -117,12 +106,8 @@ const parentWorkflows = (pattern.evolvesFrom ?? [])
           'cost-latency': costLatencyHtml ?? undefined,
         }}
       />
-
-      <!-- Related patterns -->
-      <RelatedPatterns pattern={pattern} />
     </div>
 
-    <!-- Right TOC -->
     <div class="w-toc flex-shrink-0 hidden xl:block">
       <TableOfContents client:load allHeadings={allHeadings} defaultTier="overview" />
     </div>

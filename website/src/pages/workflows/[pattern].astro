@@ -21,11 +21,12 @@ const base = import.meta.env.BASE_URL || '/agent-blueprints';
 // Read all tier files. Workflow entries live under `patterns/` since the
 // three-tier taxonomy refactor; the legacy `workflows/` directory only holds
 // a redirect stub now. The /workflows/ URLs stay live for backward compat.
-const overviewMd = readMarkdown(`patterns/${pattern.slug}/overview.md`);
-const designMd = readMarkdown(`patterns/${pattern.slug}/design.md`);
-const implMd = readMarkdown(`patterns/${pattern.slug}/implementation.md`);
-const observabilityMd = readMarkdown(`patterns/${pattern.slug}/observability.md`);
-const costLatencyMd = readMarkdown(`patterns/${pattern.slug}/cost-and-latency.md`);
+// pattern.id is the on-disk directory name; pattern.slug is the dashed URL.
+const overviewMd = readMarkdown(`patterns/${pattern.id}/overview.md`);
+const designMd = readMarkdown(`patterns/${pattern.id}/design.md`);
+const implMd = readMarkdown(`patterns/${pattern.id}/implementation.md`);
+const observabilityMd = readMarkdown(`patterns/${pattern.id}/observability.md`);
+const costLatencyMd = readMarkdown(`patterns/${pattern.id}/cost-and-latency.md`);
 
 const overviewHtml = overviewMd ? renderMarkdown(overviewMd) : null;
 const designHtml = designMd ? renderMarkdown(designMd) : null;
