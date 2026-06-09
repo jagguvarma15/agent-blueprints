@@ -18,12 +18,14 @@ export async function getStaticPaths() {
 const { pattern } = Astro.props;
 const base = import.meta.env.BASE_URL || '/agent-blueprints';
 
-// Read all tier files
-const overviewMd = readMarkdown(`workflows/${pattern.slug}/overview.md`);
-const designMd = readMarkdown(`workflows/${pattern.slug}/design.md`);
-const implMd = readMarkdown(`workflows/${pattern.slug}/implementation.md`);
-const observabilityMd = readMarkdown(`workflows/${pattern.slug}/observability.md`);
-const costLatencyMd = readMarkdown(`workflows/${pattern.slug}/cost-and-latency.md`);
+// Read all tier files. Workflow entries live under `patterns/` since the
+// three-tier taxonomy refactor; the legacy `workflows/` directory only holds
+// a redirect stub now. The /workflows/ URLs stay live for backward compat.
+const overviewMd = readMarkdown(`patterns/${pattern.slug}/overview.md`);
+const designMd = readMarkdown(`patterns/${pattern.slug}/design.md`);
+const implMd = readMarkdown(`patterns/${pattern.slug}/implementation.md`);
+const observabilityMd = readMarkdown(`patterns/${pattern.slug}/observability.md`);
+const costLatencyMd = readMarkdown(`patterns/${pattern.slug}/cost-and-latency.md`);
 
 const overviewHtml = overviewMd ? renderMarkdown(overviewMd) : null;
 const designHtml = designMd ? renderMarkdown(designMd) : null;
