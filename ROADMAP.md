@@ -49,7 +49,7 @@ Expand coverage to more specialized and emerging patterns.
 
 ## Scope Decisions
 
-Decisions worth recording so they don't get re-litigated. See [System Design Heritage](../foundations/system-design-heritage.md) for the full reasoning.
+Decisions worth recording so they don't get re-litigated. See [System Design Heritage](foundations/system-design-heritage.md) for the full reasoning.
 
 - **Reliability blueprints live in `agent-deployments`, not here.** Four reliability patterns (Circuit Breaker, Retry with Exponential Backoff, Idempotency, Distributed Tracing) are planned for the sister repo. They're operational concerns shared by every cognitive pattern, not new cognitive patterns themselves. Blueprints stays focused on the LLM-pattern layer.
 - **Generic vs. domain-specific category axis: deferred.** Every pattern in this repo is currently generic (the restaurant rebooking inside Saga is an illustrative example, not a domain pattern). Adding a `domain`/`generic` axis to `metadata.json`, the website, and the directory layout is premature scaffolding. Revisit when at least two domain-specific patterns exist — and consider hosting them in `agent-deployments` instead, since that repo already carries production-shaped, domain-bound specs.
