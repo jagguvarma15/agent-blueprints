@@ -4,6 +4,7 @@ import ComplexityBadge from '../../components/ComplexityBadge.astro';
 import TierTabs from '../../components/TierTabs';
 import TableOfContents from '../../components/TableOfContents';
 import RelatedPatterns from '../../components/RelatedPatterns.astro';
+import AntiCompositionWarning from '../../components/AntiCompositionWarning.astro';
 import { AGENT_PATTERNS, getWorkflowById } from '../../data/patterns';
 import { readMarkdown, extractHeadings } from '../../utils/content';
 import { renderMarkdown } from '../../utils/markdown';
@@ -18,13 +19,15 @@ export async function getStaticPaths() {
 const { pattern } = Astro.props;
 const base = import.meta.env.BASE_URL || '/agent-blueprints';
 
-// Read all tier files
-const overviewMd = readMarkdown(`patterns/${pattern.slug}/overview.md`);
-const designMd = readMarkdown(`patterns/${pattern.slug}/design.md`);
-const implMd = readMarkdown(`patterns/${pattern.slug}/implementation.md`);
-const evolutionMd = readMarkdown(`patterns/${pattern.slug}/evolution.md`);
-const observabilityMd = readMarkdown(`patterns/${pattern.slug}/observability.md`);
-const costLatencyMd = readMarkdown(`patterns/${pattern.slug}/cost-and-latency.md`);
+// Read all tier files. The on-disk directory name uses pattern.id (raw,
+// underscores allowed), while pattern.slug is the dashed URL form. Mixing
+// them silently breaks file reads for underscored IDs.
+const overviewMd = readMarkdown(`patterns/${pattern.id}/overview.md`);
+const designMd = readMarkdown(`patterns/${pattern.id}/design.md`);
+const implMd = readMarkdown(`patterns/${pattern.id}/implementation.md`);
+const evolutionMd = readMarkdown(`patterns/${pattern.id}/evolution.md`);
+const observabilityMd = readMarkdown(`patterns/${pattern.id}/observability.md`);
+const costLatencyMd = readMarkdown(`patterns/${pattern.id}/cost-and-latency.md`);
 
 const overviewHtml = overviewMd ? renderMarkdown(overviewMd) : null;
 const designHtml = designMd ? renderMarkdown(designMd) : null;
@@ -115,6 +118,9 @@ const parentWorkflows = (pattern.evolvesFrom ?? [])
           'cost-latency': costLatencyHtml ?? undefined,
         }}
       />
+
+      <!-- Anti-composition warnings -->
+      <AntiCompositionWarning entryId={pattern.id} />
 
       <!-- Related patterns -->
       <RelatedPatterns pattern={pattern} />

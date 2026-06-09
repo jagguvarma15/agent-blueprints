@@ -1,0 +1,74 @@
+---
+import DocsLayout from '../layouts/DocsLayout.astro';
+import CohortTaxonomy from '../components/CohortTaxonomy.astro';
+
+const base = import.meta.env.BASE_URL || '/agent-blueprints';
+---
+
+<DocsLayout
+  title="Taxonomy"
+  description="How the catalog organizes patterns, primitives, and modifiers."
+>
+  <div class="max-w-3xl">
+    <div class="mb-8">
+      <h1 class="font-display font-bold text-4xl tracking-display text-text mb-3">
+        Taxonomy
+      </h1>
+      <p class="text-lg text-text-secondary">
+        The catalog splits every entry into one of three cohorts. Each cohort answers a different
+        design question and composes with the others in predictable ways.
+      </p>
+    </div>
+
+    <CohortTaxonomy showCallout={false} heading="" />
+
+    <section class="mt-12 space-y-6">
+      <div>
+        <h2 class="font-display font-bold text-xl tracking-display text-text mb-2">
+          Why three cohorts?
+        </h2>
+        <p class="text-text-secondary leading-relaxed">
+          Earlier versions of this repo treated "workflow" and "agent pattern" as parallel
+          categories, but design questions kept leaking across the line: <em>memory</em> isn't a
+          workflow shape, it's a capability the shape draws on; <em>human-in-the-loop</em> isn't an
+          agent pattern, it's a behavior layered on top of one. The three-cohort split makes those
+          decisions orthogonal — you pick a pattern, you pick which primitives it uses, you pick
+          which modifiers wrap it.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="font-display font-bold text-xl tracking-display text-text mb-2">
+          How to walk a recipe
+        </h2>
+        <p class="text-text-secondary leading-relaxed">
+          A downstream consumer (a deployment spec, a scaffolded project, an AI tool reading the
+          catalog) names exactly one <code class="font-mono text-sm bg-surface px-1.5 py-0.5 rounded">agent_pattern</code>, lists the
+          <code class="font-mono text-sm bg-surface px-1.5 py-0.5 rounded">primitives</code> it requires, and the
+          <code class="font-mono text-sm bg-surface px-1.5 py-0.5 rounded">modifiers</code> it applies. The catalog at
+          <a href={`${base}/composition/`} class="text-accent hover:text-accent-hover transition-colors">
+          composition/</a> shows which combinations work well and which fight each other.
+        </p>
+      </div>
+
+      <div>
+        <h2 class="font-display font-bold text-xl tracking-display text-text mb-2">
+          Growing the taxonomy
+        </h2>
+        <p class="text-text-secondary leading-relaxed mb-3">
+          The cohorts themselves are declared in <code class="font-mono text-sm bg-surface px-1.5 py-0.5 rounded">taxonomy.yaml</code> at the repo
+          root. Adding a brand-new cohort (e.g. <em>guardrails</em>, <em>evaluators</em>) is one
+          entry in <code class="font-mono text-sm bg-surface px-1.5 py-0.5 rounded">taxonomy.yaml</code> plus a directory — no code change. The
+          validator, the catalog emitter, the schemas test, the docs generator, and the website data
+          generator all read <code class="font-mono text-sm bg-surface px-1.5 py-0.5 rounded">taxonomy.yaml</code>.
+        </p>
+        <p class="text-text-secondary leading-relaxed">
+          If the site lags behind the catalog after a contribution lands, trust the catalog. The
+          authoritative sources of truth are <code class="font-mono text-sm bg-surface px-1.5 py-0.5 rounded">taxonomy.yaml</code> and the
+          generated <code class="font-mono text-sm bg-surface px-1.5 py-0.5 rounded">patterns-catalog.yaml</code> at the repo root; this page is
+          a rendered view of them.
+        </p>
+      </div>
+    </section>
+  </div>
+</DocsLayout>

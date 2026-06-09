@@ -1,0 +1,45 @@
+---
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import CompositionNetwork from '../../components/CompositionNetwork';
+
+const base = import.meta.env.BASE_URL || '/agent-blueprints';
+---
+
+<DocsLayout
+  title="Composition network"
+  description="Every documented pairing between two entries in the catalog as an interactive graph."
+>
+  <div class="max-w-5xl">
+    <div class="mb-6">
+      <h1 class="font-display font-bold text-4xl tracking-display text-text mb-3">
+        Composition network
+      </h1>
+      <p class="text-lg text-text-secondary">
+        Every documented pairing between two entries in the catalog. Hover an edge to read the
+        rationale; click a node to open its page; toggle the kind filters to focus on the edges you
+        care about.
+      </p>
+    </div>
+
+    <CompositionNetwork client:load />
+
+    <section class="mt-12 space-y-5 prose-content">
+      <h2 class="font-display font-bold text-xl tracking-display text-text">How to read this</h2>
+      <p>
+        Each edge carries a <em>kind</em>:
+      </p>
+      <ul>
+        <li><strong>natural</strong> — the two entries compose cleanly with no extra design work.</li>
+        <li><strong>useful</strong> — composable, but you wire something up to pass state or control between them.</li>
+        <li><strong>complex</strong> — composable, but state, ordering, and failure handling need explicit design.</li>
+        <li><strong>redundant</strong> — they overlap in responsibility. Pick one rather than both.</li>
+      </ul>
+      <p>
+        For pairs that <em>shouldn&apos;t</em> compose at all, see
+        <a href={`${base}/composition/anti-compositions/`}>anti-compositions</a>. For full worked
+        examples, see
+        <a href={`${base}/composition/reference-architectures/`}>reference architectures</a>.
+      </p>
+    </section>
+  </div>
+</DocsLayout>

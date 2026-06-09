@@ -1,6 +1,7 @@
 ---
 import FullWidthLayout from '../../layouts/FullWidthLayout.astro';
 import ComparisonTable from '../../components/ComparisonTable';
+import CostLatencyMatrix from '../../components/CostLatencyMatrix';
 import DecisionFlowchart from '../../components/DecisionFlowchart';
 import { PATTERN_COMPARISONS } from '../../data/patterns';
 
@@ -9,7 +10,7 @@ const base = import.meta.env.BASE_URL || '/agent-blueprints';
 
 <FullWidthLayout
   title="Compare Patterns"
-  description="Compare all 12 patterns across complexity, latency, cost, and use cases."
+  description="Compare every entry across complexity, latency, cost, and use cases."
 >
   <div class="max-w-diagram mx-auto px-6 py-12">
 
@@ -19,9 +20,22 @@ const base = import.meta.env.BASE_URL || '/agent-blueprints';
         Compare Patterns
       </h1>
       <p class="text-text-secondary text-lg">
-        Sort, filter, and explore all 12 patterns across key attributes. Click a row to expand details.
+        Sort, filter, and explore every entry across key attributes. Click a row to expand details.
       </p>
     </div>
+
+    <!-- Cost vs Latency map -->
+    <section class="mb-16">
+      <div class="mb-4">
+        <h2 class="font-display font-bold text-2xl tracking-display text-text mb-2">
+          Cost vs. latency map
+        </h2>
+        <p class="text-text-secondary">
+          Every entry plotted by cost and latency. Hover a bubble for its description; click to open its page.
+        </p>
+      </div>
+      <CostLatencyMatrix client:load />
+    </section>
 
     <!-- Comparison table -->
     <section class="mb-16">

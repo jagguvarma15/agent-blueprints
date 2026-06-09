@@ -4,7 +4,7 @@ import TableOfContents from '../../components/TableOfContents';
 import { readMarkdown, extractHeadings, extractTitle } from '../../utils/content';
 import { renderMarkdown } from '../../utils/markdown';
 
-const md = readMarkdown('meta/roadmap.md');
+const md = readMarkdown('ROADMAP.md');
 const html = md ? renderMarkdown(md) : null;
 const title = md ? extractTitle(md) : 'Roadmap';
 const headings = md ? extractHeadings(md) : [];

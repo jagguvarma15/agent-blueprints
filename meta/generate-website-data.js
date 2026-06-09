@@ -329,6 +329,38 @@ ${[
 ];`,
   );
 
+  // -----------------------------------------------------------------------
+  // Compositions — the catalog's top-level edge list. Powers the network viz.
+  // -----------------------------------------------------------------------
+  const compositions = CATALOG.compositions || [];
+  sections.push(
+    `// ---------------------------------------------------------------------------
+// Composition edges — every documented pairing between two entries with a
+// 'kind' label and a one-line rationale. Sourced from
+// patterns-catalog.yaml#compositions.
+// ---------------------------------------------------------------------------
+
+export type CompositionKind = 'natural' | 'useful' | 'complex' | 'redundant';
+
+export interface CompositionEdge {
+  a: string;
+  b: string;
+  kind: CompositionKind;
+  rationale: string;
+}
+
+export const COMPOSITIONS: CompositionEdge[] = [
+${compositions
+  .map(
+    (c) =>
+      `  { a: ${tsStringLiteral(c.a)}, b: ${tsStringLiteral(c.b)}, kind: ${tsStringLiteral(
+        c.kind,
+      )}, rationale: ${tsStringLiteral(c.rationale)} },`,
+  )
+  .join('\n')}
+];`,
+  );
+
   const body = `${header}\n${sections.join('\n\n')}\n`;
   return body;
 }

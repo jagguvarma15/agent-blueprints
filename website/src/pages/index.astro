@@ -5,6 +5,7 @@ import Footer from '../components/Footer.astro';
 import PatternCard from '../components/PatternCard.astro';
 import ComplexityBadge from '../components/ComplexityBadge.astro';
 import HeroViz from '../components/HeroViz';
+import CohortTaxonomy from '../components/CohortTaxonomy.astro';
 import { WORKFLOWS, AGENT_PATTERNS } from '../data/patterns';
 
 const base = import.meta.env.BASE_URL || '/agent-blueprints';
@@ -24,7 +25,7 @@ const base = import.meta.env.BASE_URL || '/agent-blueprints';
           <div class="animate-fade-up">
             <div class="inline-flex items-center gap-2 text-xs font-mono text-text-secondary bg-surface border border-surface-border px-3 py-1.5 rounded-full mb-6">
               <div class="w-1.5 h-1.5 bg-success rounded-full animate-pulse-soft"></div>
-              Open source · MIT License · 12 patterns
+              Open source · MIT License · Patterns · Primitives · Modifiers
             </div>
 
             <h1 class="font-display font-bold text-5xl lg:text-6xl tracking-display text-text mb-5 leading-heading text-balance">
@@ -54,22 +55,19 @@ const base = import.meta.env.BASE_URL || '/agent-blueprints';
               </a>
             </div>
 
-            <!-- Stats row -->
-            <div class="mt-10 flex items-center gap-6 text-sm">
-              <div>
-                <span class="font-display font-bold text-2xl text-text">4</span>
-                <span class="text-text-secondary ml-1">Workflows</span>
-              </div>
-              <div class="w-px h-6 bg-surface-border"></div>
-              <div>
-                <span class="font-display font-bold text-2xl text-text">11</span>
-                <span class="text-text-secondary ml-1">Agent Patterns</span>
-              </div>
-              <div class="w-px h-6 bg-surface-border"></div>
-              <div>
-                <span class="font-display font-bold text-2xl text-text">3</span>
-                <span class="text-text-secondary ml-1">Tiers of depth</span>
-              </div>
+            <!-- Quick links (replaces hardcoded stats row) -->
+            <div class="mt-10 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-text-secondary">
+              <a href={`${base}/taxonomy/`} class="hover:text-accent transition-colors">
+                Taxonomy →
+              </a>
+              <span class="w-px h-4 bg-surface-border"></span>
+              <a href={`${base}/composition/network/`} class="hover:text-accent transition-colors">
+                Composition graph →
+              </a>
+              <span class="w-px h-4 bg-surface-border"></span>
+              <a href={`${base}/compare/`} class="hover:text-accent transition-colors">
+                Cost & latency map →
+              </a>
             </div>
           </div>
 
@@ -122,7 +120,7 @@ const base = import.meta.env.BASE_URL || '/agent-blueprints';
                 Workflows & Patterns
               </h3>
               <p class="text-sm text-text-secondary leading-relaxed">
-                4 LLM workflows and 11 agent patterns. Each documented at 3 levels of depth.
+                LLM workflows and agent patterns, each documented across overview, design, and implementation tiers.
               </p>
             </a>
 
@@ -147,11 +145,25 @@ const base = import.meta.env.BASE_URL || '/agent-blueprints';
         </div>
       </section>
 
-      <!-- ── Pattern grid ──────────────────────────────────────── -->
+      <!-- ── Cohort taxonomy ──────────────────────────────────── -->
       <section class="max-w-landing mx-auto px-6 py-16">
+        <div class="text-center mb-10">
+          <h2 class="font-display font-bold text-3xl tracking-display text-text mb-3">
+            The catalog at a glance
+          </h2>
+          <p class="text-text-secondary max-w-xl mx-auto">
+            Patterns shape the control flow. Primitives provide capabilities. Modifiers wrap a pattern with an orthogonal behavior.
+          </p>
+        </div>
+
+        <CohortTaxonomy showCallout={true} heading="" />
+      </section>
+
+      <!-- ── Pattern grid ──────────────────────────────────────── -->
+      <section class="max-w-landing mx-auto px-6 py-16 border-t border-surface-border">
         <div class="text-center mb-12">
           <h2 class="font-display font-bold text-3xl tracking-display text-text mb-3">
-            12 Patterns, 3 Levels of Depth
+            Workflows evolve into agent patterns
           </h2>
           <p class="text-text-secondary">
             Every pattern is documented from high-level overview to implementation detail.

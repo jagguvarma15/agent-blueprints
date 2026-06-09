@@ -3,15 +3,14 @@ import DocsLayout from '../../layouts/DocsLayout.astro';
 import ComplexityBadge from '../../components/ComplexityBadge.astro';
 import TierTabs from '../../components/TierTabs';
 import TableOfContents from '../../components/TableOfContents';
-import RelatedPatterns from '../../components/RelatedPatterns.astro';
-import AntiCompositionWarning from '../../components/AntiCompositionWarning.astro';
-import { WORKFLOWS, AGENT_PATTERNS } from '../../data/patterns';
+import { MODIFIERS, getPatternById } from '../../data/patterns';
 import { readMarkdown, extractHeadings } from '../../utils/content';
 import { renderMarkdown } from '../../utils/markdown';
+import AntiCompositionWarning from '../../components/AntiCompositionWarning.astro';
 
 export async function getStaticPaths() {
-  return WORKFLOWS.map((p) => ({
-    params: { pattern: p.slug },
+  return MODIFIERS.map((p) => ({
+    params: { modifier: p.slug },
     props: { pattern: p },
   }));
 }
@@ -19,19 +18,17 @@ export async function getStaticPaths() {
 const { pattern } = Astro.props;
 const base = import.meta.env.BASE_URL || '/agent-blueprints';
 
-// Read all tier files. Workflow entries live under `patterns/` since the
-// three-tier taxonomy refactor; the legacy `workflows/` directory only holds
-// a redirect stub now. The /workflows/ URLs stay live for backward compat.
-// pattern.id is the on-disk directory name; pattern.slug is the dashed URL.
-const overviewMd = readMarkdown(`patterns/${pattern.id}/overview.md`);
-const designMd = readMarkdown(`patterns/${pattern.id}/design.md`);
-const implMd = readMarkdown(`patterns/${pattern.id}/implementation.md`);
-const observabilityMd = readMarkdown(`patterns/${pattern.id}/observability.md`);
-const costLatencyMd = readMarkdown(`patterns/${pattern.id}/cost-and-latency.md`);
+const overviewMd = readMarkdown(`modifiers/${pattern.id}/overview.md`);
+const designMd = readMarkdown(`modifiers/${pattern.id}/design.md`);
+const implMd = readMarkdown(`modifiers/${pattern.id}/implementation.md`);
+const evolutionMd = readMarkdown(`modifiers/${pattern.id}/evolution.md`);
+const observabilityMd = readMarkdown(`modifiers/${pattern.id}/observability.md`);
+const costLatencyMd = readMarkdown(`modifiers/${pattern.id}/cost-and-latency.md`);
 
 const overviewHtml = overviewMd ? renderMarkdown(overviewMd) : null;
 const designHtml = designMd ? renderMarkdown(designMd) : null;
 const implHtml = implMd ? renderMarkdown(implMd) : null;
+const evolutionHtml = evolutionMd ? renderMarkdown(evolutionMd) : null;
 const observabilityHtml = observabilityMd ? renderMarkdown(observabilityMd) : null;
 const costLatencyHtml = costLatencyMd ? renderMarkdown(costLatencyMd) : null;
 
@@ -39,55 +36,63 @@ const allHeadings = {
   overview: overviewMd ? extractHeadings(overviewMd) : [],
   design: designMd ? extractHeadings(designMd) : [],
   implementation: implMd ? extractHeadings(implMd) : [],
+  evolution: evolutionMd ? extractHeadings(evolutionMd) : [],
   observability: observabilityMd ? extractHeadings(observabilityMd) : [],
   'cost-latency': costLatencyMd ? extractHeadings(costLatencyMd) : [],
 };
 
-const tabs = [
-  { id: 'overview' as const, label: 'Overview' },
-  { id: 'design' as const, label: 'Design' },
-  { id: 'implementation' as const, label: 'Implementation' },
-  { id: 'observability' as const, label: 'Observability' },
-  { id: 'cost-latency' as const, label: 'Cost & Latency' },
+const ALL_TABS = [
+  { id: 'overview' as const, label: 'Overview', html: overviewHtml },
+  { id: 'design' as const, label: 'Design', html: designHtml },
+  { id: 'implementation' as const, label: 'Implementation', html: implHtml },
+  { id: 'evolution' as const, label: 'Evolution', html: evolutionHtml },
+  { id: 'observability' as const, label: 'Observability', html: observabilityHtml },
+  { id: 'cost-latency' as const, label: 'Cost & Latency', html: costLatencyHtml },
 ];
+const tabs = ALL_TABS.filter((t) => t.html).map(({ id, label }) => ({ id, label }));
 
-const evolvesIntoPatterns = (pattern.evolvesInto ?? [])
-  .map((id) => AGENT_PATTERNS.find((ap) => ap.id === id))
+const appliesTo = (pattern.appliesTo ?? [])
+  .filter((id) => id !== 'any')
+  .map((id) => getPatternById(id))
   .filter(Boolean);
+const appliesToAny = (pattern.appliesTo ?? []).includes('any');
 ---
 
 <DocsLayout
   title={pattern.name}
   description={pattern.description}
   currentPattern={pattern.slug}
-  currentCategory="workflow"
+  currentCategory="modifier"
 >
   <div class="flex gap-8">
-    <!-- Main content -->
     <div class="flex-1 min-w-0">
-      <!-- Pattern header -->
       <div class="mb-8">
         <div class="flex items-center gap-2 mb-3">
-          <div class="w-2 h-2 rounded-full bg-emerald-400"></div>
-          <span class="text-xs font-mono text-text-tertiary uppercase tracking-wider">Workflow</span>
+          <div class="w-2 h-2 rounded-full bg-violet-400"></div>
+          <span class="text-xs font-mono text-text-tertiary uppercase tracking-wider">Modifier</span>
         </div>
         <h1 class="font-display font-bold text-4xl tracking-display text-text mb-3">
           {pattern.name}
         </h1>
         <p class="text-lg text-text-secondary mb-4">{pattern.description}</p>
 
-        <div class="flex flex-wrap items-center gap-2">
+        <div class="flex flex-wrap items-center gap-3">
           <ComplexityBadge complexity={pattern.complexity} />
-          <span class="text-surface-border">·</span>
-          {evolvesIntoPatterns.length > 0 && (
+
+          {appliesToAny && (
             <span class="text-sm text-text-secondary font-mono">
-              Evolves into:{' '}
-              {evolvesIntoPatterns.map((ap, i) => (
+              <span class="text-text-tertiary">Applies to:</span> any pattern
+            </span>
+          )}
+          {!appliesToAny && appliesTo.length > 0 && (
+            <span class="flex items-center gap-1.5 text-sm text-text-secondary font-mono">
+              <span class="text-text-tertiary">Applies to:</span>
+              {appliesTo.map((p, i) => (
                 <>
-                  <a href={`${base}/patterns/${ap!.slug}/`} class="text-accent hover:text-accent-hover transition-colors">
-                    {ap!.name}
+                  <a href={`${base}/patterns/${p!.slug}/`} class="text-accent hover:text-accent-hover transition-colors">
+                    {p!.name}
                   </a>
-                  {i < evolvesIntoPatterns.length - 1 && ', '}
+                  {i < appliesTo.length - 1 && <span class="text-text-tertiary">·</span>}
                 </>
               ))}
             </span>
@@ -95,7 +100,6 @@ const evolvesIntoPatterns = (pattern.evolvesInto ?? [])
         </div>
       </div>
 
-      <!-- 3-Tier Tabs -->
       <TierTabs
         client:load
         tabs={tabs}
@@ -104,19 +108,15 @@ const evolvesIntoPatterns = (pattern.evolvesInto ?? [])
           overview: overviewHtml ?? undefined,
           design: designHtml ?? undefined,
           implementation: implHtml ?? undefined,
+          evolution: evolutionHtml ?? undefined,
           observability: observabilityHtml ?? undefined,
           'cost-latency': costLatencyHtml ?? undefined,
         }}
       />
 
-      <!-- Anti-composition warnings -->
       <AntiCompositionWarning entryId={pattern.id} />
-
-      <!-- Related patterns -->
-      <RelatedPatterns pattern={pattern} />
     </div>
 
-    <!-- Right TOC (desktop) -->
     <div class="w-toc flex-shrink-0 hidden xl:block">
       <TableOfContents client:load allHeadings={allHeadings} defaultTier="overview" />
     </div>
