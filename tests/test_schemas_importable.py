@@ -1,31 +1,80 @@
-"""Smoke test: every pattern's canonical Pydantic state schema imports and instantiates.
+"""Smoke test: every entry's canonical Pydantic state schema imports and instantiates.
 
 Loaded via ``importlib`` from the file path so the suite stays self-
 contained whether or not the repo root is on ``sys.path``. The schemas
-themselves are self-contained (no cross-pattern imports), so file-path
+themselves are self-contained (no cross-entry imports), so file-path
 loading is sufficient.
+
+Cohorts are NOT hardcoded — they're read from ``taxonomy.yaml`` at the repo
+root. Adding a new cohort (e.g. ``guardrails/``) means appending one entry
+to taxonomy.yaml; this test picks it up automatically.
 
 Run with:
 
-    uv run --with 'pydantic>=2' pytest tests/test_schemas_importable.py
+    uv run --with 'pydantic>=2,PyYAML' pytest tests/test_schemas_importable.py
 """
 
 from __future__ import annotations
 
 import importlib.util
+import re
 import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Any
 
 import pytest
+import yaml
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
-# Three-tier taxonomy: patterns/, primitives/, modifiers/. Each cohort holds
-# entries with the same on-disk shape (schemas/state.py + __init__.py), so
-# the importable-schema check walks all three under a common loader.
-COHORT_DIRS: tuple[str, ...] = ("patterns", "primitives", "modifiers")
+# ---------------------------------------------------------------------------
+# Taxonomy load — single source of truth for which cohorts exist.
+# ---------------------------------------------------------------------------
+
+_TAXONOMY = yaml.safe_load((REPO_ROOT / "taxonomy.yaml").read_text(encoding="utf-8"))
+_COHORTS: list[dict[str, Any]] = _TAXONOMY["cohorts"]
+
+
+def _eval_predicate(expr: str, entry_meta: dict[str, Any]) -> bool:
+    """Tiny predicate evaluator matching the one in meta/validate-metadata.js.
+
+    Supported forms today:
+      - "true" / "false"
+      - "category == 'X'" / "category != 'X'"
+
+    Extend in lockstep with the JS evaluator when new shapes are needed.
+    """
+    trimmed = (expr or "").strip()
+    if trimmed == "true":
+        return True
+    if trimmed == "false":
+        return False
+    match = re.match(r"^category\s*(==|!=)\s*'([a-zA-Z][a-zA-Z0-9_-]*)'$", trimmed)
+    if match:
+        op, value = match.group(1), match.group(2)
+        cat = entry_meta.get("category")
+        return cat == value if op == "==" else cat != value
+    raise ValueError(f"unsupported expression: {expr}")
+
+
+def _load_entry_metadata(cohort_dir: str, entry_name: str) -> dict[str, Any] | None:
+    import json
+
+    path = REPO_ROOT / cohort_dir / entry_name / "metadata.json"
+    if not path.is_file():
+        return None
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return None
+
+
+def _cohort_by_dir(dir_name: str) -> dict[str, Any] | None:
+    for cohort in _COHORTS:
+        if cohort["dir"] == dir_name:
+            return cohort
+    return None
 
 
 def _load(cohort: str, entry_dir: str) -> Any:
