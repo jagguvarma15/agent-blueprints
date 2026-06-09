@@ -1,0 +1,45 @@
+name: Notify Deployments of Release
+
+# Fires a repository_dispatch event at agent-deployments whenever a release is
+# published on this repo. Deployments' sync-blueprints workflow consumes the
+# event, points vendir.yml at the released tag, runs `vendir sync`, and opens
+# a PR with the updated vendored/blueprints/ tree.
+#
+# Release-driven (not push-driven): vendored snapshots track tagged releases,
+# not raw main HEAD. This is the standard open-source vendoring convention —
+# downstream consumers pin to known-stable release artifacts, never to a
+# moving branch.
+#
+# Requires a deploy-time secret DEPLOYMENTS_DISPATCH_TOKEN: a fine-grained PAT
+# (or GitHub App token) with `repository_dispatch: write` scope on
+# jagguvarma15/agent-deployments. The token has no other permissions.
+#
+# If delivery fails, an admin can manually trigger deployments'
+# sync-blueprints workflow via workflow_dispatch — no auto-retry here.
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  dispatch:
+    name: Send repository_dispatch for release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Dispatch to agent-deployments
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.DEPLOYMENTS_DISPATCH_TOKEN }}
+          repository: jagguvarma15/agent-deployments
+          event-type: blueprints-release
+          client-payload: |
+            {
+              "tag": "${{ github.event.release.tag_name }}",
+              "name": ${{ toJson(github.event.release.name) }},
+              "html_url": "${{ github.event.release.html_url }}",
+              "prerelease": ${{ github.event.release.prerelease }}
+            }
