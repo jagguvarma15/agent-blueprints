@@ -9,7 +9,7 @@ jobs:
   python:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: astral-sh/setup-uv@v3
         with:
           enable-cache: true
@@ -25,15 +25,13 @@ jobs:
   typescript:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v3
-        with:
-          version: 9
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4
+        # pnpm version comes from package.json's `packageManager` field.
+      - uses: actions/setup-node@v6
         with:
           node-version: 20
-      # `cache: pnpm` requires a pre-existing pnpm-lock.yaml; enable it once
-      # the lockfile is committed alongside this PR or in a follow-up.
+          cache: pnpm
       - name: pnpm install
         run: pnpm install --no-frozen-lockfile
       - name: pnpm typecheck

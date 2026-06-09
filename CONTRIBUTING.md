@@ -20,6 +20,24 @@ Three steps:
 
 For the style conventions per tier file, see [`meta/style-guide.md`](meta/style-guide.md). For the per-cohort doc set, see [`patterns/README.md`](patterns/README.md), [`primitives/README.md`](primitives/README.md), and [`modifiers/README.md`](modifiers/README.md).
 
+## Commit message convention
+
+We use [Conventional Commits](https://www.conventionalcommits.org/) for commit messages. It's not enforced by CI, but it makes the git log skimmable and lets us adopt automated release-note generation later without a backfill. Suggested prefixes:
+
+| Prefix | Use when |
+|---|---|
+| `feat:` | A new entry, a new generator, or a new feature in the tooling. |
+| `fix:` | A bug fix in scripts, content, or CI. |
+| `docs:` | Documentation-only changes. |
+| `chore:` | Routine maintenance (dependency bumps, lockfile updates, formatting). |
+| `refactor:` | Code restructuring without behavior change. |
+| `test:` | Test-only changes. |
+| `ci:` | CI configuration changes. |
+
+Example: `feat(modifiers): add audit_logging modifier`. Drop the optional scope (`(modifiers)`) if it doesn't add clarity.
+
+Want the convention pre-loaded in your editor? Run `git config commit.template .gitmessage` once. The template at [`.gitmessage`](.gitmessage) (if present) prefills the prefix list as a comment.
+
 ## How to run the gate locally
 
 CI runs ruff + mypy + pytest + tsc on every PR. To run the same checks before pushing:

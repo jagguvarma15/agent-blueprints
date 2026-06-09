@@ -19,6 +19,17 @@ Every pattern is documented at three levels of depth. Read only what you need:
 
 ---
 
+## For AI tools
+
+If you're an AI tool (Claude Code, Cursor, GitHub Copilot, agent-scaffold, …) reading this repo, start here:
+
+- [`llms.txt`](./llms.txt) — minimal AI-tool discovery file ([llmstxt.org](https://llmstxt.org/) spec).
+- [`agents.md`](./agents.md) — how to programmatically consume the catalog (entry shapes, tier file conventions, pinning to a version).
+- [`patterns-catalog.yaml`](./patterns-catalog.yaml) — canonical machine-readable index. Schema in [`PATTERNS_CATALOG_SCHEMA.md`](./PATTERNS_CATALOG_SCHEMA.md).
+- [`meta/HOW_TO_ADD_AN_ENTRY.md`](./meta/HOW_TO_ADD_AN_ENTRY.md) — contributor walkthrough, including AI-tool prompts.
+
+---
+
 ## The three-repo ecosystem
 
 This repo is the first stop in a three-repo pipeline that takes you from pattern to running agent:
@@ -188,7 +199,7 @@ See the [Contributing Guide](./meta/contributing.md) and [Style Guide](./meta/st
 
 ## Roadmap
 
-This is Phase 1 (documentation). Code implementations, advanced patterns, and tooling are planned for future phases. See the [full roadmap](./meta/roadmap.md).
+This is Phase 1 (documentation). Code implementations, advanced patterns, and tooling are planned for future phases. See the [full roadmap](./ROADMAP.md).
 
 ## License
 
