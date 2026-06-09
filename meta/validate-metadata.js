@@ -190,6 +190,14 @@ for (const dir of ALL_DIRS) {
 // website/src/data/patterns.ts is a generated artifact (see
 // meta/generate-website-data.js), so this catches a forgotten regen as well
 // as a hand-edit that diverges.
+//
+// This check is tracked separately because regenerating the website data
+// depends on a fresh catalog — running `validate-metadata.js --emit` AFTER
+// adding a new entry produces the catalog that `generate-website-data.js`
+// then turns into the new patterns.ts. So we allow emit to proceed even
+// when only the site-data check fails (with a non-zero exit at the end so
+// CI still catches the drift in the steady state).
+let siteDataErrors = 0;
 const SITE_DATA_PATH = join(ROOT, 'website/src/data/patterns.ts');
 if (existsSync(SITE_DATA_PATH)) {
   const siteData = readFileSync(SITE_DATA_PATH, 'utf-8');
@@ -200,25 +208,31 @@ if (existsSync(SITE_DATA_PATH)) {
         `MISSING FROM SITE DATA: "${id}" is in metadata but not registered in website/src/data/patterns.ts ` +
           `(run: node meta/generate-website-data.js)`,
       );
-      errors++;
+      siteDataErrors++;
     }
   }
 } else {
   console.error(`MISSING FILE: ${SITE_DATA_PATH}`);
-  errors++;
+  siteDataErrors++;
 }
 
-if (errors === 0) {
+// Emit catalog if the metadata itself is valid — even if site data is stale.
+// This lets the contributor flow be: edit metadata → regen catalog → regen
+// site data → re-run validator (now clean). CI runs the full sequence in
+// catalog-drift.yml.
+const metadataOk = errors === 0;
+if (metadataOk && EMIT_PATH) {
+  emitCatalog(EMIT_PATH);
+}
+
+const totalErrors = errors + siteDataErrors;
+if (totalErrors === 0) {
   const counts = COHORTS.map((c) => `${c.entries.length} ${c.cohort.label_plural || c.cohort.id}`).join(' + ');
   console.log(`All ${ALL_DIRS.length} metadata.json files are valid (${counts}).`);
-  if (EMIT_PATH) {
-    emitCatalog(EMIT_PATH);
-  }
   process.exit(0);
-} else {
-  console.error(`\n${errors} validation error(s) found.`);
-  process.exit(1);
 }
+console.error(`\n${totalErrors} validation error(s) found.`);
+process.exit(1);
 
 // ---------------------------------------------------------------------------
 // Catalog emission (--emit)
