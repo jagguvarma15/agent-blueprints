@@ -70,10 +70,10 @@ Workflows are orchestrated patterns where **the code controls the flow**. The de
 
 | Pattern | What It Does | Overview | Design | Implementation |
 |---------|-------------|----------|--------|----------------|
-| **Prompt Chaining** | Sequential LLM calls with validation gates | [overview](./workflows/prompt-chaining/overview.md) | [design](./workflows/prompt-chaining/design.md) | [implementation](./workflows/prompt-chaining/implementation.md) |
-| **Parallel Calls** | Concurrent LLM calls on independent inputs | [overview](./workflows/parallel-calls/overview.md) | [design](./workflows/parallel-calls/design.md) | [implementation](./workflows/parallel-calls/implementation.md) |
-| **Orchestrator-Worker** | LLM decomposes task, delegates to workers | [overview](./workflows/orchestrator-worker/overview.md) | [design](./workflows/orchestrator-worker/design.md) | [implementation](./workflows/orchestrator-worker/implementation.md) |
-| **Evaluator-Optimizer** | Generate-evaluate feedback loop | [overview](./workflows/evaluator-optimizer/overview.md) | [design](./workflows/evaluator-optimizer/design.md) | [implementation](./workflows/evaluator-optimizer/implementation.md) |
+| **Prompt Chaining** | Sequential LLM calls with validation gates | [overview](./patterns/prompt-chaining/overview.md) | [design](./patterns/prompt-chaining/design.md) | [implementation](./patterns/prompt-chaining/implementation.md) |
+| **Parallel Calls** | Concurrent LLM calls on independent inputs | [overview](./patterns/parallel-calls/overview.md) | [design](./patterns/parallel-calls/design.md) | [implementation](./patterns/parallel-calls/implementation.md) |
+| **Orchestrator-Worker** | LLM decomposes task, delegates to workers | [overview](./patterns/orchestrator-worker/overview.md) | [design](./patterns/orchestrator-worker/design.md) | [implementation](./patterns/orchestrator-worker/implementation.md) |
+| **Evaluator-Optimizer** | Generate-evaluate feedback loop | [overview](./patterns/evaluator-optimizer/overview.md) | [design](./patterns/evaluator-optimizer/design.md) | [implementation](./patterns/evaluator-optimizer/implementation.md) |
 
 ## Agent Patterns
 
@@ -136,11 +136,11 @@ Each agent pattern includes an [evolution.md](./patterns/react/evolution.md) doc
 ```
 agent-blueprints/
 ├── foundations/          # Core concepts, terminology, pattern selection
-├── workflows/           # 4 pre-agent workflow patterns (3 tiers each)
+├── primitives/          # Building blocks the agent uses (tool_use, memory, skills)
 ├── patterns/            # 11 agent patterns (3 tiers + evolution bridge each)
 ├── composition/         # How patterns combine into production systems
 ├── meta/                # Contributing, style guide, roadmap
-└── code/                # Reference implementations (per-pattern under patterns/*/code/ and workflows/*/code/)
+└── code/                # Reference implementations (per-pattern under patterns/*/code/ and patterns/<workflow>/code/)
 ```
 
 ## Design Principles

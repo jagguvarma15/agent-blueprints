@@ -23,7 +23,7 @@ from collections.abc import Callable
 from dataclasses import dataclass, field
 from typing import Any, Literal, Protocol
 
-from patterns.human_in_the_loop.schemas.state import HitlState, HumanInput, Interrupt  # noqa: F401
+from modifiers.human_in_the_loop.schemas.state import HitlState, HumanInput, Interrupt  # noqa: F401
 
 # ── Core types ────────────────────────────────────────────────────────────────
 #

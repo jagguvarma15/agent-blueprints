@@ -1,6 +1,6 @@
 # Evolution: Prompt Chaining → Memory
 
-This document traces how the [Memory pattern](./overview.md) evolves from the [Prompt Chaining workflow](../../workflows/prompt-chaining/overview.md).
+This document traces how the [Memory pattern](./overview.md) evolves from the [Prompt Chaining workflow](../../patterns/prompt-chaining/overview.md).
 
 ## The Starting Point: Prompt Chaining
 

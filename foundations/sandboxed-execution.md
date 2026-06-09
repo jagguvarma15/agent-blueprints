@@ -126,7 +126,7 @@ The biggest exfiltration vector in a code-running agent is "code that decides to
 
 ### Snapshot / restore
 
-Some vendors expose VM snapshots — pause a sandbox, restore it later in the same state. Useful for [`Saga`](../patterns/saga/overview.md) patterns (long-running multi-step processes with checkpoints) and for [`Human in the Loop`](../patterns/human_in_the_loop/overview.md) flows where an agent pauses for human review. Not all sandbox runtimes support this; it's a feature to check for, not assume.
+Some vendors expose VM snapshots — pause a sandbox, restore it later in the same state. Useful for [`Saga`](../patterns/saga/overview.md) patterns (long-running multi-step processes with checkpoints) and for [`Human in the Loop`](../modifiers/human_in_the_loop/overview.md) flows where an agent pauses for human review. Not all sandbox runtimes support this; it's a feature to check for, not assume.
 
 ## What sandboxing does not solve
 
@@ -139,6 +139,6 @@ Some vendors expose VM snapshots — pause a sandbox, restore it later in the sa
 
 - [`security-and-safety.md`](./security-and-safety.md) — broader threat model the sandbox is one mitigation within.
 - [`agent-protocols.md`](./agent-protocols.md) — MCP's tool-call surface is the boundary the sandbox sits behind.
-- [`patterns/tool_use/overview.md`](../patterns/tool_use/overview.md) — the pattern that most often needs sandboxing.
+- [`patterns/tool_use/overview.md`](../primitives/tool_use/overview.md) — the pattern that most often needs sandboxing.
 - [`agent-deployments/docs/capabilities/sandbox/`](https://github.com/jagguvarma15/agent-deployments/tree/main/docs/capabilities/sandbox) — production-shape capability docs for specific sandbox vendors.
 - [`composition/agentic-eval-pipeline.md`](../composition/agentic-eval-pipeline.md) — how to evaluate that a sandboxed agent is actually safer, not just slower.

@@ -23,7 +23,7 @@ A task with a fixed, known structure — call this API, format the result, retur
 need for a reasoning loop. You are paying for multiple LLM calls, introducing unpredictability,
 and adding latency to a task that a single structured tool call handles.
 
-**Use instead:** [Tool Use](../patterns/tool_use/overview.md). Define the function schema,
+**Use instead:** [Tool Use](../primitives/tool_use/overview.md). Define the function schema,
 call the LLM once, dispatch the tool, inject the result, and return the final response.
 This is faster, cheaper, and more predictable.
 
@@ -78,7 +78,7 @@ These can be checked definitively. A rubric with 2-3 binary criteria converges i
 iterations. A rubric with 5 vague criteria never converges.
 
 **See also:** [Reflection overview](../patterns/reflection/overview.md),
-[Evaluator-Optimizer overview](../workflows/evaluator-optimizer/overview.md)
+[Evaluator-Optimizer overview](../patterns/evaluator-optimizer/overview.md)
 
 ---
 
@@ -122,7 +122,7 @@ costing 10x more per call than a fresh conversation.
 **Use instead:** Design compression in from the start. Keep the last 10 turns verbatim.
 Summarize older turns into a compact "session summary" block (typically 200-400 tokens
 regardless of history length). Retrieve semantically relevant memories rather than
-injecting all of them. See [Memory design](../patterns/memory/design.md) for the full
+injecting all of them. See [Memory design](../primitives/memory/design.md) for the full
 short-term / long-term / semantic memory architecture.
 
 ---
@@ -166,8 +166,8 @@ Prompt Chaining with extra overhead — one unnecessary LLM call per request to 
 a plan you already know.
 
 **Use instead:** If the task decomposition is fixed and always produces the same steps,
-use [Prompt Chaining](../workflows/prompt-chaining/overview.md). Use
-[Orchestrator-Worker](../workflows/orchestrator-worker/overview.md) only when the steps
+use [Prompt Chaining](../patterns/prompt-chaining/overview.md). Use
+[Orchestrator-Worker](../patterns/orchestrator-worker/overview.md) only when the steps
 genuinely vary based on the nature of the input.
 
 ---
@@ -286,7 +286,7 @@ to confirm its own work. This is sometimes called sycophantic self-evaluation.
 your answer," use a structured rubric with specific criteria the model did not optimize for
 during generation: "Does this response contain any claims that contradict the context
 provided? Answer yes or no." Alternatively, use a different model instance or, for
-[Evaluator-Optimizer](../workflows/evaluator-optimizer/overview.md), use a model with
+[Evaluator-Optimizer](../patterns/evaluator-optimizer/overview.md), use a model with
 different training. Separation of framing between generator and evaluator is what makes
 the feedback signal useful.
 

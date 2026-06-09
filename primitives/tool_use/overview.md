@@ -2,7 +2,7 @@
 
 Tool use enables an LLM to interact with external systems by requesting structured function calls. The LLM produces a tool name and arguments; your code executes the function and returns the result. This is the foundational capability that makes agents possible.
 
-**Evolves from:** [Prompt Chaining](../../workflows/prompt-chaining/overview.md) — adds structured function schemas, argument extraction, and result injection.
+**Evolves from:** [Prompt Chaining](../../patterns/prompt-chaining/overview.md) — adds structured function schemas, argument extraction, and result injection.
 
 ## Architecture
 
@@ -40,7 +40,7 @@ graph TD
 5. **Inject** — The tool result is added to the conversation context as a tool response.
 6. **Continue** — The LLM can make additional tool calls or produce a final text response.
 
-Tool use can be single-shot (one tool call, then respond) or multi-turn (multiple tool calls in sequence, as in the [ReAct](../react/overview.md) pattern).
+Tool use can be single-shot (one tool call, then respond) or multi-turn (multiple tool calls in sequence, as in the [ReAct](../../patterns/react/overview.md) pattern).
 
 ## Minimal Example
 
@@ -125,12 +125,12 @@ The framework-specific files share an identical task (look up the weather for a 
 
 - When the task is purely text-to-text with no external actions needed
 - When actions are predetermined — just call the functions directly from code
-- When you need complex multi-step reasoning — compose with [ReAct](../react/overview.md) or [Plan & Execute](../plan_and_execute/overview.md)
+- When you need complex multi-step reasoning — compose with [ReAct](../../patterns/react/overview.md) or [Plan & Execute](../../patterns/plan_and_execute/overview.md)
 
 ## Related Patterns
 
-- **Evolves from:** [Prompt Chaining](../../workflows/prompt-chaining/overview.md) — see [evolution.md](./evolution.md)
-- **Foundation for:** [ReAct](../react/overview.md) (tool use + reasoning loop), all other agent patterns
+- **Evolves from:** [Prompt Chaining](../../patterns/prompt-chaining/overview.md) — see [evolution.md](./evolution.md)
+- **Foundation for:** [ReAct](../../patterns/react/overview.md) (tool use + reasoning loop), all other agent patterns
 - **Combines with:** Every agent pattern — tool use is a component, not a standalone system
 
 ## Deeper Dive
@@ -142,7 +142,7 @@ The framework-specific files share an identical task (look up the weather for a 
 ## When NOT to use this pattern
 
 - The task is text-in, text-out with no external actions — Tool Use adds unnecessary structure.
-- The tools you'd expose are destructive without good guardrails — defer to a [HITL](../human_in_the_loop/overview.md) pattern.
+- The tools you'd expose are destructive without good guardrails — defer to a [HITL](../../modifiers/human_in_the_loop/overview.md) pattern.
 - You only have one tool that's always called — direct function-calling without the registry abstraction is simpler.
 
 ## Next steps

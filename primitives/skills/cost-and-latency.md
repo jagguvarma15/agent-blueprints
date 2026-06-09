@@ -53,7 +53,7 @@ The pattern's economics break in three places:
 The registry surface starts to matter. At 1,000 skills × 40 tokens = 40K tokens just for lookup metadata, you're back into the territory of expensive inline prompts. Mitigations:
 
 - **Per-role registries** — load only skills the active role can use.
-- **Domain routing** — a [`Routing`](../routing/overview.md) layer in front of the matcher picks the skill domain first; only that domain's skills land in the lookup table.
+- **Domain routing** — a [`Routing`](../../patterns/routing/overview.md) layer in front of the matcher picks the skill domain first; only that domain's skills land in the lookup table.
 - **Tiered loading** — Tier 1 always-loaded skills; Tier 2 loaded after a domain decision.
 
 ### 2. Skills with very long bodies

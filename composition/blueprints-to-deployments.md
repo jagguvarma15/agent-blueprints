@@ -14,21 +14,21 @@ This page is the index. For the canonical recipe-to-pattern table with deploymen
 
 | Pattern | Used by deployment recipe(s) |
 |---------|------------------------------|
-| [Prompt Chaining](../workflows/prompt-chaining/overview.md) | `content-pipeline` |
-| [Parallel Calls](../workflows/parallel-calls/overview.md) | `parallel-enricher` |
-| [Orchestrator-Worker](../workflows/orchestrator-worker/overview.md) | (composed inside `code-review-agent`, `hierarchical-agent`) |
-| [Evaluator-Optimizer](../workflows/evaluator-optimizer/overview.md) | `content-pipeline` |
+| [Prompt Chaining](../patterns/prompt-chaining/overview.md) | `content-pipeline` |
+| [Parallel Calls](../patterns/parallel-calls/overview.md) | `parallel-enricher` |
+| [Orchestrator-Worker](../patterns/orchestrator-worker/overview.md) | (composed inside `code-review-agent`, `hierarchical-agent`) |
+| [Evaluator-Optimizer](../patterns/evaluator-optimizer/overview.md) | `content-pipeline` |
 | [ReAct](../patterns/react/overview.md) | `research-assistant` |
 | [Plan & Execute](../patterns/plan_and_execute/overview.md) | `code-review-agent` |
-| [Tool Use](../patterns/tool_use/overview.md) | `customer-support-triage`, `research-assistant` |
-| [Memory](../patterns/memory/overview.md) | `memory-assistant` |
+| [Tool Use](../primitives/tool_use/overview.md) | `customer-support-triage`, `research-assistant` |
+| [Memory](../primitives/memory/overview.md) | `memory-assistant` |
 | [RAG](../patterns/rag/overview.md) | `docs-rag-qa` |
 | [Reflection](../patterns/reflection/overview.md) | `code-review-agent` |
 | [Routing](../patterns/routing/overview.md) | `customer-support-triage` |
 | [Multi-Agent](../patterns/multi_agent/overview.md) | `ops-crew` (flat), `hierarchical-agent` (hierarchical), `restaurant-rebooking` (flat) |
 | [Event-Driven](../patterns/event_driven/overview.md) | `restaurant-rebooking` |
 | [Saga](../patterns/saga/overview.md) | (no current recipe — candidate for booking/order workflows) |
-| [Human in the Loop](../patterns/human_in_the_loop/overview.md) | (no current recipe — candidate for content moderation, code-review approval flows) |
+| [Human in the Loop](../modifiers/human_in_the_loop/overview.md) | (no current recipe — candidate for content moderation, code-review approval flows) |
 
 Patterns marked "no current recipe" are documented here but don't yet have a production-shaped example in `agent-deployments`. That's a contribution opportunity — see [agent-deployments contributing guide](https://github.com/jagguvarma15/agent-deployments/blob/main/CONTRIBUTING.md).
 

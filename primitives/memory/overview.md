@@ -2,7 +2,7 @@
 
 The memory pattern enables an agent to persist information across conversations, building context over time. Short-term memory maintains state within a session; long-term memory stores and retrieves information across sessions using external storage.
 
-**Evolves from:** [Prompt Chaining](../../workflows/prompt-chaining/overview.md) — adds conversation state management, summarization, and persistent retrieval.
+**Evolves from:** [Prompt Chaining](../../patterns/prompt-chaining/overview.md) — adds conversation state management, summarization, and persistent retrieval.
 
 ## Architecture
 
@@ -107,9 +107,9 @@ Both variants run the same two-turn smoke (user shares Python + agent project, a
 
 ## Related Patterns
 
-- **Evolves from:** [Prompt Chaining](../../workflows/prompt-chaining/overview.md) — see [evolution.md](./evolution.md)
-- **Combines with:** [ReAct](../react/overview.md) (agent loop + memory), [RAG](../rag/overview.md) (long-term memory can use the same vector store), [Multi-Agent](../multi_agent/overview.md) (shared memory between agents)
-- **Related to:** [RAG](../rag/overview.md) — RAG retrieves from a document store; Memory retrieves from interaction history. The retrieval mechanism is similar but the data source is different.
+- **Evolves from:** [Prompt Chaining](../../patterns/prompt-chaining/overview.md) — see [evolution.md](./evolution.md)
+- **Combines with:** [ReAct](../../patterns/react/overview.md) (agent loop + memory), [RAG](../../patterns/rag/overview.md) (long-term memory can use the same vector store), [Multi-Agent](../../patterns/multi_agent/overview.md) (shared memory between agents)
+- **Related to:** [RAG](../../patterns/rag/overview.md) — RAG retrieves from a document store; Memory retrieves from interaction history. The retrieval mechanism is similar but the data source is different.
 
 ## Deeper Dive
 

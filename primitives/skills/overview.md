@@ -36,7 +36,7 @@ Skills are the right shape when:
 - **You just need a tool, not a procedure.** If the agent needs access to a system it can't reach, that's [`MCP`](../../foundations/agent-protocols.md) (Model Context Protocol), not a skill.
 - **You need cross-session state.** Skills are stateless lookups. Persistence belongs in [`Memory`](../memory/overview.md).
 - **The procedure is a one-off.** A skill is a registered, discoverable artifact. For a one-off, just prompt it.
-- **The procedure changes every run.** Skills are immutable per invocation. If the steps depend heavily on dynamic context, you want a [`Plan & Execute`](../plan_and_execute/overview.md) loop.
+- **The procedure changes every run.** Skills are immutable per invocation. If the steps depend heavily on dynamic context, you want a [`Plan & Execute`](../../patterns/plan_and_execute/overview.md) loop.
 
 ## How skills differ from MCP
 
@@ -77,10 +77,10 @@ skills/web-search-loop/
 
 ## Composes with
 
-- [`ReAct`](../react/overview.md) — the most common pairing. The ReAct loop is the control flow; skills are the procedures the loop invokes for specific task shapes.
+- [`ReAct`](../../patterns/react/overview.md) — the most common pairing. The ReAct loop is the control flow; skills are the procedures the loop invokes for specific task shapes.
 - [`Tool Use`](../tool_use/overview.md) — skills typically *call* tools (in-process or MCP). The skill is the procedural knowledge; the tool is the access.
-- [`Plan & Execute`](../plan_and_execute/overview.md) — the plan can name skills as steps. The executor invokes them in sequence.
-- [`Multi-Agent`](../multi_agent/overview.md) — different roles in a multi-agent system can have different skill grants. A worker agent gets skills relevant to its specialty; a router agent gets none.
+- [`Plan & Execute`](../../patterns/plan_and_execute/overview.md) — the plan can name skills as steps. The executor invokes them in sequence.
+- [`Multi-Agent`](../../patterns/multi_agent/overview.md) — different roles in a multi-agent system can have different skill grants. A worker agent gets skills relevant to its specialty; a router agent gets none.
 
 ## Evolves from
 
@@ -90,9 +90,9 @@ skills/web-search-loop/
 
 | Symptom | Probable next pattern |
 |---|---|
-| Your skill registry has hundreds of entries and trigger collisions are common | Add a routing layer ([`Routing`](../routing/overview.md)) that picks the skill domain before the agent picks the skill. |
-| Skills are starting to call each other for sub-procedures | Move the shared sub-procedures into MCP servers; let A2A discover specialist agents that own them ([`Multi-Agent`](../multi_agent/overview.md)). |
-| You need to pause mid-skill for human review | The skill should become a step in a [`Human in the Loop`](../human_in_the_loop/overview.md) workflow. |
+| Your skill registry has hundreds of entries and trigger collisions are common | Add a routing layer ([`Routing`](../../patterns/routing/overview.md)) that picks the skill domain before the agent picks the skill. |
+| Skills are starting to call each other for sub-procedures | Move the shared sub-procedures into MCP servers; let A2A discover specialist agents that own them ([`Multi-Agent`](../../patterns/multi_agent/overview.md)). |
+| You need to pause mid-skill for human review | The skill should become a step in a [`Human in the Loop`](../../modifiers/human_in_the_loop/overview.md) workflow. |
 
 ## See also
 

@@ -2,7 +2,7 @@
 
 An agent that handles money, customer-visible changes, or policy decisions usually needs a human checkpoint before some actions commit. The Human-in-the-Loop (HITL) pattern formalises this: the agent **proposes** an action, **pauses** in a known state, surfaces the proposal to an approver, and **resumes** with the approver's decision (approve / deny / modify) before committing.
 
-**Evolves from:** [Tool Use](../tool_use/overview.md) — adds an explicit `approve_then_execute` step around tool calls flagged for human review.
+**Evolves from:** [Tool Use](../../primitives/tool_use/overview.md) — adds an explicit `approve_then_execute` step around tool calls flagged for human review.
 
 ## Architecture
 
@@ -113,7 +113,7 @@ The Python sibling is the fuller example — three surface flavours, escalation 
 | Inserts governance without rewriting the agent | Wall-clock latency dominated by human response time (minutes to hours, not seconds) |
 | Auditable: every committed action of this class has a named approver | Approvers become the bottleneck; on-call rotations / pool routing become operational concerns |
 | Policy lives in code (`needs_review`) not folklore | Mis-classifying low-risk as high-risk burns approver attention; mis-classifying high-risk as low-risk skips the gate entirely |
-| Composable with [Saga](../saga/overview.md) (gate the riskiest step) | Doesn't unwind committed actions — use saga for that |
+| Composable with [Saga](../../patterns/saga/overview.md) (gate the riskiest step) | Doesn't unwind committed actions — use saga for that |
 | Crash-resilient via the pending-state store | TTL + escalation policy must be designed; bad defaults strand proposals or auto-approve dangerous things |
 
 ## When to Use
@@ -127,14 +127,14 @@ The Python sibling is the fuller example — three surface flavours, escalation 
 ## When NOT to Use
 
 - For every action — approval fatigue kills the gate's value. Use a policy that flags only the riskiest 1–5% of actions.
-- When the action is reversible and cheap to redo — let the agent act and use a [Saga](../saga/overview.md) compensator if it goes wrong.
+- When the action is reversible and cheap to redo — let the agent act and use a [Saga](../../patterns/saga/overview.md) compensator if it goes wrong.
 - For automation where the human approval is rubber-stamping — replace with a deterministic rule or a higher-confidence model.
 - When the work is too time-sensitive to wait for a human (sub-second decisions) — push the policy into the agent's prompt or a guardrail check instead.
 
 ## Related Patterns
 
-- **Evolves from:** [Tool Use](../tool_use/overview.md) — adds the propose-pause-resume gate around tool dispatch
-- **Composes with:** [Saga](../saga/overview.md) — gate the most irreversible step in a saga before its `do` runs; [Event-Driven](../event_driven/overview.md) — proposals become events on an "approval-pending" stream and decisions become events on a "approved/denied" stream
+- **Evolves from:** [Tool Use](../../primitives/tool_use/overview.md) — adds the propose-pause-resume gate around tool dispatch
+- **Composes with:** [Saga](../../patterns/saga/overview.md) — gate the most irreversible step in a saga before its `do` runs; [Event-Driven](../../patterns/event_driven/overview.md) — proposals become events on an "approval-pending" stream and decisions become events on a "approved/denied" stream
 - **Contrast with:** Reflection — Reflection is the agent critiquing itself; HITL is a human critiquing the agent
 
 ## Deeper Dive

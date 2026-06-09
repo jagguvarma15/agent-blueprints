@@ -16,7 +16,7 @@ import json
 from dataclasses import dataclass
 from typing import Protocol
 
-from patterns.memory.schemas.state import MemoryEntry, MemoryState, Recall  # noqa: F401
+from primitives.memory.schemas.state import MemoryEntry, MemoryState, Recall  # noqa: F401
 
 # ── Interfaces ────────────────────────────────────────────────────────────────
 #

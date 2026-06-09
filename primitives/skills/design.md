@@ -104,7 +104,7 @@ Two skills have overlapping triggers and both fire. The agent may attempt both p
 
 - Strict trigger discipline — phrase triggers as full phrases, not bare keywords (`"code review"` beats `"review"`).
 - Stage 2 LLM scoring with a "pick AT MOST 2 of these candidates" instruction.
-- Routing layer in front for large registries (use a [`Routing`](../routing/overview.md) classifier to pick the skill domain before the matcher picks the skill).
+- Routing layer in front for large registries (use a [`Routing`](../../patterns/routing/overview.md) classifier to pick the skill domain before the matcher picks the skill).
 
 ### Missed activation
 
@@ -157,6 +157,6 @@ See [`implementation.md`](./implementation.md) for the loader and matcher pseudo
 ## See also
 
 - [`patterns/tool_use/design.md`](../tool_use/design.md) — skills typically *call* tools; the tool catalog and skill registry are complementary.
-- [`patterns/routing/design.md`](../routing/design.md) — the routing layer for large skill registries.
+- [`patterns/routing/design.md`](../../patterns/routing/design.md) — the routing layer for large skill registries.
 - [`foundations/agent-protocols.md`](../../foundations/agent-protocols.md) — skills vs MCP vs A2A.
 - [`foundations/sandboxed-execution.md`](../../foundations/sandboxed-execution.md) — when skill helper scripts need a sandbox.

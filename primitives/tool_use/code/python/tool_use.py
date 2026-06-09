@@ -16,7 +16,7 @@ from collections.abc import Callable
 from dataclasses import dataclass, field
 from typing import Any, Protocol
 
-from patterns.tool_use.schemas.state import ToolCall
+from primitives.tool_use.schemas.state import ToolCall
 
 # ── Interfaces ────────────────────────────────────────────────────────────────
 
