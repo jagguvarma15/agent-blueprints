@@ -136,20 +136,28 @@ Each agent pattern includes an [evolution.md](./patterns/react/evolution.md) doc
 ```
 agent-blueprints/
 ├── foundations/          # Core concepts, terminology, pattern selection
-├── primitives/          # Building blocks the agent uses (tool_use, memory, skills)
-├── patterns/            # 11 agent patterns (3 tiers + evolution bridge each)
-├── composition/         # How patterns combine into production systems
-├── meta/                # Contributing, style guide, roadmap
-└── code/                # Reference implementations (per-pattern under patterns/*/code/ and patterns/<workflow>/code/)
+├── patterns/             # 12 flow shapes (8 agent + 4 workflow, distinguished
+│                           by the `category` field on each metadata.json)
+├── primitives/           # 3 building blocks the agent uses
+│                           (tool_use, memory, skills)
+├── modifiers/            # 1 transformation layered on a pattern
+│                           (human_in_the_loop)
+├── composition/          # How patterns + primitives + modifiers combine
+├── meta/                 # Contributing, style guide, roadmap
+└── code/                 # Reference implementations under
+                            patterns/*/code/, primitives/*/code/, modifiers/*/code/
 ```
+
+> **Three-tier taxonomy.** Picking an agent shape is three orthogonal decisions: one pattern + N primitives + N modifiers. See [`foundations/choosing-a-pattern.md`](./foundations/choosing-a-pattern.md) for the picker. The machine-readable index is [`patterns-catalog.yaml`](./patterns-catalog.yaml) (schema v2).
 
 ## Design Principles
 
 1. **Architecture-first** — Teach readers to design before they build
 2. **3-tier depth** — Overview → Design → Implementation. Read only what you need.
-3. **Workflows → Agents** — Workflows are the foundation. Agents build on them.
-4. **Generalized, not use-case-bound** — Patterns are abstract and composable
-5. **Framework-agnostic** — No provider lock-in. The LLM is a swappable layer.
+3. **Pattern + primitives + modifiers** — Three orthogonal decisions, not one. Patterns describe flow shape; primitives are building blocks; modifiers are transforms layered on top.
+4. **Workflows → Agents** — Workflows (code-controlled flow) are the foundation; agent patterns (LLM-controlled flow) build on them. Both live in `patterns/` distinguished by category.
+5. **Generalized, not use-case-bound** — Patterns are abstract and composable.
+6. **Framework-agnostic** — No provider lock-in. The LLM is a swappable layer.
 
 ## Contributing
 
