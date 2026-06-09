@@ -104,7 +104,7 @@ result = chain.run(raw_spec_document)
 
 ## Related Patterns
 
-- **Evolves into:** [ReAct](../../patterns/react/overview.md) (add dynamic tool selection and LLM-controlled looping), [Tool Use](../../patterns/tool_use/overview.md) (add structured function calling), [Memory](../../patterns/memory/overview.md) (add persistent state between runs)
+- **Evolves into:** [ReAct](../../patterns/react/overview.md) (add dynamic tool selection and LLM-controlled looping), [Tool Use](../../primitives/tool_use/overview.md) (add structured function calling), [Memory](../../primitives/memory/overview.md) (add persistent state between runs)
 - **Combines with:** [Evaluator-Optimizer](../evaluator-optimizer/overview.md) (add quality gates that loop), [Parallel Calls](../parallel-calls/overview.md) (parallelize independent steps)
 - **Simpler alternative to:** [Orchestrator-Worker](../orchestrator-worker/overview.md) (when you don't need dynamic task decomposition)
 

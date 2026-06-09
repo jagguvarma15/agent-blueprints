@@ -65,9 +65,12 @@ def _load_entry_metadata(cohort_dir: str, entry_name: str) -> dict[str, Any] | N
     if not path.is_file():
         return None
     try:
-        return json.loads(path.read_text(encoding="utf-8"))
+        loaded = json.loads(path.read_text(encoding="utf-8"))
     except json.JSONDecodeError:
         return None
+    if not isinstance(loaded, dict):
+        return None
+    return loaded
 
 
 def _cohort_by_dir(dir_name: str) -> dict[str, Any] | None:
