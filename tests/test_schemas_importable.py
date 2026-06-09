@@ -156,66 +156,90 @@ def test_schema_imports_and_validates(cohort: str, entry_dir: str, model_name: s
 def test_every_entry_has_a_schemas_dir() -> None:
     """Catches the case where a new entry lands in any cohort without a schema file.
 
-    Walks all three cohort directories (patterns/, primitives/, modifiers/)
-    and asserts each non-hidden subdirectory is covered by a _CASES entry.
-    Workflow-category patterns (code-controlled flow shapes — prompt-chaining,
-    parallel-calls, orchestrator-worker, evaluator-optimizer) are exempted —
-    they ship overview/design/implementation tier files but historically have
-    not carried a Pydantic state model.
-    """
-    import json
+    Walks every cohort declared in taxonomy.yaml. For each entry, evaluates
+    the cohort's ``requires_state_schema.when`` predicate against the entry's
+    metadata; entries that require a schema must be covered by ``_CASES``
+    (which the schema-import smoke test then exercises).
 
+    Adding a brand-new cohort requires only an entry in taxonomy.yaml and
+    matching contents on disk; this gate adapts automatically.
+    """
     covered = {(c[0], c[1]) for c in _CASES}
     missing: list[str] = []
-    for cohort in COHORT_DIRS:
-        cohort_dir = REPO_ROOT / cohort
+
+    for cohort in _COHORTS:
+        cohort_dir = REPO_ROOT / cohort["dir"]
         if not cohort_dir.is_dir():
             continue
+        predicate = cohort["requires_state_schema"]["when"]
         for p in sorted(cohort_dir.iterdir()):
             if not p.is_dir() or p.name.startswith("."):
                 continue
-            # Read category to exempt workflows.
-            meta_path = p / "metadata.json"
-            if meta_path.is_file():
-                try:
-                    if json.loads(meta_path.read_text())["category"] == "workflow":
-                        continue
-                except (KeyError, json.JSONDecodeError):
-                    pass
-            if (cohort, p.name) not in covered:
-                missing.append(f"{cohort}/{p.name}")
+            meta = _load_entry_metadata(cohort["dir"], p.name)
+            if meta is None:
+                continue
+            if not _eval_predicate(predicate, meta):
+                continue
+            if (cohort["dir"], p.name) not in covered:
+                missing.append(f"{cohort['dir']}/{p.name}")
+
     assert not missing, (
         f"Entries without coverage in test_schemas_importable: {missing}. "
-        "Add a (cohort, entry_dir, primary_model, kwargs) entry to _CASES "
-        "and create <cohort>/<entry_dir>/schemas/state.py + __init__.py."
+        "Add a (cohort_dir, entry_dir, primary_model, kwargs) entry to _CASES "
+        "and create <cohort_dir>/<entry_dir>/schemas/state.py + __init__.py."
     )
 
 
 # Framework-agnostic sibling files that must import their canonical
 # domain types from ``<cohort>/<name>/schemas/state.py`` rather than
-# re-declaring them inline. React has no top-level sibling (only framework
-# adapter subdirs), so the canonical-import gate applies through the
-# adapter-level coverage below.
-_SIBLING_CASES: list[tuple[str, str, str]] = [
-    ("patterns", "event_driven", "code/python/event_driven.py"),
-    ("patterns", "multi_agent", "code/python/multi_agent.py"),
-    ("patterns", "plan_and_execute", "code/python/plan_and_execute.py"),
-    ("patterns", "rag", "code/python/rag.py"),
-    ("patterns", "reflection", "code/python/reflection.py"),
-    ("patterns", "routing", "code/python/routing.py"),
-    ("patterns", "saga", "code/python/saga.py"),
-    ("primitives", "memory", "code/python/memory_agent.py"),
-    ("primitives", "tool_use", "code/python/tool_use.py"),
-    ("modifiers", "human_in_the_loop", "code/python/approval.py"),
-]
+# re-declaring them inline. Auto-discovered: any
+# ``<cohort>/<entry>/code/python/<entry>.py`` (or a small set of well-known
+# alternate filenames) participates.
+#
+# React has no top-level sibling (only framework adapter subdirs), so it's
+# excluded automatically — the search looks for canonical filenames only.
+
+# Well-known sibling filename alternatives keyed by entry id. Most siblings
+# match `<entry>.py` exactly; a few (memory_agent.py, approval.py) historically
+# chose a different name. New entries should use the `<entry>.py` convention
+# so they're auto-discovered without adding to this table.
+_SIBLING_ALT_NAMES = {
+    "memory": "memory_agent.py",
+    "human_in_the_loop": "approval.py",
+}
+
+
+def _discover_sibling_cases() -> list[tuple[str, str, str]]:
+    cases: list[tuple[str, str, str]] = []
+    for cohort in _COHORTS:
+        cohort_dir = REPO_ROOT / cohort["dir"]
+        if not cohort_dir.is_dir():
+            continue
+        for entry in sorted(cohort_dir.iterdir()):
+            if not entry.is_dir() or entry.name.startswith("."):
+                continue
+            # Try the canonical filename first, then the alt-names table.
+            candidate_names = [f"{entry.name}.py"]
+            alt = _SIBLING_ALT_NAMES.get(entry.name)
+            if alt:
+                candidate_names.append(alt)
+            for name in candidate_names:
+                relpath = f"code/python/{name}"
+                if (entry / relpath).is_file():
+                    cases.append((cohort["dir"], entry.name, relpath))
+                    break
+    return cases
+
+
+_SIBLING_CASES: list[tuple[str, str, str]] = _discover_sibling_cases()
 
 
 @pytest.mark.parametrize(
-    ("cohort", "entry_dir", "relpath"),
+    ("cohort_dir", "entry_dir", "relpath"),
     _SIBLING_CASES,
     ids=[f"{c[0]}/{c[1]}" for c in _SIBLING_CASES],
 )
-def test_sibling_imports_canonical_state(cohort: str, entry_dir: str, relpath: str) -> None:
+def test_sibling_imports_canonical_state(cohort_dir: str, entry_dir: str, relpath: str) -> None:
     """Each entry's framework-agnostic sibling imports its canonical
     state schema rather than redeclaring it inline.
 
@@ -223,6 +247,6 @@ def test_sibling_imports_canonical_state(cohort: str, entry_dir: str, relpath: s
     from the sibling, and a new framework adapter can forget the import
     entirely.
     """
-    src = (REPO_ROOT / cohort / entry_dir / relpath).read_text(encoding="utf-8")
-    needle = f"from {cohort}.{entry_dir}.schemas.state import"
-    assert needle in src, f"{cohort}/{entry_dir}: sibling at {relpath} missing canonical import"
+    src = (REPO_ROOT / cohort_dir / entry_dir / relpath).read_text(encoding="utf-8")
+    needle = f"from {cohort_dir}.{entry_dir}.schemas.state import"
+    assert needle in src, f"{cohort_dir}/{entry_dir}: sibling at {relpath} missing canonical import"
