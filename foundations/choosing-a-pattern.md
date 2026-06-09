@@ -1,6 +1,20 @@
 # Choosing a Pattern
 
-Use this guide to select the right pattern for your use case. Start with the decision flowchart, then refine with the detailed guidance below.
+Designing an agent is **three orthogonal decisions**, not one. Use this guide in that order:
+
+```
+1. Pick a PATTERN     (one)       — what flow shape your agent follows
+2. Pick PRIMITIVES    (zero or more) — what building blocks the agent uses
+3. Pick MODIFIERS     (zero or more) — what transformations apply
+```
+
+The pattern decides the agent's *shape* (loop, plan, retrieve, classify, …). Primitives are orthogonal building blocks the agent uses inside that shape — they don't change the shape; they're things the shape consults. Modifiers wrap a chosen pattern with a transformation (a human-approval gate, an audit overlay) without changing the underlying flow.
+
+Most of this document focuses on step 1 (pattern picking) because it's the foundational choice. Steps 2 and 3 are quick checklists at the bottom.
+
+## Step 1 — Pick a pattern
+
+Use the decision flowchart, then refine with the detailed guidance below.
 
 ## Decision Flowchart
 
@@ -157,3 +171,45 @@ Jumping straight to agent patterns without considering whether a workflow would 
 
 ### Ignoring Composition
 Building one monolithic pattern instead of composing simpler ones. **Cost:** Rigid, hard to modify, hard to test. **Fix:** Design with composition in mind from the start.
+
+---
+
+## Step 2 — Pick primitives (zero or more)
+
+Primitives are the building blocks the agent uses inside whatever pattern you picked. They're orthogonal to the pattern — same questions, same answers, regardless of which flow shape you're in.
+
+| Question | Add this primitive |
+|---|---|
+| Does the agent need to invoke functions / call APIs / interact with structured systems? | [`tool_use`](../primitives/tool_use/overview.md) — almost every non-trivial agent needs this. |
+| Does the agent need state that persists across sessions or conversations? | [`memory`](../primitives/memory/overview.md) |
+| Does the agent need codified procedural knowledge (your org's review checklist, citation format, lookup-and-summarize routine)? | [`skills`](../primitives/skills/overview.md) |
+
+A typical agent declares 1-3 primitives. Tool use is the default; memory and skills layer on as needed.
+
+## Step 3 — Pick modifiers (zero or more)
+
+Modifiers wrap your chosen pattern with a transformation. They don't change the flow's core shape; they overlay a concern.
+
+| Question | Add this modifier |
+|---|---|
+| Does the agent take high-stakes actions that should require human approval before commit? | [`human_in_the_loop`](../modifiers/human_in_the_loop/overview.md) |
+
+Most production agents add zero modifiers — that's fine. HITL is the canonical example for now; future modifiers (audit overlays, dual-LLM filters, etc.) will plug in here.
+
+## End-to-end example
+
+A research agent that answers questions by iteratively searching, citing, and persisting context:
+
+```yaml
+pattern:    react             # think → act → observe loop
+primitives: [tool_use, memory] # has tools; remembers across turns
+modifiers:  []                 # no human approval needed
+```
+
+A code review agent that runs LLM-emitted shell commands and asks a human to approve high-impact PRs:
+
+```yaml
+pattern:    plan_and_execute       # plan first, then execute
+primitives: [tool_use, skills]     # has tools; has review-checklist skills
+modifiers:  [human_in_the_loop]    # approval gate before destructive commits
+```
