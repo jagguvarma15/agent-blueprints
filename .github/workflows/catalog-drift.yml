@@ -1,10 +1,17 @@
 name: Catalog Drift Check
 
-# Regenerates patterns-catalog.yaml on every PR and push and fails if the
-# committed file diverges from what the generator produces. Forces authors
-# who edit any metadata.json (or the composition matrix) to also commit the
-# regenerated catalog. agent-deployments CI consumes this file at build time
-# so drift here would silently break downstream catalog assembly.
+# Three drift gates run on every PR and push:
+#   - patterns-catalog.yaml matches `validate-metadata.js --emit` output
+#   - generated documentation blocks (the <!-- AUTO:... --> sections in
+#     README, per-cohort READMEs, choosing-a-pattern.md, etc.) match
+#     `generate-docs.js` output
+#   - website/src/data/patterns.ts matches `generate-website-data.js` output
+#
+# All three regenerators are deterministic: same source files in →
+# byte-identical output. agent-deployments CI consumes patterns-catalog.yaml
+# directly so drift here would silently break downstream catalog assembly,
+# and the docs/site-data drift would silently let the README and the
+# /compare/ page diverge from reality.
 
 on:
   pull_request:
@@ -14,7 +21,7 @@ on:
 
 jobs:
   drift-check:
-    name: patterns-catalog.yaml is up to date
+    name: catalog + docs + website data are up to date
     runs-on: ubuntu-latest
 
     steps:
@@ -26,15 +33,42 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Regenerate catalog
-        run: node meta/validate-metadata.js --emit /tmp/patterns-catalog.yaml
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
 
-      - name: Diff against committed file
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Regenerate catalog
+        run: node meta/validate-metadata.js --emit patterns-catalog.yaml
+
+      - name: Regenerate docs (AUTO blocks)
+        run: node meta/generate-docs.js
+
+      - name: Regenerate website data
+        run: node meta/generate-website-data.js
+
+      - name: Diff against committed files
         run: |
-          if ! diff -u patterns-catalog.yaml /tmp/patterns-catalog.yaml; then
+          set -e
+          if ! git diff --exit-code -- patterns-catalog.yaml; then
             echo "::error::patterns-catalog.yaml is stale."
             echo "::error::Run: node meta/validate-metadata.js --emit patterns-catalog.yaml"
             echo "::error::Then commit the result."
             exit 1
           fi
-          echo "patterns-catalog.yaml matches generator output"
+          if ! git diff --exit-code -- ':(glob)**/*.md'; then
+            echo "::error::Generated markdown (AUTO blocks) is stale."
+            echo "::error::Run: node meta/generate-docs.js"
+            echo "::error::Then commit the result."
+            exit 1
+          fi
+          if ! git diff --exit-code -- website/src/data/patterns.ts; then
+            echo "::error::website/src/data/patterns.ts is stale."
+            echo "::error::Run: node meta/generate-website-data.js"
+            echo "::error::Then commit the result."
+            exit 1
+          fi
+          echo "All three generated artifacts match their inputs."
