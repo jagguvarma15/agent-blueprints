@@ -45,8 +45,7 @@ class SkillSelection(BaseModel):
     skill_id: str = Field(description="Identifier of the registry entry that fired.")
     activated_via: Literal["stage1_only", "stage2_judge", "explicit"] = Field(
         description=(
-            "How the skill came to be selected: pure keyword match, LLM judge pick, "
-            "or explicit caller override."
+            "How the skill came to be selected: pure keyword match, LLM judge pick, or explicit caller override."
         ),
     )
     body_tokens: int | None = Field(
