@@ -454,3 +454,55 @@ export const PATTERN_COMPARISONS: PatternComparison[] = [
     composableWith: ['saga', 'event_driven', 'tool_use'],
   },
 ];
+
+// ---------------------------------------------------------------------------
+// Composition edges — every documented pairing between two entries with a
+// 'kind' label and a one-line rationale. Sourced from
+// patterns-catalog.yaml#compositions.
+// ---------------------------------------------------------------------------
+
+export type CompositionKind = 'natural' | 'useful' | 'complex' | 'redundant';
+
+export interface CompositionEdge {
+  a: string;
+  b: string;
+  kind: CompositionKind;
+  rationale: string;
+}
+
+export const COMPOSITIONS: CompositionEdge[] = [
+  { a: 'evaluator-optimizer', b: 'orchestrator-worker', kind: 'useful', rationale: 'Evaluate synthesized result' },
+  { a: 'evaluator-optimizer', b: 'parallel-calls', kind: 'useful', rationale: 'Evaluate aggregated output' },
+  { a: 'evaluator-optimizer', b: 'prompt-chaining', kind: 'natural', rationale: 'Evaluate chain output quality' },
+  { a: 'memory', b: 'multi_agent', kind: 'natural', rationale: 'Shared agent memory' },
+  { a: 'memory', b: 'plan_and_execute', kind: 'useful', rationale: 'Remember plans across sessions' },
+  { a: 'memory', b: 'rag', kind: 'natural', rationale: 'Shared vector store' },
+  { a: 'memory', b: 'react', kind: 'natural', rationale: 'Add session persistence' },
+  { a: 'memory', b: 'reflection', kind: 'complex', rationale: 'Remember critiques' },
+  { a: 'memory', b: 'routing', kind: 'useful', rationale: 'Per-route memory' },
+  { a: 'memory', b: 'tool_use', kind: 'useful', rationale: 'Tools store/retrieve memory' },
+  { a: 'multi_agent', b: 'plan_and_execute', kind: 'natural', rationale: 'Delegate steps to agents' },
+  { a: 'multi_agent', b: 'rag', kind: 'useful', rationale: 'Agents with knowledge' },
+  { a: 'multi_agent', b: 'react', kind: 'natural', rationale: 'Workers are ReAct agents' },
+  { a: 'multi_agent', b: 'reflection', kind: 'useful', rationale: 'Reflect on synthesis' },
+  { a: 'multi_agent', b: 'routing', kind: 'natural', rationale: 'Route to agents' },
+  { a: 'multi_agent', b: 'tool_use', kind: 'natural', rationale: 'Each agent has tools' },
+  { a: 'orchestrator-worker', b: 'parallel-calls', kind: 'natural', rationale: 'Workers execute in parallel' },
+  { a: 'orchestrator-worker', b: 'prompt-chaining', kind: 'useful', rationale: 'Chain is the simplest form of worker' },
+  { a: 'parallel-calls', b: 'prompt-chaining', kind: 'useful', rationale: 'Parallelize independent chain steps' },
+  { a: 'plan_and_execute', b: 'rag', kind: 'useful', rationale: 'Retrieve context for planning' },
+  { a: 'plan_and_execute', b: 'react', kind: 'natural', rationale: 'ReAct runs each plan step' },
+  { a: 'plan_and_execute', b: 'reflection', kind: 'useful', rationale: 'Reflect on plan quality' },
+  { a: 'plan_and_execute', b: 'routing', kind: 'complex', rationale: 'Route then plan' },
+  { a: 'plan_and_execute', b: 'tool_use', kind: 'natural', rationale: 'Steps use tools' },
+  { a: 'rag', b: 'react', kind: 'natural', rationale: 'Retrieve before reasoning' },
+  { a: 'rag', b: 'reflection', kind: 'useful', rationale: 'Evaluate retrieval quality' },
+  { a: 'rag', b: 'routing', kind: 'useful', rationale: 'RAG as one route handler' },
+  { a: 'rag', b: 'tool_use', kind: 'natural', rationale: 'Retrieval as a tool' },
+  { a: 'react', b: 'reflection', kind: 'useful', rationale: 'Reflect on agent output' },
+  { a: 'react', b: 'routing', kind: 'useful', rationale: 'Route then run agent' },
+  { a: 'react', b: 'tool_use', kind: 'natural', rationale: 'ReAct uses tool calling' },
+  { a: 'reflection', b: 'routing', kind: 'complex', rationale: 'Reflect on routing' },
+  { a: 'reflection', b: 'tool_use', kind: 'useful', rationale: 'Validate tool results' },
+  { a: 'routing', b: 'tool_use', kind: 'useful', rationale: 'Different tools per route' },
+];
