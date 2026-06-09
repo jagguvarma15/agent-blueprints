@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [0.2.330] - 2026-06-09
+
+First tagged release. Bundles two work streams: the three-tier taxonomy refactor (12 patterns + 3 primitives + 1 modifier under a single `taxonomy.yaml` source of truth, with byte-identical drift-checked generators) and an AI-tool-discoverability hygiene round (`llms.txt`, `agents.md`, root-level CHANGELOG/ROADMAP, action version unification, Conventional Commits convention).
+
 ### Added
 - **Three-tier taxonomy** (`patterns/`, `primitives/`, `modifiers/`) backed by a new `taxonomy.yaml` at the repo root. Adding a new cohort (e.g. `guardrails/`) is now one entry in `taxonomy.yaml` + a directory — no code change. The validator, catalog emitter, schemas test, docs generator, and website data generator all read taxonomy.yaml. Catalog `schema_version` bumped to 2; `workflows[]` becomes a derived view of `patterns[]` for backward compat.
 - **Generic taxonomy infrastructure**: new `meta/generate-docs.js` (replaces `AUTO:` marker blocks across markdown), new `meta/generate-website-data.js` (regenerates `website/src/data/patterns.ts` from the catalog), refactored `meta/validate-metadata.js` to be taxonomy-driven. Drift gates in `catalog-drift.yml` now cover catalog + docs + website TS together.
