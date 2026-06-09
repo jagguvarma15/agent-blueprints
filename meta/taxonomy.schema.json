@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/jagguvarma15/agent-blueprints/meta/taxonomy.schema.json",
+  "title": "agent-blueprints taxonomy.yaml schema",
+  "description": "Validates the root taxonomy.yaml file that declares every cognitive-unit cohort in the repo.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "catalog_schema_version", "generator_version", "cohorts"],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Version of this taxonomy.yaml's own schema. Bumped only when taxonomy.yaml's shape changes."
+    },
+    "catalog_schema_version": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Version emitted as the top-level schema_version in patterns-catalog.yaml. Independent of this file's own schema_version."
+    },
+    "generator_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+(-[A-Za-z0-9.-]+)?$",
+      "description": "Semver string emitted as patterns-catalog.yaml's generator_version. Bumped manually when the emitter's output format changes."
+    },
+    "cohorts": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/cohort" },
+      "description": "Cohorts in declaration order. Order is preserved for stable emit ordering and for the contributor walkthrough."
+    },
+    "derived_views": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/derivedView" },
+      "default": [],
+      "description": "Backward-compatibility views: each is a filtered sub-set of an existing cohort emitted under its own catalog key."
+    }
+  },
+  "$defs": {
+    "cohort": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "dir", "label", "label_plural", "description", "category_values", "catalog_key", "requires_state_schema"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "description": "Cohort identifier. Matches the directory name (snake_case)."
+        },
+        "dir": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_/-]*$",
+          "description": "Path to the cohort's directory, repo-root-relative. Usually equals id."
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Singular human-readable label (e.g. 'Primitive')."
+        },
+        "label_plural": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Plural human-readable label (e.g. 'Primitives')."
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "description": "One-paragraph cohort description. Surfaced in the contributor guide."
+        },
+        "category_values": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true,
+          "description": "Allowed metadata.json `category` values for entries in this cohort."
+        },
+        "catalog_key": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "description": "Top-level key under which entries appear in patterns-catalog.yaml."
+        },
+        "requires_state_schema": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["when"],
+          "properties": {
+            "when": { "$ref": "#/$defs/expression" }
+          },
+          "description": "Predicate evaluated against each entry's metadata; when true, schemas/state.py is required."
+        },
+        "extra_fields": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "default": [],
+          "description": "Cohort-specific metadata.json fields beyond the base contract (id, name, category, complexity, description, tiers, evolvesFrom, composableWith, requires, tags, costTier, latencyTier)."
+        }
+      }
+    },
+    "derivedView": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "filter", "catalog_key"],
+      "properties": {
+        "source": {
+          "type": "string",
+          "description": "Cohort id this view filters."
+        },
+        "filter": { "$ref": "#/$defs/expression" },
+        "catalog_key": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*$",
+          "description": "Top-level catalog key the view is emitted under."
+        },
+        "description": {
+          "type": "string",
+          "description": "What this derived view is for. Documentation only."
+        }
+      }
+    },
+    "expression": {
+      "type": "string",
+      "description": "A tiny expression over an entry's metadata. Supported forms today: `true`, `false`, `category == 'X'`, `category != 'X'`. Extend the evaluator if new forms are needed.",
+      "pattern": "^(true|false|category\\s*(==|!=)\\s*'[a-zA-Z][a-zA-Z0-9_-]*')$"
+    }
+  }
+}
