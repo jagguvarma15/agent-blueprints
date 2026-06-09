@@ -1,0 +1,32 @@
+# <type>(<optional scope>): <subject>
+#
+# <body — what changed and why>
+#
+# <footer — breaking changes, issue refs, etc.>
+#
+# --- Conventional Commits prefixes ----------------------------------------
+#   feat:      a new entry, a new generator, or a new feature
+#   fix:       a bug fix in scripts, content, or CI
+#   docs:      documentation-only changes
+#   chore:     routine maintenance (dep bumps, lockfile, formatting)
+#   refactor:  code restructuring without behavior change
+#   test:      test-only changes
+#   ci:        CI configuration changes
+#
+# Subject line (above the first blank line):
+#   - imperative mood ("add", not "added" or "adds")
+#   - lowercase first word
+#   - no trailing period
+#   - aim for under 72 characters
+#
+# Body (after the first blank line):
+#   - wrap at 80
+#   - explain WHY, not just what (the diff shows what)
+#
+# Footer (after another blank line):
+#   - "BREAKING CHANGE: <description>" for breaking changes
+#   - "Closes #N" or "Refs #N" for issue references
+#
+# Enable this template for the current clone:
+#   git config commit.template .gitmessage
+# --------------------------------------------------------------------------
