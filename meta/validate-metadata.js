@@ -32,27 +32,47 @@ if (EMIT_FLAG_INDEX !== -1 && !EMIT_PATH) {
 }
 
 const REQUIRED_FIELDS = ['id', 'name', 'category', 'complexity', 'description', 'tiers'];
-const VALID_CATEGORIES = ['workflow', 'agent'];
+const VALID_CATEGORIES = ['workflow', 'agent', 'primitive', 'modifier'];
 const VALID_COMPLEXITIES = ['Beginner', 'Intermediate', 'Advanced'];
 
+// Three-tier taxonomy (catalog v2):
+//   patterns/    — flow shapes (LLM-controlled or code-controlled). Each
+//                  entry's metadata.json category is 'agent' or 'workflow'.
+//   primitives/  — orthogonal building blocks the agent uses (tool_use,
+//                  memory, skills). category='primitive'.
+//   modifiers/   — transformations layered on a pattern (human_in_the_loop).
+//                  category='modifier'.
 const PATTERN_DIRS = [
-  'workflows/prompt-chaining',
-  'workflows/parallel-calls',
-  'workflows/orchestrator-worker',
-  'workflows/evaluator-optimizer',
+  'patterns/prompt-chaining',
+  'patterns/parallel-calls',
+  'patterns/orchestrator-worker',
+  'patterns/evaluator-optimizer',
   'patterns/react',
   'patterns/plan_and_execute',
-  'patterns/tool_use',
-  'patterns/memory',
   'patterns/rag',
   'patterns/reflection',
   'patterns/routing',
   'patterns/multi_agent',
   'patterns/event_driven',
   'patterns/saga',
-  'patterns/human_in_the_loop',
-  'patterns/skills',
 ];
+const PRIMITIVE_DIRS = [
+  'primitives/tool_use',
+  'primitives/memory',
+  'primitives/skills',
+];
+const MODIFIER_DIRS = [
+  'modifiers/human_in_the_loop',
+];
+const ALL_DIRS = [...PATTERN_DIRS, ...PRIMITIVE_DIRS, ...MODIFIER_DIRS];
+
+// Per-tier expected metadata.category values. Used to flag mis-tagged
+// entries (e.g. a primitive that still says category: 'agent').
+const EXPECTED_CATEGORY_BY_DIR = new Map([
+  ...PATTERN_DIRS.map((d) => [d, ['agent', 'workflow']]),
+  ...PRIMITIVE_DIRS.map((d) => [d, ['primitive']]),
+  ...MODIFIER_DIRS.map((d) => [d, ['modifier']]),
+]);
 
 // Catalog emission constants — declared up here so they're outside the
 // temporal dead zone when emitCatalog() runs at the validator's success path.
@@ -65,8 +85,8 @@ const TIER_FILE_NAMES = [
   'cost-and-latency',
 ];
 const EXTRA_SUBDIRS = ['prompts', 'schemas', 'code', 'examples'];
-const SCHEMA_VERSION = 1;
-const GENERATOR_VERSION = '1.0.0';
+const SCHEMA_VERSION = 2;
+const GENERATOR_VERSION = '2.0.0';
 const COMPOSITION_MATRIX_PATH = 'composition/combination-matrix.md';
 // YAML emitter constants — same TDZ rationale; quoteString runs deep inside
 // the emitCatalog call chain.
@@ -77,7 +97,12 @@ let errors = 0;
 // Map of dir → parsed metadata. Populated as we validate; consumed by --emit.
 const PARSED = new Map();
 
-for (const dir of PATTERN_DIRS) {
+// Cache the id-set across all three tiers so cross-references (evolvesFrom,
+// composableWith, etc.) can resolve to any cohort — a pattern can compose
+// with a primitive (e.g. react ↔ memory) and vice versa.
+const ALL_IDS = new Set(ALL_DIRS.map((d) => d.split('/')[1]));
+
+for (const dir of ALL_DIRS) {
   const metaPath = join(ROOT, dir, 'metadata.json');
 
   if (!existsSync(metaPath)) {
@@ -110,6 +135,17 @@ for (const dir of PATTERN_DIRS) {
     errors++;
   }
 
+  // Tier ↔ category coherence: a directory's expected category list must
+  // contain the metadata.category value. Catches a primitive that still
+  // says category: 'agent', or a pattern accidentally marked 'modifier'.
+  const expectedCats = EXPECTED_CATEGORY_BY_DIR.get(dir);
+  if (expectedCats && meta.category && !expectedCats.includes(meta.category)) {
+    console.error(
+      `CATEGORY MISMATCH: ${dir}/metadata.json says category="${meta.category}", expected one of ${JSON.stringify(expectedCats)}`,
+    );
+    errors++;
+  }
+
   if (meta.complexity && !VALID_COMPLEXITIES.includes(meta.complexity)) {
     console.error(`INVALID complexity "${meta.complexity}": ${dir}/metadata.json`);
     errors++;
@@ -122,12 +158,13 @@ for (const dir of PATTERN_DIRS) {
     errors++;
   }
 
-  // Check that referenced patterns exist
-  const allIds = PATTERN_DIRS.map((d) => d.split('/')[1]);
-  for (const field of ['evolvesFrom', 'evolvesInto', 'composableWith']) {
+  // Check that referenced patterns exist — cross-cohort refs are allowed.
+  for (const field of ['evolvesFrom', 'evolvesInto', 'composableWith', 'appliesTo']) {
     if (meta[field]) {
       for (const refId of meta[field]) {
-        if (!allIds.includes(refId)) {
+        // 'any' is the wildcard for modifier.appliesTo — accept it.
+        if (refId === 'any') continue;
+        if (!ALL_IDS.has(refId)) {
           console.error(`UNKNOWN REF "${refId}" in ${field}: ${dir}/metadata.json`);
           errors++;
         }
@@ -147,18 +184,19 @@ for (const dir of PATTERN_DIRS) {
   }
 }
 
-// Cross-check that every pattern id is registered in the website data file.
-// Without this, a new pattern can ship to the repo with all its docs and
-// metadata, pass CI, and still be invisible on the deployed site.
+// Cross-check that every id is registered in the website data file.
+// Without this, a new pattern / primitive / modifier can ship to the repo
+// with all its docs and metadata, pass CI, and still be invisible on the
+// deployed site.
 const SITE_DATA_PATH = join(ROOT, 'website/src/data/patterns.ts');
 if (existsSync(SITE_DATA_PATH)) {
   const siteData = readFileSync(SITE_DATA_PATH, 'utf-8');
-  for (const dir of PATTERN_DIRS) {
+  for (const dir of ALL_DIRS) {
     const id = dir.split('/')[1];
     // Match either single or double quoted id literals.
     if (!siteData.includes(`id: '${id}'`) && !siteData.includes(`id: "${id}"`)) {
       console.error(
-        `MISSING FROM SITE DATA: pattern "${id}" is in metadata but not registered in website/src/data/patterns.ts`,
+        `MISSING FROM SITE DATA: "${id}" is in metadata but not registered in website/src/data/patterns.ts`,
       );
       errors++;
     }
@@ -169,7 +207,10 @@ if (existsSync(SITE_DATA_PATH)) {
 }
 
 if (errors === 0) {
-  console.log(`All ${PATTERN_DIRS.length} metadata.json files are valid.`);
+  console.log(
+    `All ${ALL_DIRS.length} metadata.json files are valid ` +
+      `(${PATTERN_DIRS.length} patterns + ${PRIMITIVE_DIRS.length} primitives + ${MODIFIER_DIRS.length} modifiers).`,
+  );
   if (EMIT_PATH) {
     emitCatalog(EMIT_PATH);
   }
@@ -184,17 +225,22 @@ if (errors === 0) {
 // ---------------------------------------------------------------------------
 
 /**
- * Aggregate per-pattern metadata + tier-file paths + composition matrix into
+ * Aggregate per-tier metadata + tier-file paths + composition matrix into
  * a deterministic YAML catalog. No timestamps, no commit SHAs — the output is
  * a pure function of the source files, so the drift CI can byte-diff.
+ *
+ * Catalog v2 shape:
+ *   patterns[]    — 12 entries; agent + workflow categories interleaved.
+ *   workflows[]   — derived view (patterns[] filtered to category=workflow).
+ *                   Kept for one release as a backward-compat affordance.
+ *   primitives[]  — 3 entries (tool_use, memory, skills).
+ *   modifiers[]   — 1 entry (human_in_the_loop), with appliesTo list.
+ *   compositions[] — unchanged shape; cross-cohort edges allowed.
  */
 function emitCatalog(outPath) {
-  const patterns = [];
-  const workflows = [];
-
-  for (const dir of PATTERN_DIRS) {
+  function buildEntry(dir) {
     const meta = PARSED.get(dir);
-    if (!meta) continue;
+    if (!meta) return null;
 
     const entry = {
       id: meta.id,
@@ -215,17 +261,28 @@ function emitCatalog(outPath) {
     if (meta.tags) entry.tags = meta.tags;
     if (meta.costTier) entry.costTier = meta.costTier;
     if (meta.latencyTier) entry.latencyTier = meta.latencyTier;
+    if (meta.appliesTo) entry.appliesTo = meta.appliesTo;
 
     const extras = detectExtras(dir);
     if (Object.keys(extras).length > 0) entry.extras = extras;
 
-    (meta.category === 'workflow' ? workflows : patterns).push(entry);
+    return entry;
   }
 
-  // Sort for determinism. Stable insertion-order would also work, but explicit
-  // is safer in case PATTERN_DIRS ordering ever drifts.
+  const patterns = PATTERN_DIRS.map(buildEntry).filter(Boolean);
+  const primitives = PRIMITIVE_DIRS.map(buildEntry).filter(Boolean);
+  const modifiers = MODIFIER_DIRS.map(buildEntry).filter(Boolean);
+
+  // Sort for determinism within each cohort.
   patterns.sort((a, b) => a.id.localeCompare(b.id));
-  workflows.sort((a, b) => a.id.localeCompare(b.id));
+  primitives.sort((a, b) => a.id.localeCompare(b.id));
+  modifiers.sort((a, b) => a.id.localeCompare(b.id));
+
+  // Derived workflows[] view: patterns[] entries whose category is 'workflow'.
+  // Kept under its own top-level key so existing consumers (older
+  // agent-deployments / agent-scaffold builds) keep reading what they expect
+  // while they migrate to walking patterns[] + filtering by category.
+  const workflows = patterns.filter((p) => p.category === 'workflow');
 
   const compositions = parseCompositionMatrix();
 
@@ -234,11 +291,16 @@ function emitCatalog(outPath) {
     generator_version: GENERATOR_VERSION,
     patterns,
     workflows,
+    primitives,
+    modifiers,
     compositions,
   };
 
   writeFileSync(outPath, renderYaml(catalog) + '\n', 'utf-8');
-  console.log(`Wrote ${outPath} (${patterns.length} patterns, ${workflows.length} workflows, ${compositions.length} compositions)`);
+  console.log(
+    `Wrote ${outPath} (${patterns.length} patterns including ${workflows.length} workflows, ` +
+      `${primitives.length} primitives, ${modifiers.length} modifiers, ${compositions.length} compositions)`,
+  );
 }
 
 /**

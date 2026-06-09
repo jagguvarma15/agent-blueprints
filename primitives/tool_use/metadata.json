@@ -1,7 +1,7 @@
 {
   "id": "tool_use",
   "name": "Tool Use",
-  "category": "agent",
+  "category": "primitive",
   "complexity": "Beginner",
   "description": "Structured function calling with schema-validated tool dispatch.",
   "tiers": [

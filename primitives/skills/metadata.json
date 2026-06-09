@@ -1,7 +1,7 @@
 {
   "id": "skills",
   "name": "Skills",
-  "category": "agent",
+  "category": "primitive",
   "complexity": "Intermediate",
   "description": "File-based, agent-discovered procedural modules. Cheap to ship many; loaded on demand at runtime.",
   "tiers": [

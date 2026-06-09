@@ -1,7 +1,7 @@
 {
   "id": "human_in_the_loop",
   "name": "Human in the Loop",
-  "category": "agent",
+  "category": "modifier",
   "complexity": "Intermediate",
   "description": "Agent proposes an action; a human approves, denies, or modifies before the action commits.",
   "tiers": [

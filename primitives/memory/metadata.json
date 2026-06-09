@@ -1,7 +1,7 @@
 {
   "id": "memory",
   "name": "Memory",
-  "category": "agent",
+  "category": "primitive",
   "complexity": "Intermediate",
   "description": "Persistent state across sessions: short-term, long-term, and semantic memory.",
   "tiers": [
