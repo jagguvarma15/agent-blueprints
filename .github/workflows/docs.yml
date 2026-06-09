@@ -59,12 +59,16 @@ jobs:
 
       - name: Check pattern structure completeness
         run: |
-          echo "Checking pattern documentation structure..."
+          echo "Checking entry documentation structure across all cohorts..."
           errors=0
-          # Required tier files for every workflow and pattern directory.
-          # Optional polish files (evolution, observability, cost-and-latency, code/)
-          # are checked per-directory via metadata.json + validate-metadata.js below.
-          for dir in workflows/*/ patterns/*/; do
+          # Required tier files for every entry in every cohort (patterns,
+          # primitives, modifiers). Workflows now live under patterns/ with
+          # `category: workflow` in metadata.json, so a single glob covers
+          # them too. Optional polish files (evolution, observability,
+          # cost-and-latency, code/) are checked per-directory via
+          # metadata.json + validate-metadata.js below.
+          shopt -s nullglob
+          for dir in patterns/*/ primitives/*/ modifiers/*/; do
             for file in overview.md design.md implementation.md metadata.json; do
               if [ ! -s "$dir$file" ]; then
                 echo "MISSING or EMPTY: $dir$file"
@@ -76,7 +80,7 @@ jobs:
             echo "Found $errors structural issues"
             exit 1
           fi
-          echo "All pattern documentation complete"
+          echo "All entry documentation complete"
 
       - name: Validate metadata.json files
         run: |
