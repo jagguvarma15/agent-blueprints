@@ -4,7 +4,7 @@ import TableOfContents from '../../components/TableOfContents';
 import { readMarkdown, extractHeadings, extractTitle } from '../../utils/content';
 import { renderMarkdown } from '../../utils/markdown';
 
-const md = readMarkdown('meta/changelog.md');
+const md = readMarkdown('CHANGELOG.md');
 const html = md ? renderMarkdown(md) : null;
 const title = md ? extractTitle(md) : 'Changelog';
 const headings = md ? extractHeadings(md) : [];

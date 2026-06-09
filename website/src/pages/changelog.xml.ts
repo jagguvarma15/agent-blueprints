@@ -59,7 +59,7 @@ function parseChangelog(md: string): Array<{ title: string; pubDate: Date; body:
 }
 
 export const GET: APIRoute = () => {
-  const md = readMarkdown('meta/changelog.md');
+  const md = readMarkdown('CHANGELOG.md');
   if (!md) {
     return new Response('Changelog not found', { status: 404 });
   }
