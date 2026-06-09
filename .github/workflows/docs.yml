@@ -82,6 +82,18 @@ jobs:
           fi
           echo "All entry documentation complete"
 
+      - name: Install pnpm
+        # Version comes from package.json's `packageManager` field.
+        uses: pnpm/action-setup@v4
+
+      - name: Set up Node for metadata validator
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+
+      - name: Install root dependencies (js-yaml for validator + generators)
+        run: pnpm install --no-frozen-lockfile
+
       - name: Validate metadata.json files
         run: |
           node meta/validate-metadata.js
