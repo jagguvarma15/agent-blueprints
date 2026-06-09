@@ -83,8 +83,8 @@ Green intensity indicates increasing complexity. Start as light as possible.
 | [Evaluator-Optimizer](../patterns/evaluator-optimizer/overview.md) | Workflow | Output quality needs iterative refinement | First-pass quality is sufficient |
 | [ReAct](../patterns/react/overview.md) | Agent | Open-ended tasks with tool use | Steps are predictable in advance |
 | [Plan & Execute](../patterns/plan_and_execute/overview.md) | Agent | Complex tasks needing upfront strategy | Simple tasks with fewer than 3 steps |
-| [Tool Use](../primitives/tool_use/overview.md) | Agent | LLM needs to interact with external systems | No external actions needed |
-| [Memory](../primitives/memory/overview.md) | Agent | Context must persist across conversations | Single-turn interactions |
+| [Tool Use](../primitives/tool_use/overview.md) | Primitive | LLM needs to interact with external systems | No external actions needed |
+| [Memory](../primitives/memory/overview.md) | Primitive | Context must persist across conversations | Single-turn interactions |
 | [RAG](../patterns/rag/overview.md) | Agent | LLM needs external knowledge to answer | All needed knowledge fits in context |
 | [Reflection](../patterns/reflection/overview.md) | Agent | Output quality must exceed single-pass | Latency is more important than quality |
 | [Routing](../patterns/routing/overview.md) | Agent | Different inputs need different handling paths | All inputs follow the same process |
@@ -178,11 +178,13 @@ Building one monolithic pattern instead of composing simpler ones. **Cost:** Rig
 
 Primitives are the building blocks the agent uses inside whatever pattern you picked. They're orthogonal to the pattern — same questions, same answers, regardless of which flow shape you're in.
 
-| Question | Add this primitive |
+<!-- AUTO:choose-primitive-table -->
+| Question | Add this |
 |---|---|
-| Does the agent need to invoke functions / call APIs / interact with structured systems? | [`tool_use`](../primitives/tool_use/overview.md) — almost every non-trivial agent needs this. |
 | Does the agent need state that persists across sessions or conversations? | [`memory`](../primitives/memory/overview.md) |
 | Does the agent need codified procedural knowledge (your org's review checklist, citation format, lookup-and-summarize routine)? | [`skills`](../primitives/skills/overview.md) |
+| Does the agent need to invoke functions / call APIs / interact with structured systems? | [`tool_use`](../primitives/tool_use/overview.md) |
+<!-- /AUTO -->
 
 A typical agent declares 1-3 primitives. Tool use is the default; memory and skills layer on as needed.
 
@@ -190,9 +192,11 @@ A typical agent declares 1-3 primitives. Tool use is the default; memory and ski
 
 Modifiers wrap your chosen pattern with a transformation. They don't change the flow's core shape; they overlay a concern.
 
-| Question | Add this modifier |
+<!-- AUTO:choose-modifier-table -->
+| Question | Add this |
 |---|---|
 | Does the agent take high-stakes actions that should require human approval before commit? | [`human_in_the_loop`](../modifiers/human_in_the_loop/overview.md) |
+<!-- /AUTO -->
 
 Most production agents add zero modifiers — that's fine. HITL is the canonical example for now; future modifiers (audit overlays, dual-LLM filters, etc.) will plug in here.
 

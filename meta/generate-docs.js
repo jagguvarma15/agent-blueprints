@@ -140,15 +140,54 @@ function renderCohortTable(args) {
   if (!cohort) {
     return `<!-- AUTO ERROR: unknown cohort '${args.cohort}' -->`;
   }
-  const entries = ENTRIES_BY_COHORT[cohort.id] || [];
+  let entries = ENTRIES_BY_COHORT[cohort.id] || [];
+  // Optional filter=category:<value> trims to entries matching that category.
+  if (args.filter) {
+    const m = args.filter.match(/^category:([a-zA-Z][a-zA-Z0-9_-]*)$/);
+    if (m) entries = entries.filter((e) => e.category === m[1]);
+  }
   if (entries.length === 0) {
     return '_(no entries)_';
   }
+  // Path prefix for links (use `base=./` from the repo root, `base=../` from
+  // a one-level-deep file, default `base=./`).
+  const base = args.base || './';
+  const style = args.style || 'default';
+
+  if (style === 'tiers') {
+    // README-style table with links to each tier file. Evolves-from is shown
+    // when present.
+    const showEvolves = entries.some((e) => e.evolvesFrom && e.evolvesFrom.length);
+    const head = showEvolves
+      ? ['| Pattern | What It Does | Evolves From | Overview | Design | Implementation |', '|---|---|---|---|---|---|']
+      : ['| Pattern | What It Does | Overview | Design | Implementation |', '|---|---|---|---|---|'];
+    const rows = entries.map((e) => {
+      const tiers = e.tier_files || {};
+      const overview = tiers.overview ? `[overview](${base}${tiers.overview})` : '—';
+      const design = tiers.design ? `[design](${base}${tiers.design})` : '—';
+      const impl = tiers.implementation ? `[impl](${base}${tiers.implementation})` : '—';
+      const evolves = showEvolves
+        ? ` ${(e.evolvesFrom || []).map((id) => byId(id)?.name || id).join(', ') || '—'} |`
+        : '';
+      return showEvolves
+        ? `| **${e.name}** | ${e.description} |${evolves} ${overview} | ${design} | ${impl} |`
+        : `| **${e.name}** | ${e.description} | ${overview} | ${design} | ${impl} |`;
+    });
+    return [...head, ...rows].join('\n');
+  }
+
+  // Default: id/name/category/complexity/description.
   const lines = ['| ID | Name | Category | Complexity | Description |', '|---|---|---|---|---|'];
   for (const entry of entries) {
     lines.push(`| \`${entry.id}\` | ${entry.name} | ${entry.category} | ${entry.complexity} | ${entry.description} |`);
   }
   return lines.join('\n');
+}
+
+// Build a flat id → entry lookup for cross-references.
+const ALL_ENTRIES = Object.values(ENTRIES_BY_COHORT).flat();
+function byId(id) {
+  return ALL_ENTRIES.find((e) => e.id === id);
 }
 
 function renderEntryList(args) {
