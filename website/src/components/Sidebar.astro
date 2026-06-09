@@ -30,6 +30,16 @@ function isActive(href: string) {
       >
         Foundations
       </a>
+      <a
+        href={`${base}/taxonomy/`}
+        class={`block px-3 py-1.5 text-sm font-semibold font-display tracking-display rounded-md mb-1 transition-colors ${
+          currentPath.includes('/taxonomy')
+            ? 'text-accent bg-accent-light'
+            : 'text-text-secondary hover:text-text hover:bg-surface'
+        }`}
+      >
+        Taxonomy
+      </a>
     </div>
 
     <!-- Workflows -->
