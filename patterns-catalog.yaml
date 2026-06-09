@@ -342,6 +342,41 @@ patterns:
       schemas: patterns/saga/schemas/
       code: patterns/saga/code/
       examples: patterns/saga/examples/
+  - id: skills
+    name: Skills
+    category: agent
+    complexity: Intermediate
+    description: "File-based, agent-discovered procedural modules. Cheap to ship many; loaded on demand at runtime."
+    dir: patterns/skills
+    tier_files:
+      overview: patterns/skills/overview.md
+      design: patterns/skills/design.md
+      implementation: patterns/skills/implementation.md
+      evolution: patterns/skills/evolution.md
+      observability: patterns/skills/observability.md
+      cost-and-latency: patterns/skills/cost-and-latency.md
+    evolvesFrom:
+      - tool_use
+    composableWith:
+      - react
+      - tool_use
+      - plan_and_execute
+      - multi_agent
+      - routing
+    requires:
+      - skill-registry
+      - trigger-matcher
+    tags:
+      - procedural
+      - discovery
+      - file-based
+      - lazy-load
+      - agent-extensible
+    costTier: low
+    latencyTier: low
+    extras:
+      prompts: patterns/skills/prompts/
+      schemas: patterns/skills/schemas/
   - id: tool_use
     name: "Tool Use"
     category: agent
