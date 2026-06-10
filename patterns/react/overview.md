@@ -11,7 +11,7 @@ graph TD
     Input([User Task]) -->|"goal"| Loop[Agent Loop]
     Loop --> Think[Think:<br/>Reason about state + goal]
     Think --> Decide{Done?}
-    Decide -->|"No"| ToolCall[Select & call tool]
+    Decide -->|"No"| ToolCall["Select & call tool"]
     ToolCall -->|"tool request"| Execute[Execute tool]
     Execute -->|"observation"| Loop
     Decide -->|"Yes"| Output([Final Answer])

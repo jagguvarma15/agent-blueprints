@@ -36,7 +36,7 @@ sequenceDiagram
     participant CP as Checkpoint Store
     participant Log as Event Log
     participant Exec as Step Executor
-    participant Sub as Sub-agent (or Tool)
+    participant Sub as Sub-agent or Tool
 
     Queue->>Worker: task_id ready
     activate Worker

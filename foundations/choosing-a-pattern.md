@@ -48,7 +48,7 @@ graph TD
     Q8 -->|"Yes"| RAG([RAG + ReAct])
 
     Q7 -->|"Yes"| Q9{Single agent<br/>sufficient?}
-    Q9 -->|"Yes"| PlanExec([Plan & Execute])
+    Q9 -->|"Yes"| PlanExec(["Plan & Execute"])
     Q9 -->|"No"| MultiAgent([Multi-Agent])
 
     style Start fill:#e3f2fd

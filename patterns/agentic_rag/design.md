@@ -16,7 +16,7 @@ graph TD
     Reflect -->|insufficient| Reform[Query Reformulator]
     Reform --> Router
     Reflect -->|sufficient| Cross[Cross-source Consistency]
-    Cross --> Compose[Answer Composer<br/>(citations enforced)]
+    Cross --> Compose["Answer Composer<br/>(citations enforced)"]
     Compose --> Verify[Citation Verifier]
     Verify -->|ungrounded claim| Reform
     Verify -->|clean| Out([Grounded answer])

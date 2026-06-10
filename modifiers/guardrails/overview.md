@@ -9,7 +9,7 @@ An agent that touches untrusted input, untrusted tool output, or customer-visibl
 ```mermaid
 graph TD
     In([Untrusted input]) --> InGuard[Input Guardrails:<br/>injection / PII / topic / jailbreak]
-    InGuard -->|"allow"| Agent[Agent core<br/>(privileged actor)]
+    InGuard -->|"allow"| Agent["Agent core<br/>(privileged actor)"]
     InGuard -->|"block"| Refuse([Refusal])
     Agent -->|"proposed tool call"| ToolGuard[Tool Guardrails:<br/>allow-list / schema / rate]
     ToolGuard -->|"allow"| Tool[Tool dispatch]
