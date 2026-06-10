@@ -1,0 +1,62 @@
+name: External Link Check
+
+# Weekly sweep of outbound URLs across the repo's markdown. Separate from
+# docs.yml on purpose: external link rot is a soft signal (Anthropic blog
+# rearranged, a vendor moved a docs page), not a "merge of this PR breaks
+# the docs" gate. Running it weekly + on demand keeps it from blocking PRs
+# while still surfacing rot before it accumulates.
+#
+# Internal links are covered by the broken-link gate in docs.yml. This
+# workflow only checks `http://` and `https://` URLs.
+
+on:
+  schedule:
+    # Mondays 09:00 UTC.
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check-external-links:
+    name: Scan external URLs with lychee
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Run lychee
+        id: lychee
+        uses: lycheeverse/lychee-action@v2
+        with:
+          # Walk the markdown tree, skip third-party noise. Fail-on lets the
+          # job report status; the issue step below surfaces the report.
+          args: >-
+            --no-progress
+            --max-concurrency 8
+            --max-redirects 5
+            --timeout 30
+            --retry-wait-time 5
+            --accept 200..=299,403,429
+            --exclude-path './node_modules'
+            --exclude-path './website/node_modules'
+            --exclude-path './website/dist'
+            --exclude-path './legacy'
+            --exclude-path './.venv'
+            --exclude '^https?://(www\.)?example\.(com|org|net)'
+            --exclude '^https?://localhost'
+            --exclude '^https?://127\.0\.0\.1'
+            './**/*.md'
+          fail: false
+          output: lychee-report.md
+
+      - name: Open or update tracking issue
+        if: steps.lychee.outputs.exit_code != '0'
+        uses: peter-evans/create-issue-from-file@v5
+        with:
+          title: "External link rot detected"
+          content-filepath: lychee-report.md
+          labels: docs, link-rot, automation
