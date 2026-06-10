@@ -9,6 +9,7 @@ For the picker question per modifier, see [`../foundations/choosing-a-pattern.md
 <!-- AUTO:cohort-table cohort=modifiers style=tiers base=../ -->
 | Pattern | What It Does | Evolves From | Overview | Design | Implementation |
 |---|---|---|---|---|---|
+| **Guardrails** | Layered input / tool / output policy checks plus a dual-LLM split that breaks the indirect-prompt-injection path. | Tool Use | [overview](../modifiers/guardrails/overview.md) | [design](../modifiers/guardrails/design.md) | [impl](../modifiers/guardrails/implementation.md) |
 | **Human in the Loop** | Agent proposes an action; a human approves, denies, or modifies before the action commits. | Tool Use | [overview](../modifiers/human_in_the_loop/overview.md) | [design](../modifiers/human_in_the_loop/design.md) | [impl](../modifiers/human_in_the_loop/implementation.md) |
 <!-- /AUTO -->
 

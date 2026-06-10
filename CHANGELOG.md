@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Added
+- **Context Engineering foundation** (`foundations/context-engineering.md`). Promotes "context-as-finite-resource" from a memory-doc subtopic to a first-class architectural framing: the four levers (select/compress/prune/persist), memory hierarchy, per-pattern context shape, context-window awareness, compaction, and budgets. Cross-linked from `foundations/README.md` and `primitives/memory/overview.md`.
+- **Guardrails modifier** (`modifiers/guardrails/`). The second modifier (alongside `human_in_the_loop`). Layered input / tool / output policy checks plus an explicit dual-LLM split (privileged actor + quarantined reader) that breaks the indirect-prompt-injection path. Ships the six tier docs (overview / design / implementation / evolution / observability / cost-and-latency), `schemas/state.py`, and two typed prompts (`quarantined-summarizer.md`, `policy-rewriter.md`). `appliesTo: [any]`.
+- **Sub-agents primitive** (`primitives/sub_agents/`). The fourth primitive (alongside `tool_use`, `memory`, `skills`). Models named, role-scoped agent instances with their own context windows, tool grants, and (optionally) models. The 2026 production default for `multi_agent` workers and the unit-of-work inside `plan_and_execute` and `react`. Ships six tier docs, `schemas/state.py` (`SubAgentSpec`, `ContextEnvelope`, `SubAgentInvocation`, `SubAgentResult`, `SubAgentsState`), and two typed prompts (`delegator.md`, `sub-agent-base.md`).
+- **Long-Horizon agent pattern** (`patterns/long_horizon/`). Multi-session tasks that span hours-to-weeks; checkpoint-and-resume across crashes, deploys, and external waits. Distinct from `saga` (compensation) and `memory` (storage). The deep-agents shape (planner + virtual filesystem + sub-agents) is the canonical composition. Ships six tier docs, `schemas/state.py` (`LongHorizonState`, `Plan`, `StepRecord`, `EventLogEntry`, `Checkpoint`), and the `planner.md` prompt. Evolves from `saga` + `event_driven`.
+- **Agentic RAG agent pattern** (`patterns/agentic_rag/`). RAG where the agent plans retrievals, decomposes queries, routes across sources, reflects on sufficiency, enforces citation-bound answers, and cross-checks across sources to defend against single-source RAG poisoning. Ships six tier docs, `schemas/state.py` (`SubQuestion`, `RetrievalAttempt`, `EvidenceChunk`, `CrossSourceConflict`, `Citation`, `VerificationResult`, `AgenticRagState`), and two typed prompts (`decomposer.md`, `sufficiency-reflector.md`). Evolves from `rag` + `plan_and_execute`.
+
+### Changed
+- `patterns-catalog.yaml` regenerated (now 14 Patterns + 4 Primitives + 2 Modifiers; derived workflows view unchanged at 4).
+- `website/src/data/patterns.ts` regenerated to register the new entries.
+- README.md, `patterns/README.md`, `primitives/README.md`, `modifiers/README.md`, and `foundations/choosing-a-pattern.md` auto-blocks regenerated to include the new entries.
+
 ## [0.2.330] - 2026-06-09
 
 First tagged release. Bundles two work streams: the three-tier taxonomy refactor (12 patterns + 3 primitives + 1 modifier under a single `taxonomy.yaml` source of truth, with byte-identical drift-checked generators) and an AI-tool-discoverability hygiene round (`llms.txt`, `agents.md`, root-level CHANGELOG/ROADMAP, action version unification, Conventional Commits convention).

@@ -33,7 +33,9 @@ LLM-controlled flow shapes. The developer provides tools and constraints; the LL
 <!-- AUTO:cohort-table cohort=patterns filter=category:agent style=tiers base=../ -->
 | Pattern | What It Does | Evolves From | Overview | Design | Implementation |
 |---|---|---|---|---|---|
+| **Agentic RAG** | RAG where the agent plans retrievals, decomposes queries, routes across sources, reflects on sufficiency, and enforces citation-bound answers. | RAG, Plan & Execute | [overview](../patterns/agentic_rag/overview.md) | [design](../patterns/agentic_rag/design.md) | [impl](../patterns/agentic_rag/implementation.md) |
 | **Event-Driven** | Agents triggered by queue or stream events rather than HTTP requests. | Tool Use | [overview](../patterns/event_driven/overview.md) | [design](../patterns/event_driven/design.md) | [impl](../patterns/event_driven/implementation.md) |
+| **Long-Horizon** | Multi-session agent tasks that span hours to weeks; checkpoint-and-resume across crashes, deploys, and external waits. | Saga, Event-Driven | [overview](../patterns/long_horizon/overview.md) | [design](../patterns/long_horizon/design.md) | [impl](../patterns/long_horizon/implementation.md) |
 | **Multi-Agent** | Supervisor-worker delegation across multiple autonomous agents. | Orchestrator-Worker, Routing | [overview](../patterns/multi_agent/overview.md) | [design](../patterns/multi_agent/design.md) | [impl](../patterns/multi_agent/implementation.md) |
 | **Plan & Execute** | LLM creates a full plan upfront, then executes each step sequentially. | Orchestrator-Worker | [overview](../patterns/plan_and_execute/overview.md) | [design](../patterns/plan_and_execute/design.md) | [impl](../patterns/plan_and_execute/implementation.md) |
 | **RAG** | Retrieval-augmented generation: retrieve relevant context before generating. | Parallel Calls | [overview](../patterns/rag/overview.md) | [design](../patterns/rag/design.md) | [impl](../patterns/rag/implementation.md) |

@@ -183,6 +183,7 @@ Primitives are the building blocks the agent uses inside whatever pattern you pi
 |---|---|
 | Does the agent need state that persists across sessions or conversations? | [`memory`](../primitives/memory/overview.md) |
 | Does the agent need codified procedural knowledge (your org's review checklist, citation format, lookup-and-summarize routine)? | [`skills`](../primitives/skills/overview.md) |
+| Is Sub-agents the right shape for your use case? | [`sub_agents`](../primitives/sub_agents/overview.md) |
 | Does the agent need to invoke functions / call APIs / interact with structured systems? | [`tool_use`](../primitives/tool_use/overview.md) |
 <!-- /AUTO -->
 
@@ -195,6 +196,7 @@ Modifiers wrap your chosen pattern with a transformation. They don't change the 
 <!-- AUTO:choose-modifier-table -->
 | Question | Add this |
 |---|---|
+| Is Guardrails the right shape for your use case? | [`guardrails`](../modifiers/guardrails/overview.md) |
 | Does the agent take high-stakes actions that should require human approval before commit? | [`human_in_the_loop`](../modifiers/human_in_the_loop/overview.md) |
 <!-- /AUTO -->
 
