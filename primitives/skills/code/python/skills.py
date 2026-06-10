@@ -135,9 +135,7 @@ class SkillRegistry:
             version=str(frontmatter["version"]),
             description=str(frontmatter["description"]),
             triggers=[str(t).lower() for t in triggers],
-            when_to_use=(
-                str(frontmatter.get("when_to_use")) if frontmatter.get("when_to_use") else None
-            ),
+            when_to_use=(str(frontmatter.get("when_to_use")) if frontmatter.get("when_to_use") else None),
             body_path=str(path),
             scripts_dir=str(path.parent / "scripts"),
         )
@@ -244,9 +242,7 @@ class SkillMatcher:
         return state
 
     def _stage2(self, user_msg: str, candidate_ids: list[str]) -> list[str]:
-        candidates_block = "\n".join(
-            f"- {sid}: {self.registry.skills[sid].description}" for sid in candidate_ids
-        )
+        candidates_block = "\n".join(f"- {sid}: {self.registry.skills[sid].description}" for sid in candidate_ids)
         prompt = _JUDGE_PROMPT.format(
             max_pick=self.max_picks,
             user_msg=user_msg,
@@ -267,9 +263,7 @@ class SkillMatcher:
 # ── Body injection ────────────────────────────────────────────────────────────
 
 
-def inject_skill_bodies(
-    prompt_parts: list[str], state: SkillsState, registry: SkillRegistry
-) -> list[str]:
+def inject_skill_bodies(prompt_parts: list[str], state: SkillsState, registry: SkillRegistry) -> list[str]:
     """Read each picked skill's body and append it to ``prompt_parts``.
 
     Skills extend the system policy: bodies go AFTER the recipe's static
