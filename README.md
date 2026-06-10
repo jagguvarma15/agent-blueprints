@@ -95,7 +95,9 @@ Agents are systems where **the LLM controls the flow**. The developer provides t
 <!-- AUTO:cohort-table cohort=patterns filter=category:agent style=tiers base=./ -->
 | Pattern | What It Does | Evolves From | Overview | Design | Implementation |
 |---|---|---|---|---|---|
+| **Agentic RAG** | RAG where the agent plans retrievals, decomposes queries, routes across sources, reflects on sufficiency, and enforces citation-bound answers. | RAG, Plan & Execute | [overview](./patterns/agentic_rag/overview.md) | [design](./patterns/agentic_rag/design.md) | [impl](./patterns/agentic_rag/implementation.md) |
 | **Event-Driven** | Agents triggered by queue or stream events rather than HTTP requests. | Tool Use | [overview](./patterns/event_driven/overview.md) | [design](./patterns/event_driven/design.md) | [impl](./patterns/event_driven/implementation.md) |
+| **Long-Horizon** | Multi-session agent tasks that span hours to weeks; checkpoint-and-resume across crashes, deploys, and external waits. | Saga, Event-Driven | [overview](./patterns/long_horizon/overview.md) | [design](./patterns/long_horizon/design.md) | [impl](./patterns/long_horizon/implementation.md) |
 | **Multi-Agent** | Supervisor-worker delegation across multiple autonomous agents. | Orchestrator-Worker, Routing | [overview](./patterns/multi_agent/overview.md) | [design](./patterns/multi_agent/design.md) | [impl](./patterns/multi_agent/implementation.md) |
 | **Plan & Execute** | LLM creates a full plan upfront, then executes each step sequentially. | Orchestrator-Worker | [overview](./patterns/plan_and_execute/overview.md) | [design](./patterns/plan_and_execute/design.md) | [impl](./patterns/plan_and_execute/implementation.md) |
 | **RAG** | Retrieval-augmented generation: retrieve relevant context before generating. | Parallel Calls | [overview](./patterns/rag/overview.md) | [design](./patterns/rag/design.md) | [impl](./patterns/rag/implementation.md) |
@@ -114,6 +116,7 @@ Primitives are building blocks the agent uses orthogonally to any pattern. Picki
 |---|---|---|---|---|---|
 | **Memory** | Persistent state across sessions: short-term, long-term, and semantic memory. | Prompt Chaining | [overview](./primitives/memory/overview.md) | [design](./primitives/memory/design.md) | [impl](./primitives/memory/implementation.md) |
 | **Skills** | File-based, agent-discovered procedural modules. Cheap to ship many; loaded on demand at runtime. | Tool Use | [overview](./primitives/skills/overview.md) | [design](./primitives/skills/design.md) | [impl](./primitives/skills/implementation.md) |
+| **Sub-agents** | Named, role-scoped agent instances spawned by a parent for delimited tasks; each has its own context window, tool grants, and (optionally) model. | Tool Use | [overview](./primitives/sub_agents/overview.md) | [design](./primitives/sub_agents/design.md) | [impl](./primitives/sub_agents/implementation.md) |
 | **Tool Use** | Structured function calling with schema-validated tool dispatch. | Prompt Chaining | [overview](./primitives/tool_use/overview.md) | [design](./primitives/tool_use/design.md) | [impl](./primitives/tool_use/implementation.md) |
 <!-- /AUTO -->
 
@@ -124,6 +127,7 @@ Modifiers wrap a chosen pattern with a transformation (gates, overlays). Picking
 <!-- AUTO:cohort-table cohort=modifiers style=tiers base=./ -->
 | Pattern | What It Does | Evolves From | Overview | Design | Implementation |
 |---|---|---|---|---|---|
+| **Guardrails** | Layered input / tool / output policy checks plus a dual-LLM split that breaks the indirect-prompt-injection path. | Tool Use | [overview](./modifiers/guardrails/overview.md) | [design](./modifiers/guardrails/design.md) | [impl](./modifiers/guardrails/implementation.md) |
 | **Human in the Loop** | Agent proposes an action; a human approves, denies, or modifies before the action commits. | Tool Use | [overview](./modifiers/human_in_the_loop/overview.md) | [design](./modifiers/human_in_the_loop/design.md) | [impl](./modifiers/human_in_the_loop/implementation.md) |
 <!-- /AUTO -->
 

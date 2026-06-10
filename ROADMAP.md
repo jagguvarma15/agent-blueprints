@@ -31,11 +31,16 @@ Add working code implementations alongside the documentation.
 
 Expand coverage to more specialized and emerging patterns.
 
+**Delivered:**
+- [x] Long-horizon agents (`patterns/long_horizon/`) — checkpointing, resume, multi-session tasks, deep-agents shape
+- [x] Agentic RAG (`patterns/agentic_rag/`) — query decomposition, multi-source routing, self-correcting retrieval, citation-bound answers
+- [x] Guardrails modifier (`modifiers/guardrails/`) — layered input / tool / output policy + dual-LLM split
+- [x] Sub-agents primitive (`primitives/sub_agents/`) — role-scoped agent instances with isolated context windows
+- [x] Context Engineering foundation (`foundations/context-engineering.md`)
+
 **Candidates:**
 - Tree of Thoughts / LATS (tree-search reasoning)
 - Debate and critique (multi-agent adversarial reasoning)
-- Long-horizon agents (checkpointing, recovery, multi-session tasks)
-- Agentic RAG (query decomposition, self-correcting retrieval)
 - Autonomous coding agents (code generation, testing, deployment)
 
 ## Phase 4: Tooling and Developer Experience

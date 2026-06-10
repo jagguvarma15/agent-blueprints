@@ -2,6 +2,8 @@
 
 The memory pattern enables an agent to persist information across conversations, building context over time. Short-term memory maintains state within a session; long-term memory stores and retrieves information across sessions using external storage.
 
+Memory is the **storage** primitive — the durable tier of the broader [Context Engineering](../../foundations/context-engineering.md) frame. Read that foundation doc first if you're trying to decide what *belongs* in long-term memory vs. what should be summarized, pruned, or persisted to a scratchpad; this doc covers the storage mechanics once that decision is made.
+
 **Evolves from:** [Prompt Chaining](../../patterns/prompt-chaining/overview.md) — adds conversation state management, summarization, and persistent retrieval.
 
 ## Architecture

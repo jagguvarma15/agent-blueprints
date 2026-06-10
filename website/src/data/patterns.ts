@@ -92,6 +92,16 @@ export const WORKFLOWS: PatternMeta[] = [
 
 export const AGENT_PATTERNS: PatternMeta[] = [
   {
+    id: 'agentic_rag',
+    name: 'Agentic RAG',
+    slug: 'agentic-rag',
+    description: 'RAG where the agent plans retrievals, decomposes queries, routes across sources, reflects on sufficiency, and enforces citation-bound answers.',
+    complexity: 'Advanced',
+    category: 'agent',
+    kind: 'pattern',
+    evolvesFrom: ['rag', 'plan_and_execute'],
+  },
+  {
     id: 'event_driven',
     name: 'Event-Driven',
     slug: 'event-driven',
@@ -100,6 +110,16 @@ export const AGENT_PATTERNS: PatternMeta[] = [
     category: 'agent',
     kind: 'pattern',
     evolvesFrom: ['tool_use'],
+  },
+  {
+    id: 'long_horizon',
+    name: 'Long-Horizon',
+    slug: 'long-horizon',
+    description: 'Multi-session agent tasks that span hours to weeks; checkpoint-and-resume across crashes, deploys, and external waits.',
+    complexity: 'Advanced',
+    category: 'agent',
+    kind: 'pattern',
+    evolvesFrom: ['saga', 'event_driven'],
   },
   {
     id: 'multi_agent',
@@ -199,6 +219,16 @@ export const PRIMITIVES: PatternMeta[] = [
     evolvesFrom: ['tool_use'],
   },
   {
+    id: 'sub_agents',
+    name: 'Sub-agents',
+    slug: 'sub-agents',
+    description: 'Named, role-scoped agent instances spawned by a parent for delimited tasks; each has its own context window, tool grants, and (optionally) model.',
+    complexity: 'Intermediate',
+    category: 'primitive',
+    kind: 'primitive',
+    evolvesFrom: ['tool_use'],
+  },
+  {
     id: 'tool_use',
     name: 'Tool Use',
     slug: 'tool-use',
@@ -215,6 +245,17 @@ export const PRIMITIVES: PatternMeta[] = [
 // ---------------------------------------------------------------------------
 
 export const MODIFIERS: PatternMeta[] = [
+  {
+    id: 'guardrails',
+    name: 'Guardrails',
+    slug: 'guardrails',
+    description: 'Layered input / tool / output policy checks plus a dual-LLM split that breaks the indirect-prompt-injection path.',
+    complexity: 'Advanced',
+    category: 'modifier',
+    kind: 'modifier',
+    evolvesFrom: ['tool_use'],
+    appliesTo: ['any'],
+  },
   {
     id: 'human_in_the_loop',
     name: 'Human in the Loop',
@@ -278,6 +319,17 @@ export interface PatternComparison {
 
 export const PATTERN_COMPARISONS: PatternComparison[] = [
   {
+    id: 'agentic_rag',
+    name: 'Agentic RAG',
+    category: 'agent',
+    complexity: 'Advanced',
+    latency: 'Variable',
+    cost: 'Variable',
+    bestFor: 'RAG where the agent plans retrievals, decomposes queries, routes across sources, reflects on sufficiency, and enforces citation-bound answers.',
+    requires: ['retrieval', 'source-registry', 'citation-tracker'],
+    composableWith: ['reflection', 'react', 'sub_agents', 'routing', 'memory'],
+  },
+  {
     id: 'evaluator-optimizer',
     name: 'Evaluator-Optimizer',
     category: 'workflow',
@@ -298,6 +350,17 @@ export const PATTERN_COMPARISONS: PatternComparison[] = [
     bestFor: 'Async reactive systems on a queue or stream',
     requires: ['tools', 'event-source', 'idempotency-store'],
     composableWith: ['multi_agent', 'routing', 'memory'],
+  },
+  {
+    id: 'long_horizon',
+    name: 'Long-Horizon',
+    category: 'agent',
+    complexity: 'Advanced',
+    latency: 'Variable',
+    cost: 'Variable',
+    bestFor: 'Multi-session agent tasks that span hours to weeks; checkpoint-and-resume across crashes, deploys, and external waits.',
+    requires: ['checkpoint-store', 'event-log', 'idempotency', 'tick-worker'],
+    composableWith: ['sub_agents', 'memory', 'multi_agent', 'human_in_the_loop', 'saga', 'event_driven'],
   },
   {
     id: 'multi_agent',
@@ -432,6 +495,17 @@ export const PATTERN_COMPARISONS: PatternComparison[] = [
     composableWith: ['react', 'tool_use', 'plan_and_execute', 'multi_agent', 'routing'],
   },
   {
+    id: 'sub_agents',
+    name: 'Sub-agents',
+    category: 'primitive',
+    complexity: 'Intermediate',
+    latency: 'Variable',
+    cost: 'Variable',
+    bestFor: 'Named, role-scoped agent instances spawned by a parent for delimited tasks; each has its own context window, tool grants, and (optionally) model.',
+    requires: ['role-registry', 'result-schemas', 'scoped-tools'],
+    composableWith: ['multi_agent', 'plan_and_execute', 'react', 'skills', 'memory'],
+  },
+  {
     id: 'tool_use',
     name: 'Tool Use',
     category: 'primitive',
@@ -441,6 +515,17 @@ export const PATTERN_COMPARISONS: PatternComparison[] = [
     bestFor: 'Structured API calls and function execution',
     requires: ['tools'],
     composableWith: ['react', 'rag', 'routing'],
+  },
+  {
+    id: 'guardrails',
+    name: 'Guardrails',
+    category: 'modifier',
+    complexity: 'Advanced',
+    latency: 'Variable',
+    cost: 'Variable',
+    bestFor: 'Layered input / tool / output policy checks plus a dual-LLM split that breaks the indirect-prompt-injection path.',
+    requires: ['detector-registry', 'policy-artifact', 'audit-sink'],
+    composableWith: ['human_in_the_loop', 'rag', 'multi_agent', 'tool_use', 'react'],
   },
   {
     id: 'human_in_the_loop',

@@ -133,12 +133,16 @@ _CASES: list[tuple[str, str, str, dict[str, Any]]] = [
             "steps": [{"id": "step-1", "name": "reserve"}],
         },
     ),
-    # Primitives (3) — moved out of patterns/ in catalog v2.
+    ("patterns", "long_horizon", "LongHorizonState", {"task_id": "t1", "goal": "ship thing"}),
+    ("patterns", "agentic_rag", "AgenticRagState", {"question_id": "q1", "question": "what?"}),
+    # Primitives (4) — moved out of patterns/ in catalog v2.
     ("primitives", "tool_use", "ToolUseState", {"user_message": "hi"}),
     ("primitives", "memory", "MemoryState", {"user_id": "u1", "user_message": "hi"}),
     ("primitives", "skills", "SkillsState", {"user_message": "hi"}),
-    # Modifiers (1) — moved out of patterns/ in catalog v2.
+    ("primitives", "sub_agents", "SubAgentsState", {"parent_id": "p1"}),
+    # Modifiers (2) — moved out of patterns/ in catalog v2.
     ("modifiers", "human_in_the_loop", "HitlState", {"goal": "approve"}),
+    ("modifiers", "guardrails", "GuardrailsState", {"request_id": "r1", "policy_version": "v1"}),
 ]
 
 
