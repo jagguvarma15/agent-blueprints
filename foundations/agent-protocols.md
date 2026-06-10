@@ -97,6 +97,57 @@ Pattern (ReAct):              MCP integration:
 
 The pattern doesn't change — only the *implementation* of the Act step. Same `ReAct` loop, but tools are MCP servers instead of in-process Python functions. This is a clean substitution: a recipe can swap in-process tools for MCP servers without rewriting its pattern logic.
 
+### MCP at production scale (the 2026 shape)
+
+By mid-2026 MCP is no longer a novel experiment — public SDK download volume reached ~97M/month in March 2026 (up from ~2M at launch in November 2024), and the public registry surface tracks thousands of servers. The shape that matters at production scale is *not* "which server do I install" — it's **which topology connects servers to agents fleet-wide**. Four topologies dominate; pick the smallest one that fits.
+
+| Topology | Shape | When it fits |
+|---|---|---|
+| **Single-tenant stdio** | Each agent process spawns the MCP servers it needs as child processes. | Local dev, single-developer agents, demo deployments. |
+| **Per-app HTTP** | Each application owns its MCP servers as long-lived HTTP services in the same VPC. | A small set of in-house agents; one team owns the servers. |
+| **Shared internal HTTP** | A handful of MCP servers serve all agents in the org over HTTP; one auth boundary. | Multiple teams sharing the same MCP integrations (filesystem, GitHub, Postgres). |
+| **Federated MCP gateway** | A gateway service in front of N servers; central policy, auth, tool allow-lists, audit. | Large orgs with policy/compliance requirements; ≥ 3 distinct agent products. |
+
+The progression is one-way: most teams start at single-tenant stdio, graduate to per-app HTTP when a second agent needs the same server, and graduate to a gateway when policy/audit becomes its own surface. Don't skip ahead — gateways are operational debt at small scale.
+
+### OAuth 2.1 and enterprise identity
+
+The 2026 MCP roadmap landed OAuth 2.1 with PKCE as the canonical auth flow for HTTP-transport servers, plus integration profiles for the major enterprise IdPs (Okta, Entra, Auth0, custom OIDC). The practical implications:
+
+- Bearer tokens in env are still fine for dev; production HTTP servers should reject anything but OAuth 2.1 / PKCE for user-facing flows.
+- The agent runtime brokers the OAuth handshake; the user (not the agent) consents to specific scopes.
+- Scope granularity matters more than auth strength — an over-broad scope (`repo` on GitHub) defeats the protocol's "least privilege" intent. Audit scope grants the same way you audit IAM policies.
+
+This is a deployment concern (the wire details belong in `agent-deployments/`); the architectural concern at this layer is choosing OAuth 2.1 over older flows whenever the integration touches user data.
+
+### Registry and verification
+
+The MCP ecosystem now has multiple registries (the official `registry.modelcontextprotocol.io`, plus community indices like PulseMCP and Smithery). The architectural question they answer: **how do I know the server I'm installing does what it claims?**
+
+- **Provenance** — signed publisher identity (the same publisher who owns the GitHub repo signed the registry entry).
+- **Scope declaration** — the server's tool list and resource URIs are part of the registry record, not just the install README.
+- **Verification ratings** — community/registry assessments of code review, dependency posture, and update cadence.
+
+Practical rule: untrusted MCP servers are a tool-poisoning surface (see the threat model below). Treat the registry record as a trust signal, not a guarantee; pin server versions in production; review the tool schemas at install time, not just at first use.
+
+### Agent-to-agent via MCP
+
+The 2026 roadmap explicitly anchors agent-to-agent calls through MCP — a worker agent exposes its capabilities as an MCP server (tools, resources, prompts) that other agents call. This **overlaps with A2A** (see below) and the choice between them is a deployment decision:
+
+- **Use MCP-for-A2A** when the worker's surface is naturally tool-shaped (well-typed inputs, deterministic outputs) and the orchestrator is already an MCP client.
+- **Use A2A** when the worker needs streaming intermediate results, task lifecycle (pause / resume / cancel), and rich artifact types beyond what MCP tools/resources express.
+
+A production system commonly uses both shapes for different worker classes.
+
+### Skills over MCP
+
+A 2026 extension: MCP servers can bundle [skills](../primitives/skills/overview.md) (procedural knowledge) alongside their tools. The server says *"here is the tool, and here is how to use it well"* — the client agent loads the skill file when it loads the tool. Two implications for design:
+
+- A skill that ships with its MCP server is version-pinned to that server; updates flow together.
+- The skill body is treated as untrusted input on installation (per the registry trust model above) — the [Guardrails](../modifiers/guardrails/overview.md) input layer should sanity-check skills the same way it sanity-checks tool descriptions.
+
+This is what makes the registry record load-bearing — the *procedural* knowledge that ships alongside the server is as much a part of the trust boundary as the code.
+
 ## A2A — Agent-to-Agent Protocol
 
 **Question A2A answers:** "Which agents are available, and how do I hand work to one of them?"
