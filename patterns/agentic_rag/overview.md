@@ -13,7 +13,7 @@ graph TD
     Plan --> Loop{Per sub-question}
     Loop --> Route[Route to source:<br/>vector / API / SQL / web]
     Route --> Retrieve[Retrieve top-K]
-    Retrieve --> Score[Score & filter relevance]
+    Retrieve --> Score["Score and filter relevance"]
     Score --> Reflect{Sufficient?}
     Reflect -->|"no"| Reform[Reformulate query]
     Reform --> Route

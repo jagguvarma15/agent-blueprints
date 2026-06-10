@@ -13,7 +13,7 @@ graph TD
     Loop --> Exec[Step Executor:<br/>sub-agent / tool / LLM]
     Exec --> Log[(Event Log<br/>append-only)]
     Exec --> CP2[(Checkpoint Store)]
-    Loop -.->|"crash / sleep"| Worker[Resume Worker<br/>(queue / cron)]
+    Loop -.->|"crash / sleep"| Worker["Resume Worker<br/>(queue / cron)"]
     Worker --> Load[Load Checkpoint]
     Load --> Replay[Replay Event Log]
     Replay --> Loop
@@ -118,7 +118,7 @@ A specific composition that has become the 2026 default for long, autonomous tas
 graph TD
     Planner[Long-horizon Planner]
     Planner -->|"step description"| Spawn[Spawn sub-agent]
-    Spawn --> Sub[Sub-agent<br/>(role-scoped tools, own context)]
+    Spawn --> Sub["Sub-agent<br/>(role-scoped tools, own context)"]
     Sub -->|"reads/writes"| FS[(Virtual filesystem<br/>per-task scratchpad)]
     Sub -->|"structured result"| Planner
     Planner -->|"check off plan, advance"| Planner

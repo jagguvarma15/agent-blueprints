@@ -17,7 +17,7 @@ graph TD
     Q([Research Question]) --> Router[Router:<br/>Classify question type]
     Router -->|"factual"| RAGAgent[RAG + ReAct Agent:<br/>Retrieve and reason]
     Router -->|"comparative"| MultiSearch[Parallel RAG:<br/>Multiple sources]
-    Router -->|"exploratory"| PlanAgent[Plan & Execute:<br/>Break down research]
+    Router -->|"exploratory"| PlanAgent["Plan & Execute:<br/>Break down research"]
     RAGAgent --> Reflect[Reflection:<br/>Check quality + citations]
     MultiSearch --> Reflect
     PlanAgent --> Reflect

@@ -93,6 +93,10 @@ const COMPARISON_DEFAULTS = {
   saga: { latency: 'High', cost: 'Medium', bestFor: 'Long-running workflows requiring compensation on failure' },
   human_in_the_loop: { latency: 'Variable', cost: 'Low', bestFor: 'High-stakes actions requiring human approval or correction' },
   skills: { latency: 'Low', cost: 'Low', bestFor: 'Repeatable in-context procedures the agent should perform consistently across runs' },
+  sub_agents: { latency: 'Medium', cost: 'Medium', bestFor: 'Delegating bounded sub-tasks to role-scoped agent instances' },
+  guardrails: { latency: 'Medium', cost: 'Medium', bestFor: 'Layered policy checks plus a dual-LLM split against prompt injection' },
+  long_horizon: { latency: 'High', cost: 'High', bestFor: 'Tasks that span hours to weeks with checkpoint-and-resume across deploys' },
+  agentic_rag: { latency: 'High', cost: 'Medium', bestFor: 'Compound or multi-source questions where grounding and citations matter' },
 };
 
 // ---------------------------------------------------------------------------

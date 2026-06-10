@@ -11,7 +11,7 @@ graph TD
     Trigger([Inbound goal]) --> Plan[Planner: produce plan]
     Plan --> Persist1[(Checkpoint: plan + initial state)]
     Persist1 --> Loop{Step loop}
-    Loop -->|"next step"| Execute[Execute step<br/>(sub-agent / tool call)]
+    Loop -->|"next step"| Execute["Execute step<br/>(sub-agent / tool call)"]
     Execute --> Persist2[(Checkpoint:<br/>step result + new state)]
     Persist2 --> Decide{Done?}
     Decide -->|"no"| Loop

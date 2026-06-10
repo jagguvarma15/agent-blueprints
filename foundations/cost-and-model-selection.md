@@ -70,6 +70,10 @@ Patterns have characteristic cost profiles. Use this table to estimate before yo
 | [Event-Driven](../patterns/event_driven/overview.md) | Per-event agent cost | Event rate × per-event cost; rate-limit per partition. |
 | [Saga](../patterns/saga/overview.md) | Steps + potential compensations | Compensations amplify cost on failure. |
 | [Human in the Loop](../modifiers/human_in_the_loop/overview.md) | Low LLM cost; high human-time cost | Cost shape changes; budget human review time. |
+| [Long-Horizon](../patterns/long_horizon/overview.md) | Per-tick model cost + storage over task lifetime | Cost accumulates over days/weeks even when idle; recap + virtual FS are the levers. |
+| [Agentic RAG](../patterns/agentic_rag/overview.md) | Per-question: decompose + (retrieve + score + reflect) × sub-questions + compose | 3–10× baseline RAG cost; tier the loop with cheaper models for relevance scoring. |
+| [Sub-agents](../primitives/sub_agents/overview.md) | One agent loop per spawn; per-role model selection | Often *lower* total cost than a monolithic agent thanks to per-role tiering. |
+| [Guardrails](../modifiers/guardrails/overview.md) | Per-layer detectors + optional quarantined-LLM call per untrusted tool result | Paid per request, every request; dual-LLM is the dominant cost driver. |
 
 ## The latency / cost / quality triangle
 

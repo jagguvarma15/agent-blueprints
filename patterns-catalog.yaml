@@ -531,6 +531,7 @@ primitives:
   extras:
     prompts: primitives/skills/prompts/
     schemas: primitives/skills/schemas/
+    code: primitives/skills/code/
 - id: sub_agents
   name: Sub-agents
   category: primitive

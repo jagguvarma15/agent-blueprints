@@ -142,7 +142,7 @@ graph LR
     PC -->|"+ persistence"| Mem[Memory]
     PAR[Parallel Calls] -->|"+ retrieval"| RAG[RAG]
     PAR -->|"+ classification"| Route[Routing]
-    OW[Orchestrator-Worker] -->|"+ planning"| PE[Plan & Execute]
+    OW[Orchestrator-Worker] -->|"+ planning"| PE["Plan & Execute"]
     OW -->|"+ agent workers"| MA[Multi-Agent]
     Route -->|"+ agent workers"| MA
     EO[Evaluator-Optimizer] -->|"+ self-critique"| Ref[Reflection]
