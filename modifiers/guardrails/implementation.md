@@ -1,6 +1,6 @@
 # Guardrails — Implementation
 
-> Code variants live under [`code/python/`](code/python/) (when shipped). The pseudocode here is framework-agnostic and mirrors the [`schemas/state.py`](schemas/state.py) shapes.
+> Code variants under `code/python/` are not yet shipped; the pseudocode here is framework-agnostic and mirrors the [`schemas/state.py`](schemas/state.py) shapes.
 
 ## Detector interface
 
