@@ -67,7 +67,6 @@ def _parse_yaml_subset(block: str) -> dict[str, object]:
     upstream `pyyaml` parser; this is a no-deps fallback for the demo.
     """
     result: dict[str, object] = {}
-    current_key: str | None = None
     current_list: list[str] | None = None
     for raw in block.splitlines():
         line = raw.rstrip()
@@ -85,13 +84,11 @@ def _parse_yaml_subset(block: str) -> dict[str, object]:
             key = key.strip()
             val = val.strip()
             if val == "":
-                current_key = key
                 current_list = []
                 result[key] = current_list
             else:
                 val = val.strip('"').strip("'")
                 result[key] = val
-                current_key = None
                 current_list = None
     return result
 
