@@ -363,9 +363,10 @@ internal evals. Citing it is easier than building a regression suite.
 **The problem:** Static benchmarks measure one-shot, lab-bounded task completion. Production
 agents deal with traffic the benchmark never sampled — long-horizon brittleness, tool
 errors that compound across steps, upstream-model drift, cost / latency degradation under
-load. 2026 industry reports place the gap between benchmark scores and production reliability
-at roughly **37 percentage points**, with cost efficiency, plan adherence, and trace
-consistency among the dominant blind spots. A benchmark score is an upper bound, not a
+load. The gap is measurable: [τ-bench](https://arxiv.org/abs/2406.12045)'s pass^k metric
+shows a single-run success rate around 61% dropping below 25% once the *same* tasks must
+pass 8 runs in a row — and production adds blind spots the benchmark never sampled (cost
+efficiency, plan adherence, trace consistency). A benchmark score is an upper bound, not a
 target.
 
 **Use instead:** Run the eval cadence that matters more than the suite's size. Pair an
