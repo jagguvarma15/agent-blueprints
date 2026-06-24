@@ -51,7 +51,7 @@ ignore = ["E501", "UP042"]
 # Tool Use's calculator example deliberately demonstrates ``eval()`` as the
 # minimal arithmetic backend. The file carries an inline ``# noqa: S307``
 # already; the file-level pin keeps that exemption explicit at config level.
-"patterns/tool_use/code/python/tool_use.py" = ["S307"]
+"primitives/tool_use/code/python/tool_use.py" = ["S307"]
 # Framework-agnostic siblings and framework adapters carry canonical-state
 # imports the body doesn't reference directly — they document the binding
 # contract recipes still resolve against. Silence F401 there rather than

@@ -25,6 +25,15 @@ Rules for writing documentation in this repository. Consistency matters — ever
 - Use diagrams over walls of text — if something can be shown visually, show it
 - Keep paragraphs short (3–5 sentences maximum)
 
+## Directory and id naming
+
+Each cohort entry lives in a directory whose name **is** its `id` — `meta/validate-metadata.js` enforces that `metadata.json`'s `id` equals the directory name. Two naming styles coexist by design; don't rename existing entries to "fix" the split:
+
+- **Hyphens** — the four original workflow patterns: `prompt-chaining`, `parallel-calls`, `orchestrator-worker`, `evaluator-optimizer`.
+- **Underscores** — every cohort whose `code/` ships a Python package: `plan_and_execute`, `multi_agent`, `event_driven`, `agentic_rag`, `long_horizon` (patterns); `tool_use`, `memory`, `skills`, `sub_agents` (primitives); `human_in_the_loop`, `guardrails` (modifiers). The directory doubles as an importable package (`from patterns.plan_and_execute.schemas.state import ...`), and hyphens are invalid in Python module paths.
+
+Single-word ids (`rag`, `react`, `routing`, `reflection`, `saga`) need no separator. For a **new** entry, use underscores if it will ship runnable Python under `code/`; otherwise match the cohort's dominant style. Whatever you pick, the directory name, the `id` in `metadata.json`, and the `pattern` slug in any `prompts/*.md` frontmatter must be byte-identical.
+
 ## Diagrams
 
 ### Mermaid Rules
@@ -62,7 +71,7 @@ These gradient colors are reserved for that purpose and should not be mixed into
 ## Cross-References
 
 - **Link constantly.** Every mention of another pattern should be a link.
-- Use relative paths: `../../workflows/prompt-chaining/overview.md`
+- Use relative paths: `../prompt-chaining/overview.md`
 - Link to the specific tier that's appropriate:
   - Casual mention → `overview.md`
   - Design discussion → `design.md`
@@ -149,7 +158,7 @@ Frontmatter schema:
 ```yaml
 ---
 role: planner                       # the role this prompt serves (matches the pattern's design vocabulary)
-pattern: plan-and-execute           # the pattern slug
+pattern: plan_and_execute           # the pattern slug
 inputs:
   - {name: goal, type: string, description: "..."}
   - {name: context, type: ["string", "null"], description: "..."}
