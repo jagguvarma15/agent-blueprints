@@ -203,7 +203,7 @@ See the [Contributing Guide](./meta/contributing.md) and [Style Guide](./meta/st
 
 ## Roadmap
 
-This is Phase 1 (documentation). Code implementations, advanced patterns, and tooling are planned for future phases. See the [full roadmap](./ROADMAP.md).
+The knowledge base, framework-agnostic Python and TypeScript reference implementations for every pattern, and the documentation website are delivered. Advanced patterns and scaffolding tooling are ongoing — see the [full roadmap](./ROADMAP.md).
 
 ## License
 
