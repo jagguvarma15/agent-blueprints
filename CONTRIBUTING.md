@@ -70,4 +70,4 @@ The Python gate uses `uv run --with ...` so contributors don't have to install t
 - `pytest tests/` — schema-import gate, convention checks, two B5 overlay walkthroughs.
 - `pnpm typecheck` — TypeScript `tsc --noEmit` across `patterns/**/*.ts`, `workflows/**/*.ts`, `composition/**/*.ts`.
 
-If a check fails, fix the cause rather than silencing the rule. The two existing per-file exemptions (`patterns/tool_use/code/python/tool_use.py` ignores `S307` for its documented `eval()` demo; the convention test ignores `E501` because it carries long path strings) are the only allowlist entries. New exemptions need an inline justification.
+If a check fails, fix the cause rather than silencing the rule. The two existing per-file exemptions (`primitives/tool_use/code/python/tool_use.py` ignores `S307` for its documented `eval()` demo; the convention test ignores `E501` because it carries long path strings) are the only allowlist entries. New exemptions need an inline justification.

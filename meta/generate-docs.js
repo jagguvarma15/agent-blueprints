@@ -17,6 +17,12 @@
  *   <!-- AUTO:cohort-table cohort=<id> [columns=...] -->
  *     Renders a markdown table listing every entry in the named cohort.
  *
+ *   <!-- AUTO:count cohort=<id> [filter=category:<value>] -->
+ *     Renders the integer entry-count of the named cohort (optionally filtered
+ *     by category). Works inline so "N patterns" claims in prose and table
+ *     cells stay in sync, e.g.:
+ *       holds <!-- AUTO:count cohort=patterns -->14<!-- /AUTO --> patterns
+ *
  *   <!-- AUTO:entry-list cohort=<id> [base=<path>] -->
  *     Renders a markdown bullet list of entries, linking each entry to its
  *     overview.md. The optional `base` is a relative-path prefix prepended
@@ -79,6 +85,8 @@ for (const cohort of TAXONOMY.cohorts) {
 
 const AUTO_OPEN_RE = /<!--\s*AUTO:([a-zA-Z][a-zA-Z0-9-]*)([^>]*)-->/;
 const AUTO_CLOSE_RE = /<!--\s*\/AUTO\s*-->/;
+// Matches a complete inline (same-line) block: open marker, inner, close marker.
+const AUTO_INLINE_RE = /(<!--\s*AUTO:([a-zA-Z][a-zA-Z0-9-]*)([^>]*)-->)(.*?)(<!--\s*\/AUTO\s*-->)/g;
 const MARKDOWN_GLOB_DIRS = [
   '.',
   'patterns',
@@ -182,6 +190,20 @@ function renderCohortTable(args) {
     lines.push(`| \`${entry.id}\` | ${entry.name} | ${entry.category} | ${entry.complexity} | ${entry.description} |`);
   }
   return lines.join('\n');
+}
+
+function renderCount(args) {
+  const cohort = COHORT_BY_ID.get(args.cohort);
+  if (!cohort) {
+    return `<!-- AUTO ERROR: unknown cohort '${args.cohort}' -->`;
+  }
+  let entries = ENTRIES_BY_COHORT[cohort.id] || [];
+  // Optional filter=category:<value> trims to entries matching that category.
+  if (args.filter) {
+    const m = args.filter.match(/^category:([a-zA-Z][a-zA-Z0-9_-]*)$/);
+    if (m) entries = entries.filter((e) => e.category === m[1]);
+  }
+  return String(entries.length);
 }
 
 // Build a flat id → entry lookup for cross-references.
@@ -292,6 +314,35 @@ function renderChooseTable(cohortId) {
 // Main loop
 // ---------------------------------------------------------------------------
 
+function renderDirective(directive, args, absPath, lineNo) {
+  switch (directive) {
+    case 'cohort-table':
+      return renderCohortTable(args);
+    case 'entry-list':
+      return renderEntryList(args);
+    case 'cohort-list':
+      return renderCohortList();
+    case 'repository-tree':
+      return renderRepositoryTree();
+    case 'choose-primitive-table':
+      return renderChooseTable('primitives');
+    case 'choose-modifier-table':
+      return renderChooseTable('modifiers');
+    case 'count':
+      return renderCount(args);
+    default:
+      throw new Error(`${absPath}:${lineNo + 1}: unknown AUTO directive '${directive}'`);
+  }
+}
+
+// True when a line contains a complete inline AUTO block (open + close on the
+// same line) — handled in-place rather than as a multi-line block.
+function hasInlineAuto(line) {
+  const open = line.match(AUTO_OPEN_RE);
+  if (!open) return false;
+  return AUTO_CLOSE_RE.test(line.slice(open.index + open[0].length));
+}
+
 function processFile(absPath) {
   const text = readFileSync(absPath, 'utf-8');
   const lines = text.split('\n');
@@ -301,6 +352,20 @@ function processFile(absPath) {
 
   while (i < lines.length) {
     const line = lines[i];
+
+    // Inline (same-line) AUTO blocks: `<!-- AUTO:x -->VALUE<!-- /AUTO -->` all
+    // on one line. Needed for counts embedded mid-sentence or in table cells.
+    if (hasInlineAuto(line)) {
+      const replaced = line.replace(AUTO_INLINE_RE, (full, open, directive, argStr, inner, closeTag) => {
+        const rendered = renderDirective(directive, parseDirectiveArgs(argStr || ''), absPath, i);
+        if (inner !== rendered) changed = true;
+        return `${open}${rendered}${closeTag}`;
+      });
+      out.push(replaced);
+      i++;
+      continue;
+    }
+
     const match = line.match(AUTO_OPEN_RE);
     if (!match) {
       out.push(line);
@@ -331,29 +396,7 @@ function processFile(absPath) {
     }
 
     // Render the new content.
-    let rendered;
-    switch (directive) {
-      case 'cohort-table':
-        rendered = renderCohortTable(args);
-        break;
-      case 'entry-list':
-        rendered = renderEntryList(args);
-        break;
-      case 'cohort-list':
-        rendered = renderCohortList();
-        break;
-      case 'repository-tree':
-        rendered = renderRepositoryTree();
-        break;
-      case 'choose-primitive-table':
-        rendered = renderChooseTable('primitives');
-        break;
-      case 'choose-modifier-table':
-        rendered = renderChooseTable('modifiers');
-        break;
-      default:
-        throw new Error(`${absPath}:${i + 1}: unknown AUTO directive '${directive}'`);
-    }
+    const rendered = renderDirective(directive, args, absPath, i);
 
     // Compare with current content (between open and close) — if same, no change.
     const currentInner = lines.slice(i + 1, close).join('\n');

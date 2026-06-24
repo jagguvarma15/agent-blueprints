@@ -1,6 +1,6 @@
 # Code Implementations
 
-Minimal, self-contained Python implementations of every pattern in this repository.
+Minimal, self-contained Python implementations for the patterns, primitives, and modifiers in this repository. TypeScript ports live alongside under `code/typescript/`.
 
 ## Design principles
 
@@ -12,27 +12,29 @@ Minimal, self-contained Python implementations of every pattern in this reposito
 ## Structure
 
 ```
-code/
-├── README.md                           ← this file
+code/README.md                          ← this file; implementations live per-entry below
 
-workflows/
+patterns/                               # workflows + agent patterns (by metadata category)
 ├── prompt-chaining/code/python/        prompt_chaining.py
 ├── parallel-calls/code/python/         parallel_calls.py
 ├── orchestrator-worker/code/python/    orchestrator_worker.py
-└── evaluator-optimizer/code/python/    evaluator_optimizer.py
-
-patterns/
-├── react/code/python/                  react_agent.py
-├── plan-and-execute/code/python/       plan_and_execute.py
-├── tool-use/code/python/               tool_use.py
-├── memory/code/python/                 memory_agent.py
+├── evaluator-optimizer/code/python/    evaluator_optimizer.py
+├── react/code/python/                  langchain/  langgraph/  pydantic-ai/
 ├── rag/code/python/                    rag.py
 ├── reflection/code/python/             reflection.py
 ├── routing/code/python/                routing.py
-├── multi-agent/code/python/            multi_agent.py
-├── event-driven/code/python/           event_driven.py
-├── saga/code/python/                   saga.py
-└── human-in-the-loop/code/python/      human_in_the_loop.py
+├── plan_and_execute/code/python/       plan_and_execute.py
+├── multi_agent/code/python/            multi_agent.py
+├── event_driven/code/python/           event_driven.py
+└── saga/code/python/                   saga.py
+
+primitives/
+├── tool_use/code/python/               tool_use.py
+├── memory/code/python/                 memory_agent.py
+└── skills/code/python/                 skills.py
+
+modifiers/
+└── human_in_the_loop/code/python/      approval.py
 ```
 
 ## Plugging in a real LLM
@@ -80,6 +82,6 @@ Each file is executable with `python <filename>.py` and runs with the built-in `
 Replace `MockLLM` with a real implementation to use a live model.
 
 ```bash
-python workflows/prompt-chaining/code/python/prompt_chaining.py
-python patterns/react/code/python/react_agent.py
+python patterns/prompt-chaining/code/python/prompt_chaining.py
+python patterns/rag/code/python/rag.py
 ```

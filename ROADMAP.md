@@ -7,7 +7,7 @@ Restructured the repo from code-first blueprints to an architecture-first docume
 **Delivered:**
 - [x] Foundations section (terminology, anatomy of an agent, pattern selection guide, plus security & safety, hallucination & grounding, evals & quality, cost & model selection, frameworks & integrations)
 - [x] 4 workflow patterns (prompt chaining, parallel calls, orchestrator-worker, evaluator-optimizer)
-- [x] 11 agent patterns (ReAct, plan & execute, tool use, memory, RAG, reflection, routing, multi-agent, event-driven, saga, human-in-the-loop)
+- [x] Agent patterns (ReAct, RAG, Reflection, Routing, Multi-Agent, Event-Driven, Saga, Plan & Execute, and more — see [`patterns-catalog.yaml`](patterns-catalog.yaml) for the canonical set)
 - [x] 3-tier documentation for each pattern (overview, design, implementation)
 - [x] Supplementary docs for each pattern (observability, cost & latency)
 - [x] Evolution bridges from workflows to agent patterns
@@ -18,13 +18,13 @@ Restructured the repo from code-first blueprints to an architecture-first docume
 Add working code implementations alongside the documentation.
 
 **Delivered:**
-- [x] Python implementations for all 11 agent patterns (`patterns/{name}/code/python/`)
-- [x] Python implementations for all 4 workflow patterns (`workflows/{name}/code/python/`)
+- [x] Python implementations for every agent pattern (`patterns/{name}/code/python/`)
+- [x] Python implementations for every workflow pattern (`patterns/{name}/code/python/`)
 - [x] Language-agnostic interfaces matching the pseudocode from Tier 3 docs
+- [x] TypeScript implementations for each pattern (`patterns/{name}/code/typescript/`)
+- [x] Formal test suites with `MockLLM` stubs, run in CI (`tests/`, gated by `lint.yml`)
 
 **Remaining:**
-- [ ] TypeScript implementations for each pattern
-- [ ] Formal test suites with LLM stubs for CI
 - [ ] Docker Compose environments for patterns requiring infrastructure (vector stores, etc.)
 
 ## Phase 3: Advanced Patterns
