@@ -7,7 +7,7 @@ Restructured the repo from code-first blueprints to an architecture-first docume
 **Delivered:**
 - [x] Foundations section (terminology, anatomy of an agent, pattern selection guide, plus security & safety, hallucination & grounding, evals & quality, cost & model selection, frameworks & integrations)
 - [x] 4 workflow patterns (prompt chaining, parallel calls, orchestrator-worker, evaluator-optimizer)
-- [x] 11 agent patterns (ReAct, plan & execute, tool use, memory, RAG, reflection, routing, multi-agent, event-driven, saga, human-in-the-loop)
+- [x] Agent patterns (ReAct, RAG, Reflection, Routing, Multi-Agent, Event-Driven, Saga, Plan & Execute, and more — see [`patterns-catalog.yaml`](patterns-catalog.yaml) for the canonical set)
 - [x] 3-tier documentation for each pattern (overview, design, implementation)
 - [x] Supplementary docs for each pattern (observability, cost & latency)
 - [x] Evolution bridges from workflows to agent patterns
