@@ -56,6 +56,16 @@ or a sub-task that requires a fundamentally different model or toolset.
 **Rule of thumb:** One agent with N tools beats N agents when the task is sequential or
 when the sub-tasks share significant context.
 
+**The deeper why:** the failure isn't only cost — it's coherence. As Cognition's
+[*Don't Build Multi-Agents*](https://cognition.com/blog/dont-build-multi-agents) argues,
+parallel sub-agents making independent decisions produce conflicting results a synthesizer
+can't cleanly merge; keeping *writes single-threaded* is the fix. The flip side, from
+[Anthropic's research system](https://www.anthropic.com/engineering/multi-agent-research-system)
+(which beat a single Claude Opus 4 agent by 90.2% on an internal eval): multi-agent
+genuinely wins for **read-heavy, parallelizable** work — many independent explorations
+gathered by sub-agents and combined by one writer. Parallelize reads; serialize writes.
+See [Multi-Agent → the single-writer debate](../patterns/multi_agent/overview.md#the-single-writer-debate).
+
 ---
 
 ## 3. Reflection Without Measurable Criteria
