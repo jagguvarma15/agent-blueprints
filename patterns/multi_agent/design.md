@@ -225,3 +225,17 @@ Cognitive concerns this repo covers; operational concerns belong in [agent-deplo
 | Rate limiting & retries | inherited | [agent-deployments cross-cutting](https://github.com/jagguvarma15/agent-deployments/tree/main/docs/cross-cutting) |
 | Idempotency | sub-agent invocations should be idempotent under retry | [agent-deployments cross-cutting](https://github.com/jagguvarma15/agent-deployments/blob/main/docs/cross-cutting/idempotency.md) |
 | Observability hooks | see `observability.md` alongside this file | [foundations](../../foundations/README.md) |
+
+## Topologies
+
+"Multi-agent" is a family of coordination topologies, not one shape. Pick the loosest that solves the problem:
+
+| Topology | Who decides next | Shape |
+|---|---|---|
+| **Manager (supervisor-worker)** | a central supervisor | hub-and-spoke |
+| **Decentralized (handoff)** | agents hand off peer-to-peer | chain / graph |
+| **Debate** | agents argue; a judge decides | adversarial |
+| **Blackboard** | agents read/write a shared workspace | shared-memory |
+| **Group-chat** | agents converse in a shared thread | round-robin / moderated |
+
+The manager topology is the safe default; reach for the others only when the task's structure demands it. All compose on the kernel's [`agents` port](../../core/architecture.md#ports) (in-process sub-graphs or remote A2A).

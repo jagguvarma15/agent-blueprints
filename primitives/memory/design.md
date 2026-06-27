@@ -154,3 +154,16 @@ Cognitive concerns this repo covers; operational concerns belong in [agent-deplo
 | Rate limiting & retries | inherited | [agent-deployments cross-cutting](https://github.com/jagguvarma15/agent-deployments/tree/main/docs/cross-cutting) |
 | Idempotency | memory writes should be idempotent (replays don't double-store) | [agent-deployments cross-cutting](https://github.com/jagguvarma15/agent-deployments/blob/main/docs/cross-cutting/idempotency.md) |
 | Observability hooks | see `observability.md` alongside this file | [foundations](../../foundations/README.md) |
+
+## Memory types
+
+The 2025-2026 taxonomy splits memory into four types; a `memory` deployment may implement one or several:
+
+| Type | Holds | Lifetime | Typical backing |
+|---|---|---|---|
+| **Working** | the current task's context | this run | Run-State (not this port) |
+| **Episodic** | past events and interactions | long-term | vector / key-value |
+| **Semantic** | distilled facts and knowledge | long-term | vector / graph |
+| **Procedural** | learned procedures and skills | long-term | files / [skills](../skills/overview.md) |
+
+Working memory is the kernel's [Run-State](../../core/architecture.md#run-state); the other three live behind this port. See the [memory three-way split](../../core/design.md#the-memory-three-way-split).
