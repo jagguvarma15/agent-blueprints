@@ -9,6 +9,8 @@ description: 'Reason-act loop: the LLM reasons, calls a tool, observes, and repe
   until done.'
 levels:
 - overview
+- architecture
+- flow
 - design
 - implementation
 - evolution
@@ -30,6 +32,7 @@ tags:
 - open-ended
 costTier: medium
 latencyTier: variable
+ir_fragment_ref: patterns/react/implementation.md
 ---
 
 # ReAct (Reason + Act) — Overview
@@ -37,6 +40,23 @@ latencyTier: variable
 ReAct is the foundational agent pattern: a loop where the LLM *reasons* about what to do, *acts* by calling a tool, *observes* the result, and repeats until the task is complete. The LLM controls when to act and when to stop.
 
 **Evolves from:** [Prompt Chaining](../prompt-chaining/overview.md) — adds dynamic tool selection and LLM-controlled looping.
+
+```yaml level=concepts
+intent: "An LLM-controlled loop that interleaves reasoning and tool use, adapting each step to the last observation, until the task is done."
+problem: "Open-ended tasks whose steps cannot be enumerated in advance need the model — not code — to decide what to do next."
+when_to_use:
+  - "Steps are not known ahead of time; the path depends on intermediate results."
+  - "The task needs adaptive tool use, possibly across multiple sources."
+  - "You want the simplest agent before reaching for planning or multi-agent."
+when_to_avoid:
+  - "Steps are predictable -> use a workflow (prompt-chaining / orchestrator-worker)."
+  - "The task needs upfront strategy -> Plan & Execute."
+  - "You cannot enforce a tool allow-list -> the loop's freedom amplifies unsafe tools."
+forces:
+  - "Adaptivity vs predictability: gains flexibility, loses a fixed step count and bounded cost."
+  - "Reasoning quality degrades as history grows -> needs context management."
+  - "Termination must be explicit (max_steps) or cost is unbounded."
+```
 
 ## Architecture
 
