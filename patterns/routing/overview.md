@@ -1,3 +1,35 @@
+---
+id: routing
+name: Routing
+kind: pattern
+category: agent
+complexity: Beginner
+scale: prototype
+description: Intent classification dispatches inputs to specialized handlers.
+levels:
+- overview
+- design
+- implementation
+- evolution
+- observability
+- cost-and-latency
+evolvesFrom:
+- parallel-calls
+composableWith:
+- react
+- rag
+- multi_agent
+requires: []
+tags:
+- classification
+- dispatch
+- specialization
+- intent
+- multi-skill
+costTier: low
+latencyTier: low
+---
+
 # Routing (Intent Classification + Dispatch) — Overview
 
 Routing uses an LLM to classify incoming requests and direct them to specialized handlers. Instead of one general-purpose processor, routing creates a system where different input types are handled by purpose-built paths — each optimized for its specific task.

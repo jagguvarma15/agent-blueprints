@@ -1,3 +1,37 @@
+---
+id: memory
+name: Memory
+kind: primitive
+category: primitive
+complexity: Intermediate
+scale: standard
+description: 'Persistent state across sessions: short-term, long-term, and semantic
+  memory.'
+levels:
+- overview
+- design
+- implementation
+- evolution
+- observability
+- cost-and-latency
+evolvesFrom:
+- prompt-chaining
+composableWith:
+- react
+- rag
+- multi_agent
+requires:
+- storage
+tags:
+- persistence
+- personalization
+- context
+- sessions
+- retrieval
+costTier: medium
+latencyTier: medium
+---
+
 # Memory — Overview
 
 The memory pattern enables an agent to persist information across conversations, building context over time. Short-term memory maintains state within a session; long-term memory stores and retrieves information across sessions using external storage.

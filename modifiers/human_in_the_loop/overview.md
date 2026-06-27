@@ -1,3 +1,39 @@
+---
+id: human_in_the_loop
+name: Human in the Loop
+kind: modifier
+category: modifier
+complexity: Intermediate
+scale: standard
+description: Agent proposes an action; a human approves, denies, or modifies before
+  the action commits.
+levels:
+- overview
+- design
+- implementation
+- evolution
+- observability
+- cost-and-latency
+evolvesFrom:
+- tool_use
+composableWith:
+- saga
+- event_driven
+- tool_use
+requires:
+- pause-resume
+- approver-surface
+- audit
+tags:
+- approval
+- governance
+- compliance
+- pause-resume
+- escalation
+costTier: low
+latencyTier: very-high
+---
+
 # Human in the Loop — Overview
 
 An agent that handles money, customer-visible changes, or policy decisions usually needs a human checkpoint before some actions commit. The Human-in-the-Loop (HITL) pattern formalises this: the agent **proposes** an action, **pauses** in a known state, surfaces the proposal to an approver, and **resumes** with the approver's decision (approve / deny / modify) before committing.

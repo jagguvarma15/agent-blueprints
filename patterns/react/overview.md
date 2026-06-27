@@ -1,3 +1,37 @@
+---
+id: react
+name: ReAct
+kind: pattern
+category: agent
+complexity: Intermediate
+scale: standard
+description: 'Reason-act loop: the LLM reasons, calls a tool, observes, and repeats
+  until done.'
+levels:
+- overview
+- design
+- implementation
+- evolution
+- observability
+- cost-and-latency
+evolvesFrom:
+- prompt-chaining
+composableWith:
+- memory
+- reflection
+- rag
+requires:
+- tools
+tags:
+- reasoning
+- tool_use
+- loop
+- adaptive
+- open-ended
+costTier: medium
+latencyTier: variable
+---
+
 # ReAct (Reason + Act) — Overview
 
 ReAct is the foundational agent pattern: a loop where the LLM *reasons* about what to do, *acts* by calling a tool, *observes* the result, and repeats until the task is complete. The LLM controls when to act and when to stop.

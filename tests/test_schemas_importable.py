@@ -58,10 +58,30 @@ def _eval_predicate(expr: str, entry_meta: dict[str, Any]) -> bool:
     raise ValueError(f"unsupported expression: {expr}")
 
 
+def _parse_frontmatter(text: str) -> dict[str, Any] | None:
+    """Parse a leading YAML frontmatter block (between --- delimiters)."""
+    match = re.match(r"^---\r?\n(.*?)\r?\n---\s*(?:\r?\n|$)", text, re.DOTALL)
+    if not match:
+        return None
+    loaded = yaml.safe_load(match.group(1))
+    return loaded if isinstance(loaded, dict) else None
+
+
 def _load_entry_metadata(cohort_dir: str, entry_name: str) -> dict[str, Any] | None:
+    """Entry metadata from overview.md frontmatter, falling back to metadata.json.
+
+    A migrated entry carries frontmatter and no metadata.json; an un-migrated one
+    still has metadata.json. Either way an entry must expose its metadata.
+    """
     import json
 
-    path = REPO_ROOT / cohort_dir / entry_name / "metadata.json"
+    entry = REPO_ROOT / cohort_dir / entry_name
+    overview = entry / "overview.md"
+    if overview.is_file():
+        fm = _parse_frontmatter(overview.read_text(encoding="utf-8"))
+        if fm is not None:
+            return fm
+    path = entry / "metadata.json"
     if not path.is_file():
         return None
     try:
@@ -184,6 +204,7 @@ def test_every_entry_has_a_schemas_dir() -> None:
                 continue
             meta = _load_entry_metadata(cohort["dir"], p.name)
             if meta is None:
+                missing.append(f"{cohort['dir']}/{p.name} (no frontmatter or metadata.json)")
                 continue
             if not _eval_predicate(predicate, meta):
                 continue

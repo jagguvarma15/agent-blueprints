@@ -1,3 +1,44 @@
+---
+id: agentic_rag
+name: Agentic RAG
+kind: pattern
+category: agent
+complexity: Advanced
+scale: production
+description: RAG where the agent plans retrievals, decomposes queries, routes across
+  sources, reflects on sufficiency, and enforces citation-bound answers.
+levels:
+- overview
+- design
+- implementation
+- evolution
+- observability
+- cost-and-latency
+evolvesFrom:
+- rag
+- plan_and_execute
+composableWith:
+- reflection
+- react
+- sub_agents
+- routing
+- memory
+requires:
+- retrieval
+- source-registry
+- citation-tracker
+tags:
+- retrieval
+- grounding
+- query-decomposition
+- multi-source
+- self-correcting
+- citations
+- rag-poisoning-defense
+costTier: medium
+latencyTier: medium-high
+---
+
 # Agentic RAG — Overview
 
 Baseline [RAG](../rag/overview.md) retrieves once and generates once. **Agentic RAG** lets the agent decide *what* to retrieve, *how many times*, *from which sources*, and *whether the retrieved evidence is enough* — looping retrieval and reasoning until the answer is grounded or the agent decides to abstain. The control flow shifts from the developer to the LLM, while the retrieval stack stays the same.

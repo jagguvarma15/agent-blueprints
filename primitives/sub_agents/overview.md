@@ -1,3 +1,42 @@
+---
+id: sub_agents
+name: Sub-agents
+kind: primitive
+category: primitive
+complexity: Intermediate
+scale: standard
+description: Named, role-scoped agent instances spawned by a parent for delimited
+  tasks; each has its own context window, tool grants, and (optionally) model.
+levels:
+- overview
+- design
+- implementation
+- evolution
+- observability
+- cost-and-latency
+evolvesFrom:
+- tool_use
+composableWith:
+- multi_agent
+- plan_and_execute
+- react
+- skills
+- memory
+requires:
+- role-registry
+- result-schemas
+- scoped-tools
+tags:
+- delegation
+- isolation
+- scoped-context
+- scoped-tools
+- parallel
+- specialization
+costTier: low-medium
+latencyTier: low-medium
+---
+
 # Sub-agents
 
 > **Tier 1 — Overview.** Diagram, when-to-use, when-not-to-use, headline tradeoffs. Two-page read.

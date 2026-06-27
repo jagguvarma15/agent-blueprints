@@ -1,3 +1,39 @@
+---
+id: event_driven
+name: Event-Driven
+kind: pattern
+category: agent
+complexity: Advanced
+scale: production
+description: Agents triggered by queue or stream events rather than HTTP requests.
+levels:
+- overview
+- design
+- implementation
+- evolution
+- observability
+- cost-and-latency
+evolvesFrom:
+- tool_use
+composableWith:
+- multi_agent
+- routing
+- memory
+requires:
+- tools
+- event-source
+- idempotency-store
+tags:
+- streaming
+- queue
+- async
+- idempotency
+- backpressure
+- dlq
+costTier: medium
+latencyTier: medium
+---
+
 # Event-Driven Agents — Overview
 
 Event-driven agents consume events from a queue or stream rather than responding to HTTP requests. The agent's lifecycle is: subscribe → receive event → enrich with current state via tools → decide → act → emit outcome. Triggers are external (cancellations, status changes, scheduled events), not user-initiated.

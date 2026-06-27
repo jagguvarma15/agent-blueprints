@@ -1,3 +1,40 @@
+---
+id: skills
+name: Skills
+kind: primitive
+category: primitive
+complexity: Intermediate
+scale: standard
+description: File-based, agent-discovered procedural modules. Cheap to ship many;
+  loaded on demand at runtime.
+levels:
+- overview
+- design
+- implementation
+- evolution
+- observability
+- cost-and-latency
+evolvesFrom:
+- tool_use
+composableWith:
+- react
+- tool_use
+- plan_and_execute
+- multi_agent
+- routing
+requires:
+- skill-registry
+- trigger-matcher
+tags:
+- procedural
+- discovery
+- file-based
+- lazy-load
+- agent-extensible
+costTier: low
+latencyTier: low
+---
+
 # Skills
 
 > **Tier 1 — Overview.** Diagram, when-to-use, when-not-to-use, headline tradeoffs. Two-page read.

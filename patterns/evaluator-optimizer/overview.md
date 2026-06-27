@@ -1,3 +1,31 @@
+---
+id: evaluator-optimizer
+name: Evaluator-Optimizer
+kind: pattern
+category: workflow
+complexity: Intermediate
+scale: standard
+description: Generate-evaluate feedback loop that iteratively improves output.
+levels:
+- overview
+- design
+- implementation
+- observability
+- cost-and-latency
+evolvesInto:
+- reflection
+composableWith:
+- prompt-chaining
+- rag
+tags:
+- feedback-loop
+- quality
+- iterative
+- evaluation
+costTier: medium-high
+latencyTier: high
+---
+
 # Evaluator-Optimizer — Overview
 
 The evaluator-optimizer pattern creates a feedback loop between two roles: a generator that produces output and an evaluator that assesses it. The cycle repeats until the output meets quality criteria or a maximum iteration count is reached.

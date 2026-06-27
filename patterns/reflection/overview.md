@@ -1,3 +1,35 @@
+---
+id: reflection
+name: Reflection
+kind: pattern
+category: agent
+complexity: Intermediate
+scale: standard
+description: LLM critiques its own output and self-improves through structured feedback.
+levels:
+- overview
+- design
+- implementation
+- evolution
+- observability
+- cost-and-latency
+evolvesFrom:
+- evaluator-optimizer
+composableWith:
+- react
+- rag
+- plan_and_execute
+requires: []
+tags:
+- self-critique
+- quality
+- iterative
+- feedback
+- improvement
+costTier: medium-high
+latencyTier: high
+---
+
 # Reflection (Self-Critique) — Overview
 
 Reflection enables an agent to evaluate and improve its own output by generating self-critique, then revising based on that critique. Unlike the [Evaluator-Optimizer](../evaluator-optimizer/overview.md) workflow where evaluation is external, reflection is *self-directed* — the agent identifies its own weaknesses.

@@ -1,3 +1,40 @@
+---
+id: saga
+name: Saga
+kind: pattern
+category: agent
+complexity: Advanced
+scale: production
+description: Long-running, multi-step business processes that need compensation when
+  an intermediate step fails.
+levels:
+- overview
+- design
+- implementation
+- evolution
+- observability
+- cost-and-latency
+evolvesFrom:
+- tool_use
+- prompt-chaining
+composableWith:
+- event_driven
+- multi_agent
+requires:
+- storage
+- idempotency
+- compensation-handlers
+tags:
+- long-running
+- compensation
+- eventual-consistency
+- saga-log
+- orchestration
+- choreography
+costTier: medium
+latencyTier: high
+---
+
 # Saga — Overview
 
 A saga is a long-running, multi-step process where each step's side effect must succeed together with the others — or be undone together when one fails partway through. Each forward step is paired with a **compensating action** that reverses it. When the saga can't complete, the runtime walks the executed steps in reverse and invokes each compensator.

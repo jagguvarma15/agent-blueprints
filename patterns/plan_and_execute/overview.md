@@ -1,3 +1,34 @@
+---
+id: plan_and_execute
+name: Plan & Execute
+kind: pattern
+category: agent
+complexity: Intermediate
+scale: standard
+description: LLM creates a full plan upfront, then executes each step sequentially.
+levels:
+- overview
+- design
+- implementation
+- evolution
+- observability
+- cost-and-latency
+evolvesFrom:
+- orchestrator-worker
+composableWith:
+- react
+- multi_agent
+requires:
+- tools
+tags:
+- planning
+- sequential
+- structured
+- trackable
+costTier: medium
+latencyTier: medium-high
+---
+
 # Plan & Execute — Overview
 
 Plan & Execute separates work into two distinct phases: first, the LLM generates an explicit plan (a sequence of steps); then, it executes each step using tools, with the option to replan if a step fails or new information changes the strategy.

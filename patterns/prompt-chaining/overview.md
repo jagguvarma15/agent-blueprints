@@ -1,3 +1,33 @@
+---
+id: prompt-chaining
+name: Prompt Chaining
+kind: pattern
+category: workflow
+complexity: Beginner
+scale: prototype
+description: Sequential LLM calls with validation gates between steps.
+levels:
+- overview
+- design
+- implementation
+- observability
+- cost-and-latency
+evolvesInto:
+- react
+- tool_use
+- memory
+composableWith:
+- parallel-calls
+- evaluator-optimizer
+tags:
+- sequential
+- deterministic
+- predictable
+- low-latency
+costTier: low
+latencyTier: medium
+---
+
 # Prompt Chaining — Overview
 
 Prompt chaining is the simplest workflow pattern: a sequence of LLM calls where each call's output becomes the next call's input, with optional validation gates between steps.

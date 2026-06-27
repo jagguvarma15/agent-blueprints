@@ -1,3 +1,38 @@
+---
+id: multi_agent
+name: Multi-Agent
+kind: pattern
+category: agent
+complexity: Advanced
+scale: production
+description: Supervisor-worker delegation across multiple autonomous agents.
+levels:
+- overview
+- design
+- implementation
+- evolution
+- observability
+- cost-and-latency
+evolvesFrom:
+- orchestrator-worker
+- routing
+composableWith:
+- react
+- routing
+- memory
+requires:
+- tools
+- orchestration
+tags:
+- supervisor
+- delegation
+- parallel
+- specialization
+- enterprise
+costTier: high
+latencyTier: high
+---
+
 # Multi-Agent (Delegation / Supervision) — Overview
 
 The multi-agent pattern uses multiple specialized agents coordinated by a supervisor. Each agent has its own tools, prompts, and domain expertise. The supervisor decides which agent to delegate to, interprets results, and orchestrates the overall task.

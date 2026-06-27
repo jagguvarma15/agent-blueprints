@@ -37,6 +37,7 @@ patterns:
   - rag-poisoning-defense
   costTier: medium
   latencyTier: medium-high
+  scale: production
   extras:
     prompts: patterns/agentic_rag/prompts/
     schemas: patterns/agentic_rag/schemas/
@@ -64,6 +65,7 @@ patterns:
   - evaluation
   costTier: medium-high
   latencyTier: high
+  scale: standard
   extras:
     code: patterns/evaluator-optimizer/code/
 - id: event_driven
@@ -98,6 +100,7 @@ patterns:
   - dlq
   costTier: medium
   latencyTier: medium
+  scale: production
   extras:
     prompts: patterns/event_driven/prompts/
     schemas: patterns/event_driven/schemas/
@@ -140,6 +143,7 @@ patterns:
   - cross-session
   costTier: medium-high
   latencyTier: very-high
+  scale: production
   extras:
     prompts: patterns/long_horizon/prompts/
     schemas: patterns/long_horizon/schemas/
@@ -174,6 +178,7 @@ patterns:
   - enterprise
   costTier: high
   latencyTier: high
+  scale: production
   extras:
     prompts: patterns/multi_agent/prompts/
     schemas: patterns/multi_agent/schemas/
@@ -204,6 +209,7 @@ patterns:
   - specialization
   costTier: medium-high
   latencyTier: medium
+  scale: standard
   extras:
     code: patterns/orchestrator-worker/code/
 - id: parallel-calls
@@ -232,6 +238,7 @@ patterns:
   - aggregation
   costTier: medium
   latencyTier: low
+  scale: prototype
   extras:
     code: patterns/parallel-calls/code/
 - id: plan_and_execute
@@ -261,6 +268,7 @@ patterns:
   - trackable
   costTier: medium
   latencyTier: medium-high
+  scale: standard
   extras:
     prompts: patterns/plan_and_execute/prompts/
     schemas: patterns/plan_and_execute/schemas/
@@ -292,6 +300,7 @@ patterns:
   - low-latency
   costTier: low
   latencyTier: medium
+  scale: prototype
   extras:
     code: patterns/prompt-chaining/code/
 - id: rag
@@ -324,6 +333,7 @@ patterns:
   - semantic-search
   costTier: low-medium
   latencyTier: low-medium
+  scale: standard
   extras:
     prompts: patterns/rag/prompts/
     schemas: patterns/rag/schemas/
@@ -357,6 +367,7 @@ patterns:
   - open-ended
   costTier: medium
   latencyTier: variable
+  scale: standard
   extras:
     prompts: patterns/react/prompts/
     schemas: patterns/react/schemas/
@@ -389,6 +400,7 @@ patterns:
   - improvement
   costTier: medium-high
   latencyTier: high
+  scale: standard
   extras:
     prompts: patterns/reflection/prompts/
     schemas: patterns/reflection/schemas/
@@ -421,6 +433,7 @@ patterns:
   - multi-skill
   costTier: low
   latencyTier: low
+  scale: prototype
   extras:
     prompts: patterns/routing/prompts/
     schemas: patterns/routing/schemas/
@@ -457,6 +470,7 @@ patterns:
   - choreography
   costTier: medium
   latencyTier: high
+  scale: production
   extras:
     prompts: patterns/saga/prompts/
     schemas: patterns/saga/schemas/
@@ -492,6 +506,7 @@ primitives:
   - retrieval
   costTier: medium
   latencyTier: medium
+  scale: standard
   extras:
     prompts: primitives/memory/prompts/
     schemas: primitives/memory/schemas/
@@ -528,6 +543,7 @@ primitives:
   - agent-extensible
   costTier: low
   latencyTier: low
+  scale: standard
   extras:
     prompts: primitives/skills/prompts/
     schemas: primitives/skills/schemas/
@@ -566,6 +582,7 @@ primitives:
   - specialization
   costTier: low-medium
   latencyTier: low-medium
+  scale: standard
   extras:
     prompts: primitives/sub_agents/prompts/
     schemas: primitives/sub_agents/schemas/
@@ -597,6 +614,7 @@ primitives:
   - deterministic
   costTier: low-medium
   latencyTier: low
+  scale: prototype
   extras:
     prompts: primitives/tool_use/prompts/
     schemas: primitives/tool_use/schemas/
@@ -638,6 +656,7 @@ modifiers:
   latencyTier: medium
   appliesTo:
   - any
+  scale: production
   extras:
     prompts: modifiers/guardrails/prompts/
     schemas: modifiers/guardrails/schemas/
@@ -672,6 +691,7 @@ modifiers:
   - escalation
   costTier: low
   latencyTier: very-high
+  scale: standard
   extras:
     prompts: modifiers/human_in_the_loop/prompts/
     schemas: modifiers/human_in_the_loop/schemas/
@@ -701,6 +721,7 @@ workflows:
   - evaluation
   costTier: medium-high
   latencyTier: high
+  scale: standard
   extras:
     code: patterns/evaluator-optimizer/code/
 - id: orchestrator-worker
@@ -728,6 +749,7 @@ workflows:
   - specialization
   costTier: medium-high
   latencyTier: medium
+  scale: standard
   extras:
     code: patterns/orchestrator-worker/code/
 - id: parallel-calls
@@ -756,6 +778,7 @@ workflows:
   - aggregation
   costTier: medium
   latencyTier: low
+  scale: prototype
   extras:
     code: patterns/parallel-calls/code/
 - id: prompt-chaining
@@ -784,6 +807,7 @@ workflows:
   - low-latency
   costTier: low
   latencyTier: medium
+  scale: prototype
   extras:
     code: patterns/prompt-chaining/code/
 compositions:

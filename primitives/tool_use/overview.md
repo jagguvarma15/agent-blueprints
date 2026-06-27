@@ -1,3 +1,35 @@
+---
+id: tool_use
+name: Tool Use
+kind: primitive
+category: primitive
+complexity: Beginner
+scale: prototype
+description: Structured function calling with schema-validated tool dispatch.
+levels:
+- overview
+- design
+- implementation
+- evolution
+- observability
+- cost-and-latency
+evolvesFrom:
+- prompt-chaining
+composableWith:
+- react
+- rag
+- routing
+requires:
+- tools
+tags:
+- function-calling
+- structured
+- schema
+- deterministic
+costTier: low-medium
+latencyTier: low
+---
+
 # Tool Use (Function Calling) — Overview
 
 Tool use enables an LLM to interact with external systems by requesting structured function calls. The LLM produces a tool name and arguments; your code executes the function and returns the result. This is the foundational capability that makes agents possible.
