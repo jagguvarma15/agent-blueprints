@@ -12,8 +12,6 @@ levels:
 - flow
 - design
 - implementation
-- observability
-- cost-and-latency
 evolvesInto:
 - plan_and_execute
 - multi_agent

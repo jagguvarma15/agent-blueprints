@@ -13,9 +13,6 @@ levels:
 - flow
 - design
 - implementation
-- evolution
-- observability
-- cost-and-latency
 evolvesFrom:
 - rag
 - plan_and_execute

@@ -12,9 +12,6 @@ levels:
 - flow
 - design
 - implementation
-- evolution
-- observability
-- cost-and-latency
 evolvesFrom:
 - parallel-calls
 composableWith:

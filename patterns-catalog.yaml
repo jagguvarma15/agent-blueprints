@@ -13,9 +13,6 @@ patterns:
     flow: patterns/agentic_rag/flow.md
     design: patterns/agentic_rag/design.md
     implementation: patterns/agentic_rag/implementation.md
-    evolution: patterns/agentic_rag/evolution.md
-    observability: patterns/agentic_rag/observability.md
-    cost-and-latency: patterns/agentic_rag/cost-and-latency.md
   evolvesFrom:
   - rag
   - plan_and_execute
@@ -56,8 +53,6 @@ patterns:
     flow: patterns/evaluator-optimizer/flow.md
     design: patterns/evaluator-optimizer/design.md
     implementation: patterns/evaluator-optimizer/implementation.md
-    observability: patterns/evaluator-optimizer/observability.md
-    cost-and-latency: patterns/evaluator-optimizer/cost-and-latency.md
   evolvesInto:
   - reflection
   composableWith:
@@ -86,9 +81,6 @@ patterns:
     flow: patterns/event_driven/flow.md
     design: patterns/event_driven/design.md
     implementation: patterns/event_driven/implementation.md
-    evolution: patterns/event_driven/evolution.md
-    observability: patterns/event_driven/observability.md
-    cost-and-latency: patterns/event_driven/cost-and-latency.md
   evolvesFrom:
   - tool_use
   composableWith:
@@ -127,9 +119,6 @@ patterns:
     flow: patterns/long_horizon/flow.md
     design: patterns/long_horizon/design.md
     implementation: patterns/long_horizon/implementation.md
-    evolution: patterns/long_horizon/evolution.md
-    observability: patterns/long_horizon/observability.md
-    cost-and-latency: patterns/long_horizon/cost-and-latency.md
   evolvesFrom:
   - saga
   - event_driven
@@ -171,9 +160,6 @@ patterns:
     flow: patterns/multi_agent/flow.md
     design: patterns/multi_agent/design.md
     implementation: patterns/multi_agent/implementation.md
-    evolution: patterns/multi_agent/evolution.md
-    observability: patterns/multi_agent/observability.md
-    cost-and-latency: patterns/multi_agent/cost-and-latency.md
   evolvesFrom:
   - orchestrator-worker
   - routing
@@ -211,8 +197,6 @@ patterns:
     flow: patterns/orchestrator-worker/flow.md
     design: patterns/orchestrator-worker/design.md
     implementation: patterns/orchestrator-worker/implementation.md
-    observability: patterns/orchestrator-worker/observability.md
-    cost-and-latency: patterns/orchestrator-worker/cost-and-latency.md
   evolvesInto:
   - plan_and_execute
   - multi_agent
@@ -242,8 +226,6 @@ patterns:
     flow: patterns/parallel-calls/flow.md
     design: patterns/parallel-calls/design.md
     implementation: patterns/parallel-calls/implementation.md
-    observability: patterns/parallel-calls/observability.md
-    cost-and-latency: patterns/parallel-calls/cost-and-latency.md
   evolvesInto:
   - rag
   - routing
@@ -274,9 +256,6 @@ patterns:
     flow: patterns/plan_and_execute/flow.md
     design: patterns/plan_and_execute/design.md
     implementation: patterns/plan_and_execute/implementation.md
-    evolution: patterns/plan_and_execute/evolution.md
-    observability: patterns/plan_and_execute/observability.md
-    cost-and-latency: patterns/plan_and_execute/cost-and-latency.md
   evolvesFrom:
   - orchestrator-worker
   composableWith:
@@ -310,8 +289,6 @@ patterns:
     flow: patterns/prompt-chaining/flow.md
     design: patterns/prompt-chaining/design.md
     implementation: patterns/prompt-chaining/implementation.md
-    observability: patterns/prompt-chaining/observability.md
-    cost-and-latency: patterns/prompt-chaining/cost-and-latency.md
   evolvesInto:
   - react
   - tool_use
@@ -342,9 +319,6 @@ patterns:
     flow: patterns/rag/flow.md
     design: patterns/rag/design.md
     implementation: patterns/rag/implementation.md
-    evolution: patterns/rag/evolution.md
-    observability: patterns/rag/observability.md
-    cost-and-latency: patterns/rag/cost-and-latency.md
   evolvesFrom:
   - parallel-calls
   composableWith:
@@ -380,9 +354,6 @@ patterns:
     flow: patterns/react/flow.md
     design: patterns/react/design.md
     implementation: patterns/react/implementation.md
-    evolution: patterns/react/evolution.md
-    observability: patterns/react/observability.md
-    cost-and-latency: patterns/react/cost-and-latency.md
   evolvesFrom:
   - prompt-chaining
   composableWith:
@@ -417,9 +388,6 @@ patterns:
     flow: patterns/reflection/flow.md
     design: patterns/reflection/design.md
     implementation: patterns/reflection/implementation.md
-    evolution: patterns/reflection/evolution.md
-    observability: patterns/reflection/observability.md
-    cost-and-latency: patterns/reflection/cost-and-latency.md
   evolvesFrom:
   - evaluator-optimizer
   composableWith:
@@ -453,9 +421,6 @@ patterns:
     flow: patterns/routing/flow.md
     design: patterns/routing/design.md
     implementation: patterns/routing/implementation.md
-    evolution: patterns/routing/evolution.md
-    observability: patterns/routing/observability.md
-    cost-and-latency: patterns/routing/cost-and-latency.md
   evolvesFrom:
   - parallel-calls
   composableWith:
@@ -489,9 +454,6 @@ patterns:
     flow: patterns/saga/flow.md
     design: patterns/saga/design.md
     implementation: patterns/saga/implementation.md
-    evolution: patterns/saga/evolution.md
-    observability: patterns/saga/observability.md
-    cost-and-latency: patterns/saga/cost-and-latency.md
   evolvesFrom:
   - tool_use
   - prompt-chaining
@@ -531,9 +493,6 @@ primitives:
     flow: primitives/memory/flow.md
     design: primitives/memory/design.md
     implementation: primitives/memory/implementation.md
-    evolution: primitives/memory/evolution.md
-    observability: primitives/memory/observability.md
-    cost-and-latency: primitives/memory/cost-and-latency.md
   evolvesFrom:
   - prompt-chaining
   composableWith:
@@ -568,9 +527,6 @@ primitives:
     flow: primitives/skills/flow.md
     design: primitives/skills/design.md
     implementation: primitives/skills/implementation.md
-    evolution: primitives/skills/evolution.md
-    observability: primitives/skills/observability.md
-    cost-and-latency: primitives/skills/cost-and-latency.md
   evolvesFrom:
   - tool_use
   composableWith:
@@ -608,9 +564,6 @@ primitives:
     flow: primitives/sub_agents/flow.md
     design: primitives/sub_agents/design.md
     implementation: primitives/sub_agents/implementation.md
-    evolution: primitives/sub_agents/evolution.md
-    observability: primitives/sub_agents/observability.md
-    cost-and-latency: primitives/sub_agents/cost-and-latency.md
   evolvesFrom:
   - tool_use
   composableWith:
@@ -649,9 +602,6 @@ primitives:
     flow: primitives/tool_use/flow.md
     design: primitives/tool_use/design.md
     implementation: primitives/tool_use/implementation.md
-    evolution: primitives/tool_use/evolution.md
-    observability: primitives/tool_use/observability.md
-    cost-and-latency: primitives/tool_use/cost-and-latency.md
   evolvesFrom:
   - prompt-chaining
   composableWith:
@@ -686,9 +636,6 @@ modifiers:
     flow: modifiers/guardrails/flow.md
     design: modifiers/guardrails/design.md
     implementation: modifiers/guardrails/implementation.md
-    evolution: modifiers/guardrails/evolution.md
-    observability: modifiers/guardrails/observability.md
-    cost-and-latency: modifiers/guardrails/cost-and-latency.md
   evolvesFrom:
   - tool_use
   composableWith:
@@ -729,9 +676,6 @@ modifiers:
     flow: modifiers/human_in_the_loop/flow.md
     design: modifiers/human_in_the_loop/design.md
     implementation: modifiers/human_in_the_loop/implementation.md
-    evolution: modifiers/human_in_the_loop/evolution.md
-    observability: modifiers/human_in_the_loop/observability.md
-    cost-and-latency: modifiers/human_in_the_loop/cost-and-latency.md
   evolvesFrom:
   - tool_use
   composableWith:
@@ -769,8 +713,6 @@ workflows:
     flow: patterns/evaluator-optimizer/flow.md
     design: patterns/evaluator-optimizer/design.md
     implementation: patterns/evaluator-optimizer/implementation.md
-    observability: patterns/evaluator-optimizer/observability.md
-    cost-and-latency: patterns/evaluator-optimizer/cost-and-latency.md
   evolvesInto:
   - reflection
   composableWith:
@@ -799,8 +741,6 @@ workflows:
     flow: patterns/orchestrator-worker/flow.md
     design: patterns/orchestrator-worker/design.md
     implementation: patterns/orchestrator-worker/implementation.md
-    observability: patterns/orchestrator-worker/observability.md
-    cost-and-latency: patterns/orchestrator-worker/cost-and-latency.md
   evolvesInto:
   - plan_and_execute
   - multi_agent
@@ -830,8 +770,6 @@ workflows:
     flow: patterns/parallel-calls/flow.md
     design: patterns/parallel-calls/design.md
     implementation: patterns/parallel-calls/implementation.md
-    observability: patterns/parallel-calls/observability.md
-    cost-and-latency: patterns/parallel-calls/cost-and-latency.md
   evolvesInto:
   - rag
   - routing
@@ -862,8 +800,6 @@ workflows:
     flow: patterns/prompt-chaining/flow.md
     design: patterns/prompt-chaining/design.md
     implementation: patterns/prompt-chaining/implementation.md
-    observability: patterns/prompt-chaining/observability.md
-    cost-and-latency: patterns/prompt-chaining/cost-and-latency.md
   evolvesInto:
   - react
   - tool_use

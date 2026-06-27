@@ -6,8 +6,7 @@ import TableOfContents from '../../components/TableOfContents';
 import RelatedPatterns from '../../components/RelatedPatterns.astro';
 import AntiCompositionWarning from '../../components/AntiCompositionWarning.astro';
 import { AGENT_PATTERNS, getWorkflowById } from '../../data/patterns';
-import { readMarkdown, extractHeadings } from '../../utils/content';
-import { renderMarkdown } from '../../utils/markdown';
+import { buildLevelDocs } from '../../utils/levels';
 
 export async function getStaticPaths() {
   return AGENT_PATTERNS.map((p) => ({
@@ -22,41 +21,7 @@ const base = import.meta.env.BASE_URL || '/agent-blueprints';
 // Read all tier files. The on-disk directory name uses pattern.id (raw,
 // underscores allowed), while pattern.slug is the dashed URL form. Mixing
 // them silently breaks file reads for underscored IDs.
-const overviewMd = readMarkdown(`patterns/${pattern.id}/overview.md`);
-const designMd = readMarkdown(`patterns/${pattern.id}/design.md`);
-const implMd = readMarkdown(`patterns/${pattern.id}/implementation.md`);
-const evolutionMd = readMarkdown(`patterns/${pattern.id}/evolution.md`);
-const observabilityMd = readMarkdown(`patterns/${pattern.id}/observability.md`);
-const costLatencyMd = readMarkdown(`patterns/${pattern.id}/cost-and-latency.md`);
-
-const overviewHtml = overviewMd ? renderMarkdown(overviewMd) : null;
-const designHtml = designMd ? renderMarkdown(designMd) : null;
-const implHtml = implMd ? renderMarkdown(implMd) : null;
-const evolutionHtml = evolutionMd ? renderMarkdown(evolutionMd) : null;
-const observabilityHtml = observabilityMd ? renderMarkdown(observabilityMd) : null;
-const costLatencyHtml = costLatencyMd ? renderMarkdown(costLatencyMd) : null;
-
-const allHeadings = {
-  overview: overviewMd ? extractHeadings(overviewMd) : [],
-  design: designMd ? extractHeadings(designMd) : [],
-  implementation: implMd ? extractHeadings(implMd) : [],
-  evolution: evolutionMd ? extractHeadings(evolutionMd) : [],
-  observability: observabilityMd ? extractHeadings(observabilityMd) : [],
-  'cost-latency': costLatencyMd ? extractHeadings(costLatencyMd) : [],
-};
-
-// Only show tabs for tiers that have content. Patterns shipped without
-// optional tiers (e.g. event-driven, which defers evolution / observability /
-// cost-and-latency to follow-up PRs) should not surface empty placeholders.
-const ALL_TABS = [
-  { id: 'overview' as const, label: 'Overview', html: overviewHtml },
-  { id: 'design' as const, label: 'Design', html: designHtml },
-  { id: 'implementation' as const, label: 'Implementation', html: implHtml },
-  { id: 'evolution' as const, label: 'Evolution', html: evolutionHtml },
-  { id: 'observability' as const, label: 'Observability', html: observabilityHtml },
-  { id: 'cost-latency' as const, label: 'Cost & Latency', html: costLatencyHtml },
-];
-const tabs = ALL_TABS.filter((t) => t.html).map(({ id, label }) => ({ id, label }));
+const { tabs, content, headings } = buildLevelDocs(`patterns/${pattern.id}`);
 
 // Resolve parent workflows
 const parentWorkflows = (pattern.evolvesFrom ?? [])
@@ -109,14 +74,7 @@ const parentWorkflows = (pattern.evolvesFrom ?? [])
         client:load
         tabs={tabs}
         defaultTier="overview"
-        content={{
-          overview: overviewHtml ?? undefined,
-          design: designHtml ?? undefined,
-          implementation: implHtml ?? undefined,
-          evolution: evolutionHtml ?? undefined,
-          observability: observabilityHtml ?? undefined,
-          'cost-latency': costLatencyHtml ?? undefined,
-        }}
+        content={content}
       />
 
       <!-- Anti-composition warnings -->
@@ -128,7 +86,7 @@ const parentWorkflows = (pattern.evolvesFrom ?? [])
 
     <!-- Right TOC -->
     <div class="w-toc flex-shrink-0 hidden xl:block">
-      <TableOfContents client:load allHeadings={allHeadings} defaultTier="overview" />
+      <TableOfContents client:load allHeadings={headings} defaultTier="overview" />
     </div>
   </div>
 </DocsLayout>

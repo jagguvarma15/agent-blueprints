@@ -12,8 +12,6 @@ levels:
 - flow
 - design
 - implementation
-- observability
-- cost-and-latency
 evolvesInto:
 - react
 - tool_use

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 
-type Tier = 'overview' | 'design' | 'implementation' | 'evolution' | 'observability' | 'cost-latency';
+type Tier = 'overview' | 'architecture' | 'flow' | 'design' | 'implementation';
 
 interface Tab {
   id: Tier;

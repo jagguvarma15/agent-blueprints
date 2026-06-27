@@ -4,8 +4,7 @@ import ComplexityBadge from '../../components/ComplexityBadge.astro';
 import TierTabs from '../../components/TierTabs';
 import TableOfContents from '../../components/TableOfContents';
 import { PRIMITIVES, getPatternById } from '../../data/patterns';
-import { readMarkdown, extractHeadings } from '../../utils/content';
-import { renderMarkdown } from '../../utils/markdown';
+import { buildLevelDocs } from '../../utils/levels';
 import AntiCompositionWarning from '../../components/AntiCompositionWarning.astro';
 
 export async function getStaticPaths() {
@@ -19,38 +18,7 @@ const { pattern } = Astro.props;
 const base = import.meta.env.BASE_URL || '/agent-blueprints';
 
 // pattern.id is the on-disk directory name; pattern.slug is the dashed URL.
-const overviewMd = readMarkdown(`primitives/${pattern.id}/overview.md`);
-const designMd = readMarkdown(`primitives/${pattern.id}/design.md`);
-const implMd = readMarkdown(`primitives/${pattern.id}/implementation.md`);
-const evolutionMd = readMarkdown(`primitives/${pattern.id}/evolution.md`);
-const observabilityMd = readMarkdown(`primitives/${pattern.id}/observability.md`);
-const costLatencyMd = readMarkdown(`primitives/${pattern.id}/cost-and-latency.md`);
-
-const overviewHtml = overviewMd ? renderMarkdown(overviewMd) : null;
-const designHtml = designMd ? renderMarkdown(designMd) : null;
-const implHtml = implMd ? renderMarkdown(implMd) : null;
-const evolutionHtml = evolutionMd ? renderMarkdown(evolutionMd) : null;
-const observabilityHtml = observabilityMd ? renderMarkdown(observabilityMd) : null;
-const costLatencyHtml = costLatencyMd ? renderMarkdown(costLatencyMd) : null;
-
-const allHeadings = {
-  overview: overviewMd ? extractHeadings(overviewMd) : [],
-  design: designMd ? extractHeadings(designMd) : [],
-  implementation: implMd ? extractHeadings(implMd) : [],
-  evolution: evolutionMd ? extractHeadings(evolutionMd) : [],
-  observability: observabilityMd ? extractHeadings(observabilityMd) : [],
-  'cost-latency': costLatencyMd ? extractHeadings(costLatencyMd) : [],
-};
-
-const ALL_TABS = [
-  { id: 'overview' as const, label: 'Overview', html: overviewHtml },
-  { id: 'design' as const, label: 'Design', html: designHtml },
-  { id: 'implementation' as const, label: 'Implementation', html: implHtml },
-  { id: 'evolution' as const, label: 'Evolution', html: evolutionHtml },
-  { id: 'observability' as const, label: 'Observability', html: observabilityHtml },
-  { id: 'cost-latency' as const, label: 'Cost & Latency', html: costLatencyHtml },
-];
-const tabs = ALL_TABS.filter((t) => t.html).map(({ id, label }) => ({ id, label }));
+const { tabs, content, headings } = buildLevelDocs(`primitives/${pattern.id}`);
 
 const parents = (pattern.evolvesFrom ?? [])
   .map((id) => getPatternById(id))
@@ -98,21 +66,14 @@ const parents = (pattern.evolvesFrom ?? [])
         client:load
         tabs={tabs}
         defaultTier="overview"
-        content={{
-          overview: overviewHtml ?? undefined,
-          design: designHtml ?? undefined,
-          implementation: implHtml ?? undefined,
-          evolution: evolutionHtml ?? undefined,
-          observability: observabilityHtml ?? undefined,
-          'cost-latency': costLatencyHtml ?? undefined,
-        }}
+        content={content}
       />
 
       <AntiCompositionWarning entryId={pattern.id} />
     </div>
 
     <div class="w-toc flex-shrink-0 hidden xl:block">
-      <TableOfContents client:load allHeadings={allHeadings} defaultTier="overview" />
+      <TableOfContents client:load allHeadings={headings} defaultTier="overview" />
     </div>
   </div>
 </DocsLayout>

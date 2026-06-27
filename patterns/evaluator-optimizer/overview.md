@@ -12,8 +12,6 @@ levels:
 - flow
 - design
 - implementation
-- observability
-- cost-and-latency
 evolvesInto:
 - reflection
 composableWith:
