@@ -346,6 +346,8 @@ patterns:
   dir: patterns/react
   tier_files:
     overview: patterns/react/overview.md
+    architecture: patterns/react/architecture.md
+    flow: patterns/react/flow.md
     design: patterns/react/design.md
     implementation: patterns/react/implementation.md
     evolution: patterns/react/evolution.md
@@ -368,6 +370,7 @@ patterns:
   costTier: medium
   latencyTier: variable
   scale: standard
+  ir_fragment_ref: patterns/react/implementation.md
   extras:
     prompts: patterns/react/prompts/
     schemas: patterns/react/schemas/
