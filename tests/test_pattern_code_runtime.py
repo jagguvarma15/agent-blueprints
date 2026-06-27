@@ -77,9 +77,26 @@ def _eval_predicate(expr: str, entry_meta: dict[str, Any]) -> bool:
 
 
 def _load_entry_metadata(cohort_dir: str, entry_name: str) -> dict[str, Any] | None:
-    import json
+    """Entry metadata from overview.md frontmatter, falling back to metadata.json.
 
-    path = REPO_ROOT / cohort_dir / entry_name / "metadata.json"
+    Mirrors ``test_schemas_importable._load_entry_metadata`` — kept in lockstep.
+    """
+    import json
+    import re
+
+    entry = REPO_ROOT / cohort_dir / entry_name
+    overview = entry / "overview.md"
+    if overview.is_file():
+        match = re.match(
+            r"^---\r?\n(.*?)\r?\n---\s*(?:\r?\n|$)",
+            overview.read_text(encoding="utf-8"),
+            re.DOTALL,
+        )
+        if match:
+            fm = yaml.safe_load(match.group(1))
+            if isinstance(fm, dict):
+                return fm
+    path = entry / "metadata.json"
     if not path.is_file():
         return None
     try:
