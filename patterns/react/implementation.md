@@ -1,5 +1,28 @@
 # ReAct — Implementation
 
+```yaml level=implementation
+generator:
+  target_interface: core/interfaces/python/kernel.py:Step
+  produces:
+    - { file: agent/react_loop.py, from: patterns/react/code/_reference.py }
+  dependencies: [tool_use]
+ir_fragment:
+  state:
+    base: RunState
+    schema_ref: patterns/react/schemas/state.py:ReActState
+  steps:
+    - { id: react.loop, kind: llm, code_ref: patterns/react/code/_reference.py, inputs: [goal, messages, steps], outputs: [steps, messages, final_answer] }
+  control_policy:
+    type: planner
+    entry_step: react.loop
+    termination: { max_steps: 8, condition: "state.terminated_reason is not None", fallback: react.loop }
+  ports:
+    - { name: model, protocol: model, required: true }
+    - { name: tools, protocol: tools, required: true }
+examples:
+  - { name: compound-interest-qa, ref: overview.md }
+```
+
 ## Core Interfaces
 
 ```
