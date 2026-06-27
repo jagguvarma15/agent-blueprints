@@ -18,7 +18,8 @@ them is a documented production trap. The runtime port carries an explicit tier:
 A step that has external side effects must declare idempotency/side-effect
 metadata so a `durable` adapter can guarantee exactly-once. The in-process adapter
 must never advertise a guarantee it cannot keep. Choosing the tier is a
-[scale](#the-scale-ladder) decision.
+[scale](#the-scale-ladder) decision. See
+[`foundations/durability-and-state.md`](../foundations/durability-and-state.md).
 
 ## Determinism and replay
 
@@ -54,7 +55,8 @@ Concerns that wrap the graph rather than living in a step. The kernel owns their
 binding (the seam is the IR's `cross_cutting` refs + ports).
 
 - **Observability** — a span per step over the trace bus; the OpenTelemetry GenAI
-  semantic conventions are the target backend shape, realized in `agent-deployments`.
+  semantic conventions are the target backend shape. See
+  [`foundations/observability-and-tracing.md`](../foundations/observability-and-tracing.md).
 - **Guardrails** — layered input / tool / output policy checks that wrap the
   dispatcher. See [`modifiers/guardrails/overview.md`](../modifiers/guardrails/overview.md).
 - **Budgets** — token / cost / wall-clock / step caps enforced by the engine
