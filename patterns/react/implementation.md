@@ -11,7 +11,7 @@ ir_fragment:
     base: RunState
     schema_ref: patterns/react/schemas/state.py:ReActState
   steps:
-    - { id: react.loop, kind: llm, code_ref: patterns/react/code/_reference.py, inputs: [goal, messages, steps], outputs: [steps, messages, final_answer] }
+    - { id: react.loop, kind: llm, code_ref: patterns/react/code/_reference.py, inputs: [question, steps], outputs: [steps, final_answer, terminated_reason] }
   control_policy:
     type: planner
     entry_step: react.loop

@@ -53,6 +53,7 @@ if (!Array.isArray(TAXONOMY.cohorts) || TAXONOMY.cohorts.length === 0) {
 
 const REQUIRED_FIELDS = ['id', 'name', 'category', 'complexity', 'description', 'tiers'];
 const VALID_COMPLEXITIES = ['Beginner', 'Intermediate', 'Advanced'];
+const SCALE_VALUES = ['prototype', 'standard', 'production', 'enterprise'];
 // The five depth levels (concepts=overview, architecture, flow, design,
 // implementation), followed by the three legacy tiers kept for back-compat
 // while entries migrate. Disk-presence decides which appear in `tier_files`.
@@ -189,6 +190,11 @@ for (const dir of ALL_DIRS) {
 
   if (meta.complexity && !VALID_COMPLEXITIES.includes(meta.complexity)) {
     console.error(`INVALID complexity "${meta.complexity}": ${dir}/metadata.json`);
+    errors++;
+  }
+
+  if (meta.scale && !SCALE_VALUES.includes(meta.scale)) {
+    console.error(`INVALID scale "${meta.scale}": ${dir} (expected one of ${SCALE_VALUES.join(', ')})`);
     errors++;
   }
 

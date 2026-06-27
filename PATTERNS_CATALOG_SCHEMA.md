@@ -114,7 +114,7 @@ All three cohorts share the same entry shape — only the `category` value and a
 | `complexity` | enum | yes | `"Beginner"`, `"Intermediate"`, or `"Advanced"`. |
 | `description` | string | yes | One-sentence summary. |
 | `dir` | string | yes | Repo-root-relative path to the entry directory. |
-| `tier_files` | map | yes | Map of tier name → relative path. Only includes tiers whose `.md` file exists on disk. |
+| `tier_files` | map | yes | Map of **level** name → relative path for the five levels (overview/architecture/flow/design/implementation). Only includes levels whose `.md` exists on disk. The legacy evolution/observability/cost-and-latency facets fold into Design and are no longer listed. |
 | `evolvesFrom` | string[] | no | IDs this evolved from. Cross-cohort references allowed. |
 | `evolvesInto` | string[] | no | IDs that evolved FROM this entry. Cross-cohort allowed. |
 | `composableWith` | string[] | no | IDs that compose naturally with this one. Cross-cohort allowed. |
@@ -123,7 +123,17 @@ All three cohorts share the same entry shape — only the `category` value and a
 | `tags` | string[] | no | Searchable keywords. |
 | `costTier` | string | no | `"low"`, `"low-medium"`, `"medium"`, `"high"`, `"variable"`. |
 | `latencyTier` | string | no | Same vocabulary as `costTier`. |
+| `scale` | string | no | Minimum scale at which the entry matters: `"prototype"`, `"standard"`, `"production"`, `"enterprise"`. |
+| `ir_fragment_ref` | string | no | Path to the entry's Implementation-level doc, which carries its IR fragment — the slice the entry contributes to a composed agent's IR (see `core/spec/ir.schema.json`). |
 | `extras` | map | no | Best-effort detection of optional subdirs (`prompts/`, `schemas/`, `code/`, `examples/`). Only present when at least one is detected. |
+
+> **Levels model (additive).** Every entry is documented at five levels — Concepts
+> (`overview.md`) → Architecture → Flow → Design → Implementation — each pairing a
+> machine-readable ` ```yaml level=… ` block with prose. `scale` and
+> `ir_fragment_ref` are additive optional keys (no `schema_version` bump). The
+> three legacy facets fold into Design. Authoring source moved from `metadata.json`
+> to `overview.md` frontmatter; the generator reads frontmatter and falls back to a
+> `metadata.json` if present, so older entries parse unchanged.
 
 ### Composition edge
 

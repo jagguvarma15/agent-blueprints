@@ -18,7 +18,7 @@ export async function getStaticPaths() {
 const { pattern } = Astro.props;
 const base = import.meta.env.BASE_URL || '/agent-blueprints';
 
-// Read all tier files. Workflow entries live under `patterns/` since the
+// Build the level docs. Workflow entries live under `patterns/` since the
 // three-tier taxonomy refactor; the legacy `workflows/` directory only holds
 // a redirect stub now. The /workflows/ URLs stay live for backward compat.
 // pattern.id is the on-disk directory name; pattern.slug is the dashed URL.
