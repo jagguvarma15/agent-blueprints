@@ -15,11 +15,24 @@ export const REPO_ROOT = (() => {
  * Read a markdown file relative to the repo root.
  * Returns null if the file doesn't exist.
  */
+/** Strip a leading YAML frontmatter block ("---\n...\n---"). */
+export function stripFrontmatter(md: string): string {
+  return md.replace(/^---\r?\n[\s\S]*?\r?\n---\s*(?:\r?\n|$)/, '');
+}
+
+/**
+ * Strip fenced ```yaml level=...``` machine blocks. These are the generator's
+ * structured source; human readers see the surrounding prose, not raw YAML.
+ */
+export function stripMachineBlocks(md: string): string {
+  return md.replace(/```ya?ml\s+level=[^\n]*\n[\s\S]*?\n```[ \t]*(?:\r?\n|$)/g, '');
+}
+
 export function readMarkdown(relPath: string): string | null {
   const fullPath = path.join(REPO_ROOT, relPath);
   if (!existsSync(fullPath)) return null;
   try {
-    return readFileSync(fullPath, 'utf-8');
+    return stripMachineBlocks(stripFrontmatter(readFileSync(fullPath, 'utf-8')));
   } catch {
     return null;
   }

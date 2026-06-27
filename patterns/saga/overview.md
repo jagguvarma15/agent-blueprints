@@ -1,4 +1,51 @@
+---
+id: saga
+name: Saga
+kind: pattern
+category: agent
+complexity: Advanced
+scale: production
+description: Long-running, multi-step business processes that need compensation when
+  an intermediate step fails.
+levels:
+- overview
+- architecture
+- flow
+- design
+- implementation
+evolvesFrom:
+- tool_use
+- prompt-chaining
+composableWith:
+- event_driven
+- multi_agent
+requires:
+- storage
+- idempotency
+- compensation-handlers
+tags:
+- long-running
+- compensation
+- eventual-consistency
+- saga-log
+- orchestration
+- choreography
+costTier: medium
+latencyTier: high
+ir_fragment_ref: patterns/saga/implementation.md
+---
+
 # Saga — Overview
+
+```yaml level=concepts
+intent: "A multi-step transaction where each step has a compensating action to roll back on failure."
+when_to_use:
+  - "Distributed transactions across services that need partial-failure rollback."
+  - "Each step has a meaningful inverse (refund, cancel, release)."
+when_to_avoid:
+  - "A single atomic operation — no saga needed."
+  - "Steps have no compensating action."
+```
 
 A saga is a long-running, multi-step process where each step's side effect must succeed together with the others — or be undone together when one fails partway through. Each forward step is paired with a **compensating action** that reverses it. When the saga can't complete, the runtime walks the executed steps in reverse and invokes each compensator.
 

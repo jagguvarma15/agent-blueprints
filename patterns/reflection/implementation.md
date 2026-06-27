@@ -1,5 +1,16 @@
 # Reflection — Implementation
 
+```yaml level=implementation
+ir_fragment:
+  state: { base: RunState, schema_ref: patterns/reflection/schemas/state.py }
+  steps:
+    - { id: reflection.generate, kind: llm, outputs: [messages] }
+    - { id: reflection.critique, kind: eval, inputs: [messages], outputs: [messages] }
+  control_policy: { type: planner, termination: { max_steps: 6, condition: "state.terminated_reason is not None" } }
+  ports:
+    - { name: model, protocol: model, required: true }
+```
+
 ## Core Interfaces
 
 ```

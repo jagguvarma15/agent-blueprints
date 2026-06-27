@@ -53,8 +53,13 @@ if (!Array.isArray(TAXONOMY.cohorts) || TAXONOMY.cohorts.length === 0) {
 
 const REQUIRED_FIELDS = ['id', 'name', 'category', 'complexity', 'description', 'tiers'];
 const VALID_COMPLEXITIES = ['Beginner', 'Intermediate', 'Advanced'];
+// The five depth levels (concepts=overview, architecture, flow, design,
+// implementation), followed by the three legacy tiers kept for back-compat
+// while entries migrate. Disk-presence decides which appear in `tier_files`.
 const TIER_FILE_NAMES = [
   'overview',
+  'architecture',
+  'flow',
   'design',
   'implementation',
   'evolution',
@@ -81,9 +86,36 @@ function discoverEntries(cohort) {
   if (!existsSync(abs)) return [];
   return readdirSync(abs, { withFileTypes: true })
     .filter((e) => e.isDirectory() && !e.name.startsWith('.'))
-    .filter((e) => existsSync(join(abs, e.name, 'metadata.json')))
+    .filter(
+      (e) =>
+        existsSync(join(abs, e.name, 'metadata.json')) ||
+        existsSync(join(abs, e.name, 'overview.md')),
+    )
     .map((e) => `${dir}/${e.name}`)
     .sort();
+}
+
+// Load an entry's metadata from overview.md frontmatter when present, else from
+// metadata.json. During the migration to single-source structured markdown an
+// entry carries one or the other; a migrated entry has frontmatter and no
+// metadata.json, so neither source ever drifts against the other.
+function loadEntryMeta(dir) {
+  const overviewPath = join(ROOT, dir, 'overview.md');
+  if (existsSync(overviewPath)) {
+    const fm = parseFrontmatter(readFileSync(overviewPath, 'utf-8'));
+    if (fm) return fm;
+  }
+  const metaPath = join(ROOT, dir, 'metadata.json');
+  if (existsSync(metaPath)) return JSON.parse(readFileSync(metaPath, 'utf-8'));
+  return null;
+}
+
+// Extract and parse a leading YAML frontmatter block (between --- delimiters).
+function parseFrontmatter(text) {
+  const m = text.match(/^---\r?\n([\s\S]*?)\r?\n---\s*(?:\r?\n|$)/);
+  if (!m) return null;
+  const parsed = yaml.load(m[1]);
+  return parsed && typeof parsed === 'object' ? parsed : null;
 }
 
 // `cohorts` is the in-memory join of taxonomy.cohorts[] + discovered entry
@@ -117,15 +149,21 @@ let errors = 0;
 const PARSED = new Map();
 
 for (const dir of ALL_DIRS) {
-  const metaPath = join(ROOT, dir, 'metadata.json');
   let meta;
   try {
-    meta = JSON.parse(readFileSync(metaPath, 'utf-8'));
+    meta = loadEntryMeta(dir);
   } catch (e) {
-    console.error(`INVALID JSON: ${dir}/metadata.json — ${e.message}`);
+    console.error(`INVALID metadata: ${dir} — ${e.message}`);
     errors++;
     continue;
   }
+  if (!meta) {
+    console.error(`MISSING metadata: ${dir} has neither overview.md frontmatter nor metadata.json`);
+    errors++;
+    continue;
+  }
+  // A migrated entry may name its level list `levels`; treat it as `tiers`.
+  if (!meta.tiers && meta.levels) meta.tiers = meta.levels;
   PARSED.set(dir, meta);
 
   // Required-field check.
@@ -270,6 +308,8 @@ function emitCatalog(outPath) {
     if (meta.costTier) entry.costTier = meta.costTier;
     if (meta.latencyTier) entry.latencyTier = meta.latencyTier;
     if (meta.appliesTo) entry.appliesTo = meta.appliesTo;
+    if (meta.scale) entry.scale = meta.scale;
+    if (meta.ir_fragment_ref) entry.ir_fragment_ref = meta.ir_fragment_ref;
 
     const extras = detectExtras(dir);
     if (Object.keys(extras).length > 0) entry.extras = extras;

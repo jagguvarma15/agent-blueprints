@@ -4,6 +4,26 @@
 >
 > Typed prompts: [`prompts/`](prompts/) — one file per LLM role with JSON-Schema I/O. See [`meta/style-guide.md`](../../meta/style-guide.md#typed-prompts) for the frontmatter contract.
 
+```yaml level=design
+parameters:
+  - { name: max_steps, type: int, default: 8, range: [1, 50], required: true }
+  - { name: temperature, type: float, default: 0.0, required: false }
+  - { name: repeat_detection, type: bool, default: true, required: false }
+quality_attributes:
+  reliability: medium    # bounded by max_steps + repeat detection
+  cost: variable         # ~1 model call per iteration
+  latency: variable
+  observability: high    # per-iteration thought / action / observation trace
+failure_modes:
+  - { mode: infinite-loop, mitigation: "iteration cap + repeat detection" }
+  - { mode: context-overflow, mitigation: "truncate / summarize / sliding window" }
+  - { mode: hallucinated-tool, mitigation: "schema-bound registry rejects unknown tool names" }
+trade_offs:
+  - { gain: handles-open-ended-tasks, cost: [unpredictable-steps, unpredictable-cost] }
+decisions:
+  - { id: ADR-max-steps, status: accepted, decision: "max_steps is mandatory, not optional", consequence: "no run spins forever; a guard-stop returns best-so-far" }
+```
+
 ## Component Breakdown
 
 ```mermaid

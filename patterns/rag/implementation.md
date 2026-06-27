@@ -1,5 +1,19 @@
 # RAG — Implementation
 
+```yaml level=implementation
+generator:
+  target_interface: core/interfaces/python/kernel.py:Step
+ir_fragment:
+  state: { base: RunState, schema_ref: patterns/rag/schemas/state.py }
+  steps:
+    - { id: rag.retrieve, kind: retrieval, inputs: [goal], outputs: [messages] }
+    - { id: rag.generate, kind: llm, inputs: [goal, messages], outputs: [final_answer] }
+  control_policy: { type: static_graph, entry_step: rag.retrieve }
+  ports:
+    - { name: model, protocol: model, required: true }
+    - { name: memory, protocol: memory, required: true }
+```
+
 ## Core Interfaces
 
 ```

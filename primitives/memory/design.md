@@ -1,5 +1,17 @@
 # Memory — Design
 
+```yaml level=design
+quality_attributes:
+  reliability: medium
+  cost: low
+  latency: low
+  observability: medium
+failure_modes:
+  - { mode: retrieval-miss, mitigation: "hybrid search + reranking" }
+  - { mode: unbounded-growth, mitigation: "summarization + eviction policy" }
+  - { mode: stale-memory, mitigation: "recency-weighted retrieval" }
+```
+
 > Canonical Pydantic state schema: [`schemas/state.py`](schemas/state.py) — `MemoryState` is the top-level shape; `MemoryEntry`, `Recall` are the auxiliary models. Recipes targeting Memory reference these names verbatim.
 >
 > Typed prompts: [`prompts/`](prompts/) — `extractor.md` (write path) + `chat.md` (read path). See [`meta/style-guide.md`](../../meta/style-guide.md#typed-prompts) for the frontmatter contract.
@@ -142,3 +154,16 @@ Cognitive concerns this repo covers; operational concerns belong in [agent-deplo
 | Rate limiting & retries | inherited | [agent-deployments cross-cutting](https://github.com/jagguvarma15/agent-deployments/tree/main/docs/cross-cutting) |
 | Idempotency | memory writes should be idempotent (replays don't double-store) | [agent-deployments cross-cutting](https://github.com/jagguvarma15/agent-deployments/blob/main/docs/cross-cutting/idempotency.md) |
 | Observability hooks | see `observability.md` alongside this file | [foundations](../../foundations/README.md) |
+
+## Memory types
+
+The 2025-2026 taxonomy splits memory into four types; a `memory` deployment may implement one or several:
+
+| Type | Holds | Lifetime | Typical backing |
+|---|---|---|---|
+| **Working** | the current task's context | this run | Run-State (not this port) |
+| **Episodic** | past events and interactions | long-term | vector / key-value |
+| **Semantic** | distilled facts and knowledge | long-term | vector / graph |
+| **Procedural** | learned procedures and skills | long-term | files / [skills](../skills/overview.md) |
+
+Working memory is the kernel's [Run-State](../../core/architecture.md#run-state); the other three live behind this port. See the [memory three-way split](../../core/design.md#the-memory-three-way-split).

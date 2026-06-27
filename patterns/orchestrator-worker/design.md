@@ -1,5 +1,16 @@
 # Orchestrator-Worker — Design
 
+```yaml level=design
+quality_attributes:
+  reliability: medium
+  cost: high
+  latency: medium
+  observability: high
+failure_modes:
+  - { mode: bad-decomposition, mitigation: "constrain the orchestrator with a schema" }
+  - { mode: worker-failure, mitigation: "retry the subtask" }
+```
+
 Detailed component breakdown and design decisions for building an orchestrator-worker system.
 
 ## Component Breakdown

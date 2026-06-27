@@ -1,5 +1,16 @@
 # Routing — Design
 
+```yaml level=design
+quality_attributes:
+  reliability: medium
+  cost: low
+  latency: low
+  observability: high
+failure_modes:
+  - { mode: misroute, mitigation: "confidence threshold + a fallback handler" }
+  - { mode: unknown-category, mitigation: "explicit default/fallback branch" }
+```
+
 > Canonical Pydantic state schema: [`schemas/state.py`](schemas/state.py) — `RoutingState` is the top-level shape; `Route`, `RouteDecision` are the auxiliary models. Recipes targeting Routing reference these names verbatim.
 >
 > Typed prompts: [`prompts/`](prompts/) — `router.md` (classification) + `specialist.md` (generic per-route handler). See [`meta/style-guide.md`](../../meta/style-guide.md#typed-prompts) for the frontmatter contract.

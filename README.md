@@ -12,10 +12,14 @@
 
 This repository teaches you how to *think about and design* agent systems — before you write a single line of code. It covers both LLM workflows (where the developer controls the flow) and agent patterns (where the LLM controls the flow), with an explicit progression showing how one evolves into the other.
 
-Every pattern is documented at three levels of depth. Read only what you need:
-- **Overview** (Tier 1) — Architecture diagram, tradeoffs, when to use it. 1–2 pages.
-- **Design** (Tier 2) — Component breakdown, data flow, error handling, scaling. 3–5 pages.
-- **Implementation** (Tier 3) — Pseudocode, interfaces, testing strategy, pitfalls. 5–10 pages.
+Every blueprint is documented across five levels of depth — read only what you need:
+- **Concepts** (`overview.md`) — intent, when to use / avoid, the forces. 1–2 pages.
+- **Architecture** (`architecture.md`) — the static structure: components, edges, ports.
+- **Flow** (`flow.md`) — the runtime behaviour: control flow, steps, termination.
+- **Design** (`design.md`) — parameters, quality trade-offs, failure modes, decisions.
+- **Implementation** (`implementation.md`) — interfaces, pseudocode, the IR fragment, pitfalls.
+
+Each level pairs a machine-readable <code>&#96;&#96;&#96;yaml level=…&#96;&#96;&#96;</code> block (the generator's source) with prose for humans. The model every blueprint composes onto is [the kernel](./core/overview.md). [`react`](./patterns/react/overview.md) is the fully-worked reference; the remaining entries are migrating to the full level set.
 
 ---
 
@@ -65,6 +69,7 @@ flowchart LR
 | If You... | Read This |
 |-----------|-----------|
 | Are new to LLM systems | [Foundations](./foundations/README.md) — concepts, terminology, mental models |
+| Want the architecture every pattern composes onto | [The Kernel](./core/overview.md) — Step, Engine, Control Policy, Run State, Ports + the IR |
 | Need to pick a pattern | [Choosing a Pattern](./foundations/choosing-a-pattern.md) — decision flowchart |
 | Want structured LLM pipelines | [Workflows](./workflows/README.md) — 4 pre-agent patterns |
 | Want autonomous LLM behavior | [Agent Patterns](./patterns/README.md) — <!-- AUTO:count cohort=patterns filter=category:agent -->10<!-- /AUTO --> agent architectures |
@@ -173,6 +178,9 @@ Each agent pattern includes an [evolution.md](./patterns/react/evolution.md) doc
 
 ```
 agent-blueprints/
+├── core/                 # The kernel every blueprint composes onto:
+│                           Step/Engine/Control-Policy/Run-State/Ports + the IR
+│                           (spec/ir.schema.json) and interface stubs
 ├── foundations/          # Core concepts, terminology, pattern selection
 ├── patterns/             # Flow shapes: agent (LLM-controlled) + workflow
 │                           (code-controlled), split by the `category` field
@@ -191,7 +199,7 @@ agent-blueprints/
 ## Design Principles
 
 1. **Architecture-first** — Teach readers to design before they build
-2. **3-tier depth** — Overview → Design → Implementation. Read only what you need.
+2. **Five-level depth** — Concepts → Architecture → Flow → Design → Implementation. Read only what you need.
 3. **Pattern + primitives + modifiers** — Three orthogonal decisions, not one. Patterns describe flow shape; primitives are building blocks; modifiers are transforms layered on top.
 4. **Workflows → Agents** — Workflows (code-controlled flow) are the foundation; agent patterns (LLM-controlled flow) build on them. Both live in `patterns/` distinguished by category.
 5. **Generalized, not use-case-bound** — Patterns are abstract and composable.

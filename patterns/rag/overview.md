@@ -1,4 +1,48 @@
+---
+id: rag
+name: RAG
+kind: pattern
+category: agent
+complexity: Intermediate
+scale: standard
+description: 'Retrieval-augmented generation: retrieve relevant context before generating.'
+levels:
+- overview
+- architecture
+- flow
+- design
+- implementation
+evolvesFrom:
+- parallel-calls
+composableWith:
+- react
+- routing
+- reflection
+requires:
+- retrieval
+- vector-store
+tags:
+- retrieval
+- grounding
+- knowledge-base
+- embeddings
+- semantic-search
+costTier: low-medium
+latencyTier: low-medium
+ir_fragment_ref: patterns/rag/implementation.md
+---
+
 # RAG (Retrieval-Augmented Generation) — Overview
+
+```yaml level=concepts
+intent: "Retrieve relevant context before generating, grounding the answer in fetched documents."
+when_to_use:
+  - "Knowledge-grounded QA over a corpus the model was not trained on."
+  - "You need to reduce hallucination by citing retrieved evidence."
+when_to_avoid:
+  - "The model already knows the answer; retrieval adds latency for nothing."
+  - "There is no corpus to retrieve from."
+```
 
 RAG grounds LLM responses in external knowledge by retrieving relevant documents before generating a response. Instead of relying solely on the LLM's training data, the system searches a knowledge base and injects the most relevant content into the prompt.
 

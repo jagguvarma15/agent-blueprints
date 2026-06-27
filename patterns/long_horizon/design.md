@@ -1,5 +1,16 @@
 # Long-Horizon — Design
 
+```yaml level=design
+quality_attributes:
+  reliability: high
+  cost: high
+  latency: variable
+  observability: high
+failure_modes:
+  - { mode: lost-resume, mitigation: "durable runtime tier (not just checkpoint)" }
+  - { mode: state-corruption, mitigation: "versioned checkpoints" }
+```
+
 > Canonical Pydantic state schema: [`schemas/state.py`](schemas/state.py) — `LongHorizonState` is the top-level shape; `Checkpoint`, `EventLogEntry`, `StepRecord` are the auxiliary models.
 
 ## Component Breakdown

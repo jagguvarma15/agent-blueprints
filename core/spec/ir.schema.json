@@ -1,0 +1,202 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/jagguvarma15/agent-blueprints/main/core/spec/ir.schema.json",
+  "title": "Agent Blueprint IR",
+  "description": "The composition manifest a selection (one pattern + N primitives + N modifiers, at a scale) compiles to. It is a declarative ASSEMBLY manifest with symbolic *_ref leaves, not a behavioural program: a generator emits procedural code from it. This keeps it framework-agnostic (one IR, many emitters) while sidestepping the 'graph fallacy' of encoding dynamic flow as static data. Each blueprint entry contributes an `ir_fragment` (at its Implementation level); the generator merges the selected fragments into a full IR, namespacing ids by entry and binding each abstract port to a deployments option.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["ir_version", "metadata", "state", "steps", "control_policy"],
+  "properties": {
+    "ir_version": {
+      "type": "string",
+      "const": "1",
+      "description": "IR contract version. Additive fields do not bump this; shape changes do."
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "selection": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "The user selection this IR was composed from.",
+          "properties": {
+            "pattern": { "type": "string" },
+            "primitives": { "type": "array", "items": { "type": "string" } },
+            "modifiers": { "type": "array", "items": { "type": "string" } },
+            "scale": { "type": "string" }
+          }
+        }
+      }
+    },
+    "state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["base", "schema_ref"],
+      "description": "The Run-State the graph threads. References a RunState subclass symbolically rather than inlining it.",
+      "properties": {
+        "base": {
+          "type": "string",
+          "const": "RunState",
+          "description": "Always extends the kernel RunState base (core/interfaces/python/state.py)."
+        },
+        "schema_ref": {
+          "type": "string",
+          "description": "Symbolic ref to the pattern's RunState subclass, e.g. 'patterns/react/schemas/state.py:ReActState'."
+        },
+        "channels": {
+          "type": "array",
+          "description": "State fields written concurrently and how to merge them (LangGraph-style reducers).",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name"],
+            "properties": {
+              "name": { "type": "string" },
+              "type": { "type": "string" },
+              "reducer": { "type": "string", "enum": ["replace", "append", "merge"] }
+            }
+          }
+        }
+      }
+    },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/step" }
+    },
+    "control_policy": { "$ref": "#/$defs/control_policy" },
+    "ports": {
+      "type": "array",
+      "description": "Abstract ports the composed agent needs; each binds to a deployments option at generation time.",
+      "items": { "$ref": "#/$defs/port" }
+    },
+    "cross_cutting": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/cross_cutting" }
+    },
+    "edges": {
+      "type": "array",
+      "description": "Optional. Sequential edges are derived from declaration order + dataflow; declare explicit edges only for router / parallel / loop shapes.",
+      "items": { "$ref": "#/$defs/edge" }
+    },
+    "provenance": {
+      "type": "object",
+      "description": "Maps each namespaced step/port id to the blueprint entry that contributed it (for merge-conflict detection).",
+      "additionalProperties": { "type": "string" }
+    }
+  },
+  "$defs": {
+    "step": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind"],
+      "properties": {
+        "id": { "type": "string", "description": "Step id, namespaced by entry id (e.g. 'react.loop')." },
+        "kind": {
+          "type": "string",
+          "enum": ["llm", "tool", "retrieval", "router", "reducer", "subgraph", "human", "compensation", "eval", "code"]
+        },
+        "code_ref": {
+          "type": "string",
+          "description": "Symbolic ref to the reference implementation or template the emitter fills (e.g. 'patterns/react/code/python/langgraph/react.py')."
+        },
+        "config": {
+          "type": "object",
+          "description": "Kind-specific config (model id, prompt-template id, tool name, MCP server, k). Open by design; '${ports.x}' interpolates a bound port."
+        },
+        "inputs": { "type": "array", "items": { "type": "string" }, "description": "Run-State fields this step reads." },
+        "outputs": { "type": "array", "items": { "type": "string" }, "description": "Run-State fields this step writes." },
+        "retry": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "max": { "type": "integer", "minimum": 0 },
+            "backoff": { "type": "string", "enum": ["none", "fixed", "exponential"] }
+          }
+        },
+        "timeout_s": { "type": "number", "minimum": 0 },
+        "stream": { "type": "boolean", "default": false },
+        "interrupt": {
+          "type": "string",
+          "enum": ["before", "after"],
+          "description": "Suspend the run for human input before/after this step (the pause-resume seam)."
+        },
+        "compensate_ref": {
+          "type": "string",
+          "description": "Symbolic ref to this step's saga compensator, unwound on downstream failure."
+        }
+      }
+    },
+    "control_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type"],
+      "description": "Who picks the next step — the workflow (code) vs agent (model) switch.",
+      "properties": {
+        "type": { "type": "string", "enum": ["static_graph", "router", "planner", "hybrid"] },
+        "entry_step": { "type": "string" },
+        "decision_step": {
+          "type": "string",
+          "description": "For router/planner: the step that chooses the next step."
+        },
+        "termination": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "max_steps": { "type": "integer", "minimum": 1 },
+            "token_budget": { "type": "integer", "minimum": 1 },
+            "condition": { "type": "string", "description": "A guard ref evaluated against Run-State." },
+            "fallback": { "type": "string" }
+          }
+        },
+        "concurrency": { "type": "string", "enum": ["sequential", "parallel"], "default": "sequential" }
+      }
+    },
+    "port": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "protocol"],
+      "properties": {
+        "name": { "type": "string" },
+        "protocol": { "type": "string", "enum": ["model", "tools", "memory", "runtime", "agents"] },
+        "required": { "type": "boolean", "default": true },
+        "cardinality": { "type": "string", "enum": ["one", "many"], "default": "one" },
+        "binding": {
+          "type": "string",
+          "description": "The deployments option bound to this port, filled at composition time (e.g. 'memory_store.pgvector'). Empty in a blueprint fragment."
+        }
+      }
+    },
+    "cross_cutting": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["concern"],
+      "description": "A cross-cutting concern wrapping the graph. Blueprints own the design-time shape; deployments own the operational realization (the binding).",
+      "properties": {
+        "concern": {
+          "type": "string",
+          "enum": ["observability", "guardrails", "budgets", "context_assembly", "eval"]
+        },
+        "ref": { "type": "string", "description": "Symbolic ref to the modifier/handler that realizes it." },
+        "config": { "type": "object" }
+      }
+    },
+    "edge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "to"],
+      "properties": {
+        "from": { "type": "string" },
+        "to": { "type": "string" },
+        "when": {
+          "type": "string",
+          "description": "Optional guard ref; absent = unconditional. The emitter turns this into an `if`, keeping data-dependent branching out of static edges."
+        }
+      }
+    }
+  }
+}

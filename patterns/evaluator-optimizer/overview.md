@@ -1,4 +1,43 @@
+---
+id: evaluator-optimizer
+name: Evaluator-Optimizer
+kind: pattern
+category: workflow
+complexity: Intermediate
+scale: standard
+description: Generate-evaluate feedback loop that iteratively improves output.
+levels:
+- overview
+- architecture
+- flow
+- design
+- implementation
+evolvesInto:
+- reflection
+composableWith:
+- prompt-chaining
+- rag
+tags:
+- feedback-loop
+- quality
+- iterative
+- evaluation
+costTier: medium-high
+latencyTier: high
+ir_fragment_ref: patterns/evaluator-optimizer/implementation.md
+---
+
 # Evaluator-Optimizer — Overview
+
+```yaml level=concepts
+intent: "A generator produces output and an evaluator scores it; loop until the bar is met."
+when_to_use:
+  - "There is a clear, automatable evaluation criterion."
+  - "Iterative improvement measurably raises quality."
+when_to_avoid:
+  - "No measurable signal to optimize against."
+  - "Latency-tight paths — the loop multiplies calls."
+```
 
 The evaluator-optimizer pattern creates a feedback loop between two roles: a generator that produces output and an evaluator that assesses it. The cycle repeats until the output meets quality criteria or a maximum iteration count is reached.
 

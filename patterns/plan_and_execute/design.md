@@ -1,5 +1,16 @@
 # Plan & Execute — Design
 
+```yaml level=design
+quality_attributes:
+  reliability: medium
+  cost: high
+  latency: high
+  observability: high
+failure_modes:
+  - { mode: stale-plan, mitigation: "replan when reality deviates from the plan" }
+  - { mode: step-failure, mitigation: "retry then replan" }
+```
+
 > Canonical Pydantic state schema: [`schemas/state.py`](schemas/state.py) — `PlanExecuteState` is the top-level shape; `Plan`, `Step`, `ExecutionResult` are the auxiliary models. Recipes targeting Plan & Execute reference these names verbatim.
 >
 > Typed prompts: [`prompts/`](prompts/) — `planner.md`, `executor.md`, `reflector.md`. See [`meta/style-guide.md`](../../meta/style-guide.md#typed-prompts) for the frontmatter contract.

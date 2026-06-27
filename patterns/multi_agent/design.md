@@ -1,5 +1,16 @@
 # Multi-Agent — Design
 
+```yaml level=design
+quality_attributes:
+  reliability: medium
+  cost: high
+  latency: high
+  observability: high
+failure_modes:
+  - { mode: worker-divergence, mitigation: "explicit task contracts + result schemas" }
+  - { mode: cost-blowup, mitigation: "per-worker budgets + a global cap" }
+```
+
 > Canonical Pydantic state schema: [`schemas/state.py`](schemas/state.py) — `MultiAgentState` is the top-level shape; `AgentResult`, `SupervisorDecision` are the auxiliary models. Recipes targeting Multi-Agent reference these names verbatim.
 >
 > Typed prompts: [`prompts/`](prompts/) — `supervisor.md` (routing/termination) + `worker.md` (generic, parameterized by `agent_name`). See [`meta/style-guide.md`](../../meta/style-guide.md#typed-prompts) for the frontmatter contract.
@@ -214,3 +225,17 @@ Cognitive concerns this repo covers; operational concerns belong in [agent-deplo
 | Rate limiting & retries | inherited | [agent-deployments cross-cutting](https://github.com/jagguvarma15/agent-deployments/tree/main/docs/cross-cutting) |
 | Idempotency | sub-agent invocations should be idempotent under retry | [agent-deployments cross-cutting](https://github.com/jagguvarma15/agent-deployments/blob/main/docs/cross-cutting/idempotency.md) |
 | Observability hooks | see `observability.md` alongside this file | [foundations](../../foundations/README.md) |
+
+## Topologies
+
+"Multi-agent" is a family of coordination topologies, not one shape. Pick the loosest that solves the problem:
+
+| Topology | Who decides next | Shape |
+|---|---|---|
+| **Manager (supervisor-worker)** | a central supervisor | hub-and-spoke |
+| **Decentralized (handoff)** | agents hand off peer-to-peer | chain / graph |
+| **Debate** | agents argue; a judge decides | adversarial |
+| **Blackboard** | agents read/write a shared workspace | shared-memory |
+| **Group-chat** | agents converse in a shared thread | round-robin / moderated |
+
+The manager topology is the safe default; reach for the others only when the task's structure demands it. All compose on the kernel's [`agents` port](../../core/architecture.md#ports) (in-process sub-graphs or remote A2A).

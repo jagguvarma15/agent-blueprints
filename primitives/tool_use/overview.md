@@ -1,4 +1,45 @@
+---
+id: tool_use
+name: Tool Use
+kind: primitive
+category: primitive
+complexity: Beginner
+scale: prototype
+description: Structured function calling with schema-validated tool dispatch.
+levels:
+- overview
+- architecture
+- flow
+- design
+- implementation
+evolvesFrom:
+- prompt-chaining
+composableWith:
+- react
+- rag
+- routing
+requires:
+- tools
+tags:
+- function-calling
+- structured
+- schema
+- deterministic
+costTier: low-medium
+latencyTier: low
+ir_fragment_ref: primitives/tool_use/implementation.md
+---
+
 # Tool Use (Function Calling) — Overview
+
+```yaml level=concepts
+intent: "Schema-validated function calling: the model requests a tool, code validates and executes it."
+when_to_use:
+  - "The agent must act on the world — search, compute, call an API, write data."
+  - "You need structured, validated arguments rather than free text."
+when_to_avoid:
+  - "Pure text generation with no external actions."
+```
 
 Tool use enables an LLM to interact with external systems by requesting structured function calls. The LLM produces a tool name and arguments; your code executes the function and returns the result. This is the foundational capability that makes agents possible.
 

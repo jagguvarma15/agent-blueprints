@@ -1,4 +1,44 @@
+---
+id: parallel-calls
+name: Parallel Calls
+kind: pattern
+category: workflow
+complexity: Beginner
+scale: prototype
+description: Concurrent LLM calls on independent inputs, aggregated at the end.
+levels:
+- overview
+- architecture
+- flow
+- design
+- implementation
+evolvesInto:
+- rag
+- routing
+composableWith:
+- prompt-chaining
+- orchestrator-worker
+tags:
+- parallel
+- concurrent
+- low-latency
+- fan-out
+- aggregation
+costTier: medium
+latencyTier: low
+ir_fragment_ref: patterns/parallel-calls/implementation.md
+---
+
 # Parallel Calls (Fan-out / Fan-in) — Overview
+
+```yaml level=concepts
+intent: "Run independent LLM calls concurrently and aggregate the results."
+when_to_use:
+  - "Independent subtasks with no ordering dependency."
+  - "Latency reduction via concurrency, or voting/ensembling for reliability."
+when_to_avoid:
+  - "Subtasks depend on each other — use prompt chaining."
+```
 
 Parallel calls execute multiple LLM requests simultaneously on independent inputs, then aggregate the results. This pattern trades sequential simplicity for throughput.
 

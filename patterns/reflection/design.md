@@ -1,5 +1,16 @@
 # Reflection — Design
 
+```yaml level=design
+quality_attributes:
+  reliability: high
+  cost: high
+  latency: high
+  observability: high
+failure_modes:
+  - { mode: non-convergence, mitigation: "max_iterations cap" }
+  - { mode: critic-miscalibration, mitigation: "anchor the critic with explicit rubric + examples" }
+```
+
 > Canonical Pydantic state schema: [`schemas/state.py`](schemas/state.py) — `ReflectionState` is the top-level shape; `Draft`, `Critique` are the auxiliary models. Recipes targeting Reflection reference these names verbatim.
 >
 > Typed prompts: [`prompts/`](prompts/) — `drafter.md`, `critic.md`. See [`meta/style-guide.md`](../../meta/style-guide.md#typed-prompts) for the frontmatter contract.

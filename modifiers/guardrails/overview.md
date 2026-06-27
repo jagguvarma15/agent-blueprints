@@ -1,4 +1,54 @@
+---
+id: guardrails
+name: Guardrails
+kind: modifier
+category: modifier
+complexity: Advanced
+scale: production
+description: Layered input / tool / output policy checks plus a dual-LLM split that
+  breaks the indirect-prompt-injection path.
+levels:
+- overview
+- architecture
+- flow
+- design
+- implementation
+evolvesFrom:
+- tool_use
+composableWith:
+- human_in_the_loop
+- rag
+- multi_agent
+- tool_use
+- react
+requires:
+- detector-registry
+- policy-artifact
+- audit-sink
+appliesTo:
+- any
+tags:
+- safety
+- policy
+- dual-llm
+- prompt-injection
+- defense-in-depth
+- calibration
+costTier: low-medium
+latencyTier: medium
+ir_fragment_ref: modifiers/guardrails/implementation.md
+---
+
 # Guardrails — Overview
+
+```yaml level=concepts
+intent: "Layered input / tool / output policy checks plus a dual-LLM split that breaks indirect prompt injection."
+when_to_use:
+  - "Untrusted input or content reaches the agent context."
+  - "The agent has tool access in production."
+when_to_avoid:
+  - "A fully trusted, closed loop (rare in production)."
+```
 
 An agent that touches untrusted input, untrusted tool output, or customer-visible output usually needs structural defenses around it — not just a hopeful system prompt. The **Guardrails** modifier formalises those defenses: layered checks on the way in, on the way out, and around tool dispatch, with explicit fail-open vs fail-closed behavior on each layer.
 

@@ -1,5 +1,16 @@
 # Evaluator-Optimizer — Implementation
 
+```yaml level=implementation
+ir_fragment:
+  state: { base: RunState }
+  steps:
+    - { id: eo.generate, kind: llm }
+    - { id: eo.evaluate, kind: eval }
+  control_policy: { type: static_graph, termination: { max_steps: 10 } }
+  ports:
+    - { name: model, protocol: model, required: true }
+```
+
 Pseudocode, interfaces, state management, and testing strategy for building a generate-evaluate loop.
 
 ## Core Interfaces

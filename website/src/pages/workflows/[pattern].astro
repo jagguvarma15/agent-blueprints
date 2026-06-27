@@ -6,8 +6,7 @@ import TableOfContents from '../../components/TableOfContents';
 import RelatedPatterns from '../../components/RelatedPatterns.astro';
 import AntiCompositionWarning from '../../components/AntiCompositionWarning.astro';
 import { WORKFLOWS, AGENT_PATTERNS } from '../../data/patterns';
-import { readMarkdown, extractHeadings } from '../../utils/content';
-import { renderMarkdown } from '../../utils/markdown';
+import { buildLevelDocs } from '../../utils/levels';
 
 export async function getStaticPaths() {
   return WORKFLOWS.map((p) => ({
@@ -23,33 +22,7 @@ const base = import.meta.env.BASE_URL || '/agent-blueprints';
 // three-tier taxonomy refactor; the legacy `workflows/` directory only holds
 // a redirect stub now. The /workflows/ URLs stay live for backward compat.
 // pattern.id is the on-disk directory name; pattern.slug is the dashed URL.
-const overviewMd = readMarkdown(`patterns/${pattern.id}/overview.md`);
-const designMd = readMarkdown(`patterns/${pattern.id}/design.md`);
-const implMd = readMarkdown(`patterns/${pattern.id}/implementation.md`);
-const observabilityMd = readMarkdown(`patterns/${pattern.id}/observability.md`);
-const costLatencyMd = readMarkdown(`patterns/${pattern.id}/cost-and-latency.md`);
-
-const overviewHtml = overviewMd ? renderMarkdown(overviewMd) : null;
-const designHtml = designMd ? renderMarkdown(designMd) : null;
-const implHtml = implMd ? renderMarkdown(implMd) : null;
-const observabilityHtml = observabilityMd ? renderMarkdown(observabilityMd) : null;
-const costLatencyHtml = costLatencyMd ? renderMarkdown(costLatencyMd) : null;
-
-const allHeadings = {
-  overview: overviewMd ? extractHeadings(overviewMd) : [],
-  design: designMd ? extractHeadings(designMd) : [],
-  implementation: implMd ? extractHeadings(implMd) : [],
-  observability: observabilityMd ? extractHeadings(observabilityMd) : [],
-  'cost-latency': costLatencyMd ? extractHeadings(costLatencyMd) : [],
-};
-
-const tabs = [
-  { id: 'overview' as const, label: 'Overview' },
-  { id: 'design' as const, label: 'Design' },
-  { id: 'implementation' as const, label: 'Implementation' },
-  { id: 'observability' as const, label: 'Observability' },
-  { id: 'cost-latency' as const, label: 'Cost & Latency' },
-];
+const { tabs, content, headings } = buildLevelDocs(`patterns/${pattern.id}`);
 
 const evolvesIntoPatterns = (pattern.evolvesInto ?? [])
   .map((id) => AGENT_PATTERNS.find((ap) => ap.id === id))
@@ -100,13 +73,7 @@ const evolvesIntoPatterns = (pattern.evolvesInto ?? [])
         client:load
         tabs={tabs}
         defaultTier="overview"
-        content={{
-          overview: overviewHtml ?? undefined,
-          design: designHtml ?? undefined,
-          implementation: implHtml ?? undefined,
-          observability: observabilityHtml ?? undefined,
-          'cost-latency': costLatencyHtml ?? undefined,
-        }}
+        content={content}
       />
 
       <!-- Anti-composition warnings -->
@@ -118,7 +85,7 @@ const evolvesIntoPatterns = (pattern.evolvesInto ?? [])
 
     <!-- Right TOC (desktop) -->
     <div class="w-toc flex-shrink-0 hidden xl:block">
-      <TableOfContents client:load allHeadings={allHeadings} defaultTier="overview" />
+      <TableOfContents client:load allHeadings={headings} defaultTier="overview" />
     </div>
   </div>
 </DocsLayout>

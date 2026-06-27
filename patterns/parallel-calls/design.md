@@ -1,5 +1,16 @@
 # Parallel Calls — Design
 
+```yaml level=design
+quality_attributes:
+  reliability: medium
+  cost: high
+  latency: low
+  observability: medium
+failure_modes:
+  - { mode: partial-failure, mitigation: "quorum aggregation + retry stragglers" }
+  - { mode: aggregation-conflict, mitigation: "explicit merge/voting rule" }
+```
+
 Detailed component breakdown and design decisions for building a fan-out/fan-in workflow.
 
 ## Component Breakdown

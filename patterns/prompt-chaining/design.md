@@ -1,5 +1,16 @@
 # Prompt Chaining — Design
 
+```yaml level=design
+quality_attributes:
+  reliability: high
+  cost: medium
+  latency: medium
+  observability: high
+failure_modes:
+  - { mode: error-propagation, mitigation: "validation gate after each stage" }
+  - { mode: gate-failure, mitigation: "retry the stage or abort with a clear error" }
+```
+
 Detailed component breakdown and design decisions for building a prompt chain.
 
 ## Component Breakdown

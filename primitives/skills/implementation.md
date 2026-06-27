@@ -1,5 +1,15 @@
 # Skills — Implementation
 
+```yaml level=implementation
+ir_fragment:
+  state: { base: RunState, schema_ref: primitives/skills/schemas/state.py }
+  steps:
+    - { id: skills.load, kind: code }
+    - { id: skills.run, kind: tool }
+  ports:
+    - { name: tools, protocol: tools, required: false }
+```
+
 > **Tier 3 — Implementation.** `SKILL.md` schema, loader pseudocode, trigger matching, security boundaries, pitfalls. For the conceptual shape, see [`design.md`](./design.md).
 
 ## SKILL.md schema

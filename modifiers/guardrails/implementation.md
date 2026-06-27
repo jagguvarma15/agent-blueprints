@@ -1,5 +1,13 @@
 # Guardrails — Implementation
 
+```yaml level=implementation
+ir_fragment:
+  cross_cutting:
+    - { concern: guardrails, ref: modifiers/guardrails }
+  ports:
+    - { name: model, protocol: model, required: true }
+```
+
 > Code variants under `code/python/` are not yet shipped; the pseudocode here is framework-agnostic and mirrors the [`schemas/state.py`](schemas/state.py) shapes.
 
 ## Detector interface

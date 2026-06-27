@@ -1,4 +1,44 @@
+---
+id: orchestrator-worker
+name: Orchestrator-Worker
+kind: pattern
+category: workflow
+complexity: Intermediate
+scale: standard
+description: LLM decomposes a task and delegates to specialized workers.
+levels:
+- overview
+- architecture
+- flow
+- design
+- implementation
+evolvesInto:
+- plan_and_execute
+- multi_agent
+composableWith:
+- parallel-calls
+- evaluator-optimizer
+tags:
+- decomposition
+- delegation
+- dynamic
+- specialization
+costTier: medium-high
+latencyTier: medium
+ir_fragment_ref: patterns/orchestrator-worker/implementation.md
+---
+
 # Orchestrator-Worker — Overview
+
+```yaml level=concepts
+intent: "An orchestrator LLM decomposes a task and delegates subtasks to worker LLMs."
+when_to_use:
+  - "Decomposition is dynamic — the subtasks are not known upfront."
+  - "Workers are LLM calls, not autonomous agents."
+when_to_avoid:
+  - "Steps are fixed — use prompt chaining."
+  - "Workers need autonomy/tools — use multi-agent."
+```
 
 The orchestrator-worker pattern uses a central LLM to decompose a complex task into subtasks, delegates each subtask to a worker LLM call, then synthesizes the results. Unlike parallel calls, the orchestrator *reasons* about how to split the work.
 

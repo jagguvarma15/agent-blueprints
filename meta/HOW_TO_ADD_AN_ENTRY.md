@@ -5,7 +5,7 @@ The recommended landing page for anyone (first-time contributor, regular maintai
 The repo is structured so that adding a new cognitive unit is **three steps**:
 
 1. **Pick a cohort** (or [add a new one](#adding-a-brand-new-cohort)).
-2. **Create the entry directory** with `metadata.json` + the tier markdown files declared in `tiers`.
+2. **Create the entry directory** with `overview.md` carrying YAML **frontmatter** (`id`, `name`, `kind`, `category`, `complexity`, `scale`, `description`, `levels`, and any relationships) + the level markdown files listed in `levels`. Frontmatter replaced the old `metadata.json` sidecar — the generator still reads a `metadata.json` as a fallback, but new entries should use frontmatter. See [`patterns/react/overview.md`](../patterns/react/overview.md) for the reference shape and the five levels (Concepts → Architecture → Flow → Design → Implementation).
 3. **Run the generators**:
    ```bash
    node meta/validate-metadata.js --emit patterns-catalog.yaml

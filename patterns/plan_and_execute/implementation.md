@@ -1,5 +1,17 @@
 # Plan & Execute — Implementation
 
+```yaml level=implementation
+ir_fragment:
+  state: { base: RunState, schema_ref: patterns/plan_and_execute/schemas/state.py }
+  steps:
+    - { id: pe.plan, kind: llm, outputs: [messages] }
+    - { id: pe.execute, kind: subgraph, inputs: [messages], outputs: [messages] }
+  control_policy: { type: hybrid, entry_step: pe.plan }
+  ports:
+    - { name: model, protocol: model, required: true }
+    - { name: tools, protocol: tools, required: true }
+```
+
 ## Core Interfaces
 
 ```

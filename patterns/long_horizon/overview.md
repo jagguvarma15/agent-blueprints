@@ -1,4 +1,55 @@
+---
+id: long_horizon
+name: Long-Horizon
+kind: pattern
+category: agent
+complexity: Advanced
+scale: production
+description: Multi-session agent tasks that span hours to weeks; checkpoint-and-resume
+  across crashes, deploys, and external waits.
+levels:
+- overview
+- architecture
+- flow
+- design
+- implementation
+evolvesFrom:
+- saga
+- event_driven
+composableWith:
+- sub_agents
+- memory
+- multi_agent
+- human_in_the_loop
+- saga
+- event_driven
+requires:
+- checkpoint-store
+- event-log
+- idempotency
+- tick-worker
+tags:
+- long-running
+- checkpointing
+- resume
+- deep-agents
+- virtual-filesystem
+- cross-session
+costTier: medium-high
+latencyTier: very-high
+ir_fragment_ref: patterns/long_horizon/implementation.md
+---
+
 # Long-Horizon — Overview
+
+```yaml level=concepts
+intent: "Tasks spanning hours to weeks, checkpointing and resuming across crashes, deploys, and external waits."
+when_to_use:
+  - "Long-running goals with human or external waits in the middle."
+  - "Durability across process death is a requirement."
+when_to_avoid:
+  - "Short, single-session tasks that complete in one run."
+```
 
 A long-horizon agent is a task that spans **hours, days, or weeks** of wall-clock — far beyond any single LLM request, often beyond any single process lifetime. The pattern formalises the harness around such tasks: the agent **checkpoints** its state at decision points, can be **killed and resumed** without losing progress, and **replays its event log** to reconstruct what it knew. The active work is durable; the model is stateless across resumes.
 

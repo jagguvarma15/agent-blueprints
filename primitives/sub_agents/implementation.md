@@ -1,5 +1,15 @@
 # Sub-agents — Implementation
 
+```yaml level=implementation
+ir_fragment:
+  state: { base: RunState, schema_ref: primitives/sub_agents/schemas/state.py }
+  steps:
+    - { id: sub_agents.spawn, kind: subgraph }
+  ports:
+    - { name: model, protocol: model, required: true }
+    - { name: agents, protocol: agents, required: true }
+```
+
 > Code variants under `code/python/` are not yet shipped; the pseudocode here is framework-agnostic and mirrors [`schemas/state.py`](schemas/state.py).
 
 ## Role file format

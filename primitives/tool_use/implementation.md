@@ -1,5 +1,18 @@
 # Tool Use — Implementation
 
+```yaml level=implementation
+generator:
+  produces:
+    - { file: agent/tools/registry.py, from: primitives/tool_use/code/python/tool_use.py }
+ir_fragment:
+  state: { base: RunState, schema_ref: primitives/tool_use/schemas/state.py }
+  steps:
+    - { id: tool_use.dispatch, kind: tool }
+  ports:
+    - { name: tools, protocol: tools, required: true }
+    - { name: model, protocol: model, required: true }
+```
+
 ## Core Interfaces
 
 ```

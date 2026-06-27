@@ -1,4 +1,49 @@
+---
+id: event_driven
+name: Event-Driven
+kind: pattern
+category: agent
+complexity: Advanced
+scale: production
+description: Agents triggered by queue or stream events rather than HTTP requests.
+levels:
+- overview
+- architecture
+- flow
+- design
+- implementation
+evolvesFrom:
+- tool_use
+composableWith:
+- multi_agent
+- routing
+- memory
+requires:
+- tools
+- event-source
+- idempotency-store
+tags:
+- streaming
+- queue
+- async
+- idempotency
+- backpressure
+- dlq
+costTier: medium
+latencyTier: medium
+ir_fragment_ref: patterns/event_driven/implementation.md
+---
+
 # Event-Driven Agents — Overview
+
+```yaml level=concepts
+intent: "Agents triggered by queue or stream events rather than HTTP requests."
+when_to_use:
+  - "Asynchronous workloads with decoupled producers and consumers."
+  - "High throughput where back-pressure and retries matter."
+when_to_avoid:
+  - "Synchronous request-response UX where the caller waits."
+```
 
 Event-driven agents consume events from a queue or stream rather than responding to HTTP requests. The agent's lifecycle is: subscribe → receive event → enrich with current state via tools → decide → act → emit outcome. Triggers are external (cancellations, status changes, scheduled events), not user-initiated.
 

@@ -1,5 +1,15 @@
 # Human in the Loop — Implementation
 
+```yaml level=implementation
+ir_fragment:
+  cross_cutting:
+    - { concern: guardrails, ref: modifiers/human_in_the_loop }
+  steps:
+    - { id: hitl.gate, kind: human, interrupt: before }
+  ports:
+    - { name: runtime, protocol: runtime, required: true }
+```
+
 Two concrete implementations of the same proposal flow:
 
 1. **LangGraph `interrupt()` + Slack** — async-resume; the agent persists state, surfaces the proposal to Slack, and resumes when the decision webhook fires.

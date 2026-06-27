@@ -1,5 +1,17 @@
 # Guardrails — Design
 
+```yaml level=design
+quality_attributes:
+  reliability: high
+  cost: low
+  latency: low
+  observability: high
+failure_modes:
+  - { mode: injection, mitigation: "dual-LLM split (privileged actor + quarantined reader)" }
+  - { mode: bypass, mitigation: "defense-in-depth across input/tool/output" }
+  - { mode: false-positive, mitigation: "tune thresholds; log + review" }
+```
+
 > Canonical Pydantic state schema: [`schemas/state.py`](schemas/state.py) — `GuardrailsState` is the top-level shape; `Verdict`, `BlockDecision`, `LayerResult` are the auxiliary models.
 >
 > Typed prompts: [`prompts/`](prompts/) — `quarantined-summarizer.md` (the dual-LLM quarantined reader) + `policy-rewriter.md` (output rewriter on soft-block).

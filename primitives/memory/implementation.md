@@ -1,5 +1,15 @@
 # Memory — Implementation
 
+```yaml level=implementation
+ir_fragment:
+  state: { base: RunState, schema_ref: primitives/memory/schemas/state.py }
+  steps:
+    - { id: memory.retrieve, kind: retrieval }
+    - { id: memory.write, kind: code }
+  ports:
+    - { name: memory, protocol: memory, required: true }
+```
+
 ## Core Interfaces
 
 ```

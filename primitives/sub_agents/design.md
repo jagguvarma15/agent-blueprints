@@ -1,5 +1,16 @@
 # Sub-agents — Design
 
+```yaml level=design
+quality_attributes:
+  reliability: medium
+  cost: high
+  latency: variable
+  observability: high
+failure_modes:
+  - { mode: context-bleed, mitigation: "strict per-sub-agent context envelopes" }
+  - { mode: result-loss, mitigation: "typed result schema" }
+```
+
 > Canonical Pydantic state schema: [`schemas/state.py`](schemas/state.py) — `SubAgentsState` is the top-level shape; `SubAgentSpec`, `SubAgentResult`, `SubAgentInvocation` are the auxiliary models.
 >
 > Typed prompts: [`prompts/`](prompts/) — `delegator.md` (the parent's prompt that decides what to delegate) + `sub-agent-base.md` (the base system prompt every sub-agent inherits).
