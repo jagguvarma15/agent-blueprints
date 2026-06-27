@@ -65,6 +65,7 @@ flowchart LR
 | If You... | Read This |
 |-----------|-----------|
 | Are new to LLM systems | [Foundations](./foundations/README.md) — concepts, terminology, mental models |
+| Want the architecture every pattern composes onto | [The Kernel](./core/overview.md) — Step, Engine, Control Policy, Run State, Ports + the IR |
 | Need to pick a pattern | [Choosing a Pattern](./foundations/choosing-a-pattern.md) — decision flowchart |
 | Want structured LLM pipelines | [Workflows](./workflows/README.md) — 4 pre-agent patterns |
 | Want autonomous LLM behavior | [Agent Patterns](./patterns/README.md) — <!-- AUTO:count cohort=patterns filter=category:agent -->10<!-- /AUTO --> agent architectures |
@@ -173,6 +174,9 @@ Each agent pattern includes an [evolution.md](./patterns/react/evolution.md) doc
 
 ```
 agent-blueprints/
+├── core/                 # The kernel every blueprint composes onto:
+│                           Step/Engine/Control-Policy/Run-State/Ports + the IR
+│                           (spec/ir.schema.json) and interface stubs
 ├── foundations/          # Core concepts, terminology, pattern selection
 ├── patterns/             # Flow shapes: agent (LLM-controlled) + workflow
 │                           (code-controlled), split by the `category` field
