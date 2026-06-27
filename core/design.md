@@ -53,9 +53,8 @@ Concerns that wrap the graph rather than living in a step. The kernel owns their
 **design-time shape**; the **operational realization** is an `agent-deployments`
 binding (the seam is the IR's `cross_cutting` refs + ports).
 
-- **Observability** — a span per step over the trace bus; the OTel GenAI
-  conventions are the target backend shape. See
-  [`foundations/observability-and-tracing.md`](../foundations/observability-and-tracing.md).
+- **Observability** — a span per step over the trace bus; the OpenTelemetry GenAI
+  semantic conventions are the target backend shape, realized in `agent-deployments`.
 - **Guardrails** — layered input / tool / output policy checks that wrap the
   dispatcher. See [`modifiers/guardrails/overview.md`](../modifiers/guardrails/overview.md).
 - **Budgets** — token / cost / wall-clock / step caps enforced by the engine
