@@ -18,9 +18,9 @@ jobs:
       - name: ruff format --check
         run: uv run --with 'ruff>=0.6' ruff format --check .
       - name: mypy (tests/)
-        run: uv run --with 'mypy>=1.10' --with 'pydantic>=2' --with PyYAML --with pytest mypy --config-file pyproject.toml tests/
+        run: uv run --with 'mypy>=1.10' --with 'pydantic>=2' --with PyYAML --with pytest --with jsonschema mypy --config-file pyproject.toml tests/
       - name: pytest
-        run: uv run --with 'pydantic>=2' --with PyYAML --with pytest pytest tests/
+        run: uv run --with 'pydantic>=2' --with PyYAML --with pytest --with jsonschema pytest tests/
 
   typescript:
     runs-on: ubuntu-latest

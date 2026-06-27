@@ -40,6 +40,16 @@ slice of the IR it contributes when selected:
   step);
 - a **modifier** contributes a `cross_cutting` entry that wraps the graph.
 
+> **Status of the fragments.** Today the per-entry `ir_fragment` blocks are
+> *illustrative contract sketches*: the `state` block names the entry's domain
+> schema plus the kernel `RunState` base it maps onto, and `inputs`/`outputs` are
+> dataflow hints the generator reconciles against the referenced schema — they are
+> not asserted as exact field names except on the worked [`react`](../patterns/react/implementation.md)
+> reference. The one fully-validated IR is [`spec/example.yaml`](./spec/example.yaml),
+> checked against [`spec/ir.schema.json`](./spec/ir.schema.json) in CI. Re-basing
+> every entry's `schemas/state.py` onto `RunState` lands with the scaffold
+> activation work, once `core/` is vendored alongside the schemas.
+
 ## The merge model
 
 The generator composes a selection's fragments into one IR:

@@ -27,35 +27,35 @@ Below: adding a fictional new modifier called `audit_logging`.
 # 1. Pick the cohort. Modifiers live at modifiers/.
 mkdir -p modifiers/audit_logging/{prompts,schemas}
 
-# 2a. Author metadata.json.
-cat > modifiers/audit_logging/metadata.json <<'EOF'
-{
-  "id": "audit_logging",
-  "name": "Audit Logging",
-  "category": "modifier",
-  "complexity": "Intermediate",
-  "description": "Records every tool call + agent decision to an append-only audit log for compliance + replay.",
-  "tiers": [
-    "overview",
-    "design",
-    "implementation",
-    "evolution",
-    "observability",
-    "cost-and-latency"
-  ],
-  "evolvesFrom": ["tool_use"],
-  "composableWith": ["react", "plan_and_execute", "multi_agent"],
-  "requires": ["append-only-log"],
-  "appliesTo": ["any"],
-  "tags": ["compliance", "audit", "replay"],
-  "costTier": "low",
-  "latencyTier": "low"
-}
+# 2a. Author overview.md with YAML frontmatter (the single source — replaces metadata.json).
+cat > modifiers/audit_logging/overview.md <<'EOF'
+---
+id: audit_logging
+name: Audit Logging
+kind: modifier
+category: modifier
+complexity: Intermediate
+scale: standard
+description: Records every tool call + agent decision to an append-only audit log for compliance + replay.
+levels: [overview, architecture, flow, design, implementation]
+evolvesFrom: [tool_use]
+composableWith: [react, plan_and_execute, multi_agent]
+requires: [append-only-log]
+appliesTo: [any]
+tags: [compliance, audit, replay]
+costTier: low
+latencyTier: low
+---
+
+# Audit Logging — Overview
+
+The Concepts level: intent, when to use / avoid, the forces. Pair the prose with a
+fenced `yaml level=concepts` block (the generator's machine source).
 EOF
 
-# 2b. Author each tier file. Templates exist for shape; copy from a sibling.
-# See "Tier file conventions" below for what goes in each.
-touch modifiers/audit_logging/{overview,design,implementation,evolution,observability,cost-and-latency}.md
+# 2b. Author the other four level files (Architecture / Flow / Design / Implementation).
+# Each carries a fenced `yaml level=<name>` block + prose; copy the shape from a sibling.
+touch modifiers/audit_logging/{architecture,flow,design,implementation}.md
 
 # 2c. If category requires a state schema (per taxonomy.yaml), add it:
 touch modifiers/audit_logging/schemas/__init__.py

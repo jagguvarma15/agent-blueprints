@@ -6,7 +6,7 @@
 [![Framework Agnostic](https://img.shields.io/badge/framework-agnostic-blue)](./foundations/README.md)
 [![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen)](./meta/contributing.md)
 
-**An architecture-first guide to designing LLM workflow and agent systems.**
+**The architecture-first design core for AI agents** — the kernel, the patterns (at five levels), and the spec/IR that a generator composes into running agents.
 
 ---
 
@@ -34,33 +34,34 @@ If you're an AI tool (Claude Code, Cursor, GitHub Copilot, agent-scaffold, …) 
 
 ---
 
-## The three-repo ecosystem
+## The ecosystem: two arms of a generator
 
-This repo is the first stop in a three-repo pipeline that takes you from pattern to running agent:
+`agent-blueprints` and `agent-deployments` are the two **arms** that feed [`agent-scaffold`](https://github.com/jagguvarma15/agent-scaffold) — the engine that composes a selection into a real, running agent:
 
 ```mermaid
 flowchart LR
-  P["Pattern<br/>agent-blueprints"] --> S["Spec<br/>agent-deployments"]
-  S --> G["Generator<br/>agent-scaffold"]
-  G --> R["Running agent"]
+  B["agent-blueprints<br/>design core:<br/>kernel · patterns · spec/IR"] --> S["agent-scaffold<br/>compose engine"]
+  D["agent-deployments<br/>verified options:<br/>adapters · recipes"] --> S
+  S --> R["Running agent<br/>code + server, live"]
 
-  style P fill:#e8f5e9
-  style S fill:#fff3e0
-  style G fill:#fce4ec
-  style R fill:#e3f2fd
+  style B fill:#e8f5e9,stroke:#0f6e56
+  style D fill:#fff3e0,stroke:#9a6a00
+  style S fill:#eeedfe,stroke:#534ab7
+  style R fill:#e3f2fd,stroke:#1565c0
 ```
 
-- **[agent-blueprints](https://github.com/jagguvarma15/agent-blueprints)** *(this repo)* — framework-agnostic *cognitive* patterns, tradeoffs, and design guidance. Start here if you want to design before you build.
-- **[agent-deployments](https://github.com/jagguvarma15/agent-deployments)** — opinionated, production-shaped markdown specs for ten concrete agents (Python + TypeScript tracks), plus the *reliability/ops* layer (auth, rate limiting, retries, idempotency, distributed tracing, observability) that every agent inherits.
-- **[agent-scaffold](https://github.com/jagguvarma15/agent-scaffold)** — a CLI that consumes a deployment spec, asks Claude to emit a complete project, and writes the files atomically to disk.
+- **[agent-blueprints](https://github.com/jagguvarma15/agent-blueprints)** *(this repo)* — the **design core**. The [kernel](./core/overview.md) every agent composes onto (Step · Engine · Control-Policy · Run-State · Ports · Cross-cutting), the framework-agnostic patterns / primitives / modifiers documented at five levels (Concepts → Architecture → Flow → Design → Implementation), and the **spec/IR** ([`core/spec/ir.schema.json`](./core/spec/ir.schema.json)) a selection compiles to. *What the agent is and how it's shaped.*
+- **[agent-deployments](https://github.com/jagguvarma15/agent-deployments)** — the **verified options**. Adapters per axis (frameworks, model providers, stores, deploy targets) that bind to the kernel's ports, the reliability/ops layer (auth, rate limiting, retries, idempotency, tracing), and production-shaped recipes. *Which concrete options realize each port.*
+- **[agent-scaffold](https://github.com/jagguvarma15/agent-scaffold)** — the **composition engine**. Validates a selection, compiles it to the IR, binds each port to a deployments option, and emits a complete, running project. *Cooks the agent.*
 
-> **Boundary:** cognitive patterns (how the agent thinks) live here; operational patterns (how the agent survives production) live in `agent-deployments`. See [System Design Heritage](./foundations/system-design-heritage.md) for the full mapping.
+> **Boundary.** Blueprints owns the *design-time* shape — what the agent does and how its flow is structured; deployments owns the *operational realization* — the concrete adapters and ops. The kernel's **ports** are the seam where the two meet. See [System Design Heritage](./foundations/system-design-heritage.md).
 
-### From pattern to running agent
+### How the arms compose
 
-- **[Blueprints → Deployments](./composition/blueprints-to-deployments.md)** — which deployment recipes use which patterns, and what every recipe inherits from the operational layer.
-- **[Blueprint → Spec → Scaffold](./composition/blueprint-to-spec-to-scaffold.md)** — end-to-end walkthrough on one concrete agent (Research Assistant).
-- **[`patterns-catalog.yaml`](./patterns-catalog.yaml)** — machine-readable index aggregating every pattern + workflow + composition edge. Consumed by `agent-deployments` CI; regenerate via `node meta/validate-metadata.js --emit patterns-catalog.yaml`. See [`PATTERNS_CATALOG_SCHEMA.md`](./PATTERNS_CATALOG_SCHEMA.md).
+- **[The kernel + IR](./core/overview.md)** — the normalized core a selection compiles to: the [IR schema](./core/spec/ir.schema.json) + a [worked example](./core/spec/example.yaml).
+- **[Blueprints → Deployments](./composition/blueprints-to-deployments.md)** — which recipes use which patterns, and what each inherits from the operational layer.
+- **[Blueprint → Spec → Scaffold](./composition/blueprint-to-spec-to-scaffold.md)** — an end-to-end walkthrough on one concrete agent.
+- **[`patterns-catalog.yaml`](./patterns-catalog.yaml)** — the machine-readable index `agent-deployments` CI consumes; regenerate via `node meta/validate-metadata.js --emit patterns-catalog.yaml`. See [`PATTERNS_CATALOG_SCHEMA.md`](./PATTERNS_CATALOG_SCHEMA.md).
 
 ---
 
