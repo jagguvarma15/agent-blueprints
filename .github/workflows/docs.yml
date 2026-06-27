@@ -69,7 +69,7 @@ jobs:
           # metadata.json + validate-metadata.js below.
           shopt -s nullglob
           for dir in patterns/*/ primitives/*/ modifiers/*/; do
-            for file in overview.md design.md implementation.md metadata.json; do
+            for file in overview.md design.md implementation.md; do
               if [ ! -s "$dir$file" ]; then
                 echo "MISSING or EMPTY: $dir$file"
                 errors=$((errors + 1))
