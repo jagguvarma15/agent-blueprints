@@ -1,0 +1,79 @@
+# Worked example IR — the manifest that the selection
+#   pattern = react, primitives = [tool_use, memory], modifiers = [guardrails]
+# compiles to at scale = production. Validates against ./ir.schema.json.
+#
+# Every leaf is a symbolic *_ref: the IR is an assembly manifest, not framework
+# code. One IR, many emitters. Ports are abstract here; the generator binds each
+# to a verified agent-deployments option (e.g. memory -> memory_store.pgvector).
+ir_version: "1"
+
+metadata:
+  name: react-tooluse-memory-guarded
+  description: A ReAct loop with structured tool use, long-term memory, and layered guardrails.
+  selection:
+    pattern: react
+    primitives: [tool_use, memory]
+    modifiers: [guardrails]
+    scale: production
+
+state:
+  base: RunState
+  schema_ref: patterns/react/schemas/state.py:ReActState
+  channels:
+    - { name: messages, type: list, reducer: append }
+    - { name: steps, type: list, reducer: append }
+
+steps:
+  - id: react.loop
+    kind: llm
+    code_ref: patterns/react/code/python/langgraph/react.py
+    inputs: [goal, messages, steps]
+    outputs: [steps, messages]
+    config:
+      model: ${ports.model}
+      prompt_template: patterns/react/prompts/agent.md
+  - id: tool_use.dispatch
+    kind: tool
+    code_ref: primitives/tool_use/code/python/tool_use.py
+    inputs: [steps]
+    outputs: [steps]
+    config:
+      registry: ${ports.tools}
+  - id: memory.retrieve
+    kind: retrieval
+    code_ref: primitives/memory/code/python/memory_agent.py
+    inputs: [goal]
+    outputs: [messages]
+    config:
+      store: ${ports.memory}
+      k: 5
+
+control_policy:
+  type: planner # the model picks the next step -> agent
+  entry_step: react.loop
+  termination:
+    max_steps: 8
+    condition: state.terminated_reason is not None
+    fallback: react.loop
+  concurrency: sequential
+
+ports:
+  - { name: model, protocol: model, required: true }
+  - { name: tools, protocol: tools, required: true }
+  - { name: memory, protocol: memory, required: false, cardinality: one }
+
+cross_cutting:
+  - concern: guardrails
+    ref: modifiers/guardrails
+  - concern: budgets
+    config: { max_steps: 8 }
+  - concern: observability
+
+edges:
+  - { from: react.loop, to: tool_use.dispatch, when: "state.steps[-1].action is not None" }
+  - { from: tool_use.dispatch, to: react.loop }
+
+provenance:
+  react.loop: react
+  tool_use.dispatch: tool_use
+  memory.retrieve: memory
