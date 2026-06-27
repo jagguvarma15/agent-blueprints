@@ -9,6 +9,8 @@ description: Agent proposes an action; a human approves, denies, or modifies bef
   the action commits.
 levels:
 - overview
+- architecture
+- flow
 - design
 - implementation
 - evolution
@@ -32,9 +34,19 @@ tags:
 - escalation
 costTier: low
 latencyTier: very-high
+ir_fragment_ref: modifiers/human_in_the_loop/implementation.md
 ---
 
 # Human in the Loop — Overview
+
+```yaml level=concepts
+intent: "The agent proposes an action; a human approves, denies, or edits before it commits."
+when_to_use:
+  - "High-stakes or irreversible actions."
+  - "Compliance requires a human decision on record."
+when_to_avoid:
+  - "High-volume, low-stakes actions where approval is a bottleneck."
+```
 
 An agent that handles money, customer-visible changes, or policy decisions usually needs a human checkpoint before some actions commit. The Human-in-the-Loop (HITL) pattern formalises this: the agent **proposes** an action, **pauses** in a known state, surfaces the proposal to an approver, and **resumes** with the approver's decision (approve / deny / modify) before committing.
 

@@ -1,5 +1,18 @@
 # Multi-Agent — Implementation
 
+```yaml level=implementation
+ir_fragment:
+  state: { base: RunState, schema_ref: patterns/multi_agent/schemas/state.py }
+  steps:
+    - { id: ma.supervise, kind: router, outputs: [messages] }
+    - { id: ma.delegate, kind: subgraph, inputs: [messages], outputs: [messages] }
+    - { id: ma.aggregate, kind: reducer, inputs: [messages], outputs: [final_answer] }
+  control_policy: { type: planner, entry_step: ma.supervise }
+  ports:
+    - { name: model, protocol: model, required: true }
+    - { name: agents, protocol: agents, required: true }
+```
+
 ## Core Interfaces
 
 ```

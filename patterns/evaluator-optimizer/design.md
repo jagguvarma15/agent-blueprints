@@ -1,5 +1,16 @@
 # Evaluator-Optimizer — Design
 
+```yaml level=design
+quality_attributes:
+  reliability: high
+  cost: high
+  latency: high
+  observability: high
+failure_modes:
+  - { mode: non-convergence, mitigation: "max_iterations cap + return best-so-far" }
+  - { mode: eval-miscalibration, mitigation: "validate the evaluator against held-out labels" }
+```
+
 Detailed component breakdown and design decisions for building a generate-evaluate optimization loop.
 
 ## Component Breakdown

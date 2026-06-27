@@ -1,5 +1,15 @@
 # Routing — Implementation
 
+```yaml level=implementation
+ir_fragment:
+  state: { base: RunState, schema_ref: patterns/routing/schemas/state.py }
+  steps:
+    - { id: routing.classify, kind: router, inputs: [goal], outputs: [messages] }
+  control_policy: { type: router, decision_step: routing.classify }
+  ports:
+    - { name: model, protocol: model, required: true }
+```
+
 ## Core Interfaces
 
 ```

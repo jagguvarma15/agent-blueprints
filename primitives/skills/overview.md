@@ -9,6 +9,8 @@ description: File-based, agent-discovered procedural modules. Cheap to ship many
   loaded on demand at runtime.
 levels:
 - overview
+- architecture
+- flow
 - design
 - implementation
 - evolution
@@ -33,9 +35,19 @@ tags:
 - agent-extensible
 costTier: low
 latencyTier: low
+ir_fragment_ref: primitives/skills/implementation.md
 ---
 
 # Skills
+
+```yaml level=concepts
+intent: "File-based, agent-discovered procedural modules, loaded on demand at runtime."
+when_to_use:
+  - "Many capabilities, cheap to ship; load-on-demand keeps the context small."
+  - "Capabilities evolve independently of the agent core."
+when_to_avoid:
+  - "A few stable capabilities — plain tools are simpler."
+```
 
 > **Tier 1 — Overview.** Diagram, when-to-use, when-not-to-use, headline tradeoffs. Two-page read.
 

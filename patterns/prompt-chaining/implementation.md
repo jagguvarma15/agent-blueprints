@@ -1,5 +1,15 @@
 # Prompt Chaining — Implementation
 
+```yaml level=implementation
+ir_fragment:
+  state: { base: RunState }
+  steps:
+    - { id: pc.stage, kind: llm }
+  control_policy: { type: static_graph }
+  ports:
+    - { name: model, protocol: model, required: true }
+```
+
 Pseudocode, interfaces, state management, and testing strategy for building a prompt chain.
 
 ## Core Interfaces

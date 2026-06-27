@@ -1,5 +1,17 @@
 # Memory — Design
 
+```yaml level=design
+quality_attributes:
+  reliability: medium
+  cost: low
+  latency: low
+  observability: medium
+failure_modes:
+  - { mode: retrieval-miss, mitigation: "hybrid search + reranking" }
+  - { mode: unbounded-growth, mitigation: "summarization + eviction policy" }
+  - { mode: stale-memory, mitigation: "recency-weighted retrieval" }
+```
+
 > Canonical Pydantic state schema: [`schemas/state.py`](schemas/state.py) — `MemoryState` is the top-level shape; `MemoryEntry`, `Recall` are the auxiliary models. Recipes targeting Memory reference these names verbatim.
 >
 > Typed prompts: [`prompts/`](prompts/) — `extractor.md` (write path) + `chat.md` (read path). See [`meta/style-guide.md`](../../meta/style-guide.md#typed-prompts) for the frontmatter contract.

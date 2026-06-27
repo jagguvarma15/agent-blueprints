@@ -1,5 +1,16 @@
 # Event-Driven Agents — Design
 
+```yaml level=design
+quality_attributes:
+  reliability: high
+  cost: variable
+  latency: variable
+  observability: high
+failure_modes:
+  - { mode: duplicate-delivery, mitigation: "idempotency keys" }
+  - { mode: poison-message, mitigation: "retry budget then dead-letter queue" }
+```
+
 > Canonical Pydantic state schema: [`schemas/state.py`](schemas/state.py) — `EventDrivenState` is the top-level shape; `Event`, `Case`, `Outcome` are the auxiliary models. Recipes targeting Event-Driven reference these names verbatim.
 >
 > Typed prompts: [`prompts/`](prompts/) — `enricher.md`, `decider.md`, `actor.md`. See [`meta/style-guide.md`](../../meta/style-guide.md#typed-prompts) for the frontmatter contract.

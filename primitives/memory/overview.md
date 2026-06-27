@@ -9,6 +9,8 @@ description: 'Persistent state across sessions: short-term, long-term, and seman
   memory.'
 levels:
 - overview
+- architecture
+- flow
 - design
 - implementation
 - evolution
@@ -30,9 +32,19 @@ tags:
 - retrieval
 costTier: medium
 latencyTier: medium
+ir_fragment_ref: primitives/memory/implementation.md
 ---
 
 # Memory — Overview
+
+```yaml level=concepts
+intent: "Storage and retrieval of state across sessions: short-term, long-term, and semantic memory."
+when_to_use:
+  - "Personalization or continuity across sessions."
+  - "Accumulating knowledge the agent should recall later."
+when_to_avoid:
+  - "Stateless, single-shot tasks."
+```
 
 The memory pattern enables an agent to persist information across conversations, building context over time. Short-term memory maintains state within a session; long-term memory stores and retrieves information across sessions using external storage.
 

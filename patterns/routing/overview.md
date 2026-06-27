@@ -8,6 +8,8 @@ scale: prototype
 description: Intent classification dispatches inputs to specialized handlers.
 levels:
 - overview
+- architecture
+- flow
 - design
 - implementation
 - evolution
@@ -28,9 +30,20 @@ tags:
 - multi-skill
 costTier: low
 latencyTier: low
+ir_fragment_ref: patterns/routing/implementation.md
 ---
 
 # Routing (Intent Classification + Dispatch) — Overview
+
+```yaml level=concepts
+intent: "Classify the input and dispatch it to a specialized handler."
+when_to_use:
+  - "Distinct input types each need different handling."
+  - "Cost optimization: a cheap classifier routes to the right (sometimes cheaper) handler."
+when_to_avoid:
+  - "A single handler already serves every input."
+  - "Categories overlap so heavily that classification is unreliable."
+```
 
 Routing uses an LLM to classify incoming requests and direct them to specialized handlers. Instead of one general-purpose processor, routing creates a system where different input types are handled by purpose-built paths — each optimized for its specific task.
 

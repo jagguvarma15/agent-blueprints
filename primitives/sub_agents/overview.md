@@ -9,6 +9,8 @@ description: Named, role-scoped agent instances spawned by a parent for delimite
   tasks; each has its own context window, tool grants, and (optionally) model.
 levels:
 - overview
+- architecture
+- flow
 - design
 - implementation
 - evolution
@@ -35,9 +37,19 @@ tags:
 - specialization
 costTier: low-medium
 latencyTier: low-medium
+ir_fragment_ref: primitives/sub_agents/implementation.md
 ---
 
 # Sub-agents
+
+```yaml level=concepts
+intent: "Named, role-scoped agent instances spawned for delimited tasks, each with its own context window."
+when_to_use:
+  - "Context isolation between sub-tasks."
+  - "Parallel specialized work with bounded delegation."
+when_to_avoid:
+  - "Simple single-context tasks — spawning adds overhead."
+```
 
 > **Tier 1 — Overview.** Diagram, when-to-use, when-not-to-use, headline tradeoffs. Two-page read.
 

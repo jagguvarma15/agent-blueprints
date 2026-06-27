@@ -1,5 +1,16 @@
 # Human in the Loop — Design
 
+```yaml level=design
+quality_attributes:
+  reliability: high
+  cost: low
+  latency: variable
+  observability: high
+failure_modes:
+  - { mode: approval-timeout, mitigation: "timeout policy + escalation" }
+  - { mode: no-approver, mitigation: "fail-safe deny" }
+```
+
 > Canonical Pydantic state schema: [`schemas/state.py`](schemas/state.py) — `HitlState` is the top-level shape; `Interrupt`, `HumanInput` are the auxiliary models. Recipes targeting Human-in-the-Loop reference these names verbatim.
 >
 > Typed prompts: [`prompts/`](prompts/) — `agent.md` (the main loop with interrupt capability) + `interrupt-formatter.md` (sanitizes interrupts for the UI). See [`meta/style-guide.md`](../../meta/style-guide.md#typed-prompts) for the frontmatter contract.

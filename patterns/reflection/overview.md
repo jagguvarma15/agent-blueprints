@@ -8,6 +8,8 @@ scale: standard
 description: LLM critiques its own output and self-improves through structured feedback.
 levels:
 - overview
+- architecture
+- flow
 - design
 - implementation
 - evolution
@@ -28,9 +30,20 @@ tags:
 - improvement
 costTier: medium-high
 latencyTier: high
+ir_fragment_ref: patterns/reflection/implementation.md
 ---
 
 # Reflection (Self-Critique) — Overview
+
+```yaml level=concepts
+intent: "The model critiques its own output and revises until it meets a quality bar."
+when_to_use:
+  - "Quality-critical generation where a first draft is not good enough."
+  - "There is a clear, checkable success criterion to critique against."
+when_to_avoid:
+  - "Latency or cost is tight — reflection multiplies model calls."
+  - "There is no measurable quality signal to drive revision."
+```
 
 Reflection enables an agent to evaluate and improve its own output by generating self-critique, then revising based on that critique. Unlike the [Evaluator-Optimizer](../evaluator-optimizer/overview.md) workflow where evaluation is external, reflection is *self-directed* — the agent identifies its own weaknesses.
 

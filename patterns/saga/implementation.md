@@ -1,5 +1,16 @@
 # Saga — Implementation
 
+```yaml level=implementation
+ir_fragment:
+  state: { base: RunState, schema_ref: patterns/saga/schemas/state.py }
+  steps:
+    - { id: saga.step, kind: tool, compensate_ref: "<per-step compensator>" }
+  control_policy: { type: static_graph }
+  ports:
+    - { name: tools, protocol: tools, required: true }
+    - { name: runtime, protocol: runtime, required: false }
+```
+
 Two structural approaches, both running the same rebooking flow.
 
 1. **Orchestration with LangGraph** — a single state machine owns the step list, the log, and the compensation walker.

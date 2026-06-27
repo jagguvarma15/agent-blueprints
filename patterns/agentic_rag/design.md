@@ -1,5 +1,17 @@
 # Agentic RAG — Design
 
+```yaml level=design
+quality_attributes:
+  reliability: high
+  cost: high
+  latency: high
+  observability: high
+failure_modes:
+  - { mode: insufficient-retrieval, mitigation: "reflect-and-loop with query reformulation" }
+  - { mode: source-conflict, mitigation: "cross-source verification" }
+  - { mode: citation-drift, mitigation: "bind every claim to a retrieved span" }
+```
+
 > Canonical Pydantic state schema: [`schemas/state.py`](schemas/state.py) — `AgenticRagState` is the top-level shape; `SubQuestion`, `RetrievalAttempt`, `EvidenceChunk`, `Citation` are the auxiliary models.
 
 ## Component Breakdown

@@ -1,5 +1,18 @@
 # Long-Horizon — Implementation
 
+```yaml level=implementation
+ir_fragment:
+  state: { base: RunState, schema_ref: patterns/long_horizon/schemas/state.py }
+  steps:
+    - { id: lh.plan, kind: llm }
+    - { id: lh.execute, kind: subgraph, interrupt: after }
+  control_policy: { type: hybrid, entry_step: lh.plan }
+  ports:
+    - { name: model, protocol: model, required: true }
+    - { name: memory, protocol: memory, required: true }
+    - { name: runtime, protocol: runtime, required: true }
+```
+
 > Code variants under `code/python/` are not yet shipped; the pseudocode here is framework-agnostic and mirrors [`schemas/state.py`](schemas/state.py).
 
 ## Storage choice

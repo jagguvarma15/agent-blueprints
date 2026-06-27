@@ -8,6 +8,8 @@ scale: standard
 description: LLM creates a full plan upfront, then executes each step sequentially.
 levels:
 - overview
+- architecture
+- flow
 - design
 - implementation
 - evolution
@@ -27,9 +29,19 @@ tags:
 - trackable
 costTier: medium
 latencyTier: medium-high
+ir_fragment_ref: patterns/plan_and_execute/implementation.md
 ---
 
 # Plan & Execute — Overview
+
+```yaml level=concepts
+intent: "Create a full plan upfront, then execute each step in order."
+when_to_use:
+  - "Multi-step tasks whose structure is largely knowable before starting."
+  - "You want the plan to be inspectable/approvable before execution."
+when_to_avoid:
+  - "Highly dynamic tasks where plans go stale fast — use ReAct instead."
+```
 
 Plan & Execute separates work into two distinct phases: first, the LLM generates an explicit plan (a sequence of steps); then, it executes each step using tools, with the option to replan if a step fails or new information changes the strategy.
 

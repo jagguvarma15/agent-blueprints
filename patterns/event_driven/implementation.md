@@ -1,5 +1,17 @@
 # Event-Driven Agents — Implementation
 
+```yaml level=implementation
+ir_fragment:
+  state: { base: RunState, schema_ref: patterns/event_driven/schemas/state.py }
+  steps:
+    - { id: ed.consume, kind: code }
+    - { id: ed.handle, kind: subgraph, outputs: [messages] }
+  control_policy: { type: static_graph, entry_step: ed.consume }
+  ports:
+    - { name: model, protocol: model, required: true }
+    - { name: runtime, protocol: runtime, required: true }
+```
+
 ## Core Interfaces
 
 ```

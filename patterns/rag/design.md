@@ -1,5 +1,17 @@
 # RAG — Design
 
+```yaml level=design
+quality_attributes:
+  reliability: high
+  cost: medium
+  latency: medium
+  observability: medium
+failure_modes:
+  - { mode: retrieval-miss, mitigation: "hybrid search + reranking" }
+  - { mode: context-overflow, mitigation: "rerank then truncate to top chunks" }
+  - { mode: stale-index, mitigation: "scheduled re-embedding" }
+```
+
 > Canonical Pydantic state schema: [`schemas/state.py`](schemas/state.py) — `RagState` is the top-level shape; `Query`, `RetrievedDoc`, `Answer` are the auxiliary models. Recipes targeting RAG reference these names verbatim.
 >
 > Typed prompts: [`prompts/`](prompts/) — `qa.md` (the synthesis step). See [`meta/style-guide.md`](../../meta/style-guide.md#typed-prompts) for the frontmatter contract.

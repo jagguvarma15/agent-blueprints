@@ -1,5 +1,16 @@
 # Parallel Calls — Implementation
 
+```yaml level=implementation
+ir_fragment:
+  state: { base: RunState }
+  steps:
+    - { id: par.work, kind: llm }
+    - { id: par.aggregate, kind: reducer }
+  control_policy: { type: static_graph, concurrency: parallel }
+  ports:
+    - { name: model, protocol: model, required: true }
+```
+
 Pseudocode, interfaces, state management, and testing strategy for building a fan-out/fan-in workflow.
 
 ## Core Interfaces

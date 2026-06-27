@@ -1,5 +1,16 @@
 # Skills — Design
 
+```yaml level=design
+quality_attributes:
+  reliability: medium
+  cost: low
+  latency: low
+  observability: medium
+failure_modes:
+  - { mode: skill-not-found, mitigation: "fallback + clear discovery errors" }
+  - { mode: version-drift, mitigation: "pin skill versions" }
+```
+
 > **Tier 2 — Design.** Components, data flow, failure modes, scaling. For the headline concept, see [`overview.md`](./overview.md). For the runnable shape, see [`implementation.md`](./implementation.md).
 
 ## Components

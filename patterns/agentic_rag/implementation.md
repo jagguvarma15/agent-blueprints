@@ -1,5 +1,19 @@
 # Agentic RAG — Implementation
 
+```yaml level=implementation
+ir_fragment:
+  state: { base: RunState, schema_ref: patterns/agentic_rag/schemas/state.py }
+  steps:
+    - { id: arag.decompose, kind: llm }
+    - { id: arag.retrieve, kind: retrieval }
+    - { id: arag.reflect, kind: eval }
+    - { id: arag.synthesize, kind: llm, outputs: [final_answer] }
+  control_policy: { type: planner, entry_step: arag.decompose, termination: { max_steps: 12 } }
+  ports:
+    - { name: model, protocol: model, required: true }
+    - { name: memory, protocol: memory, required: true }
+```
+
 > Code variants under `code/python/` are not yet shipped; the pseudocode here is framework-agnostic and mirrors [`schemas/state.py`](schemas/state.py).
 
 ## Runner shape

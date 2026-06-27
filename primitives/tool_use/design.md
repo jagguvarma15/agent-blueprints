@@ -1,5 +1,17 @@
 # Tool Use — Design
 
+```yaml level=design
+quality_attributes:
+  reliability: high
+  cost: low
+  latency: low
+  observability: high
+failure_modes:
+  - { mode: invalid-args, mitigation: "schema validation before execution" }
+  - { mode: unsafe-tool, mitigation: "permission gate (Never / Ask)" }
+  - { mode: hallucinated-tool, mitigation: "registry rejects unknown names" }
+```
+
 > Canonical Pydantic state schema: [`schemas/state.py`](schemas/state.py) — `ToolUseState` is the top-level shape; `ToolCall`, `ToolResult` are the auxiliary models. Recipes targeting Tool Use reference these names verbatim.
 >
 > Typed prompts: [`prompts/`](prompts/) — one file per LLM role with JSON-Schema I/O. See [`meta/style-guide.md`](../../meta/style-guide.md#typed-prompts) for the frontmatter contract.

@@ -1,5 +1,17 @@
 # Orchestrator-Worker — Implementation
 
+```yaml level=implementation
+ir_fragment:
+  state: { base: RunState }
+  steps:
+    - { id: ow.decompose, kind: llm }
+    - { id: ow.work, kind: llm }
+    - { id: ow.synthesize, kind: reducer }
+  control_policy: { type: planner, entry_step: ow.decompose }
+  ports:
+    - { name: model, protocol: model, required: true }
+```
+
 Pseudocode, interfaces, state management, and testing strategy for building an orchestrator-worker system.
 
 ## Core Interfaces
