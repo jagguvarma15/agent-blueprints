@@ -11,6 +11,7 @@ For the picker question per primitive ("Does the agent need tools? memory? skill
 |---|---|---|---|---|---|
 | **Memory** | Persistent state across sessions: short-term, long-term, and semantic memory. | Prompt Chaining | [overview](../primitives/memory/overview.md) | [design](../primitives/memory/design.md) | [impl](../primitives/memory/implementation.md) |
 | **Skills** | File-based, agent-discovered procedural modules. Cheap to ship many; loaded on demand at runtime. | Tool Use | [overview](../primitives/skills/overview.md) | [design](../primitives/skills/design.md) | [impl](../primitives/skills/implementation.md) |
+| **Step Log** | A serializable step-log — the agent's run state as an append-only event log for pause / resume / retry / trace. | Tool Use | [overview](../primitives/step_log/overview.md) | [design](../primitives/step_log/design.md) | [impl](../primitives/step_log/implementation.md) |
 | **Sub-agents** | Named, role-scoped agent instances spawned by a parent for delimited tasks; each has its own context window, tool grants, and (optionally) model. | Tool Use | [overview](../primitives/sub_agents/overview.md) | [design](../primitives/sub_agents/design.md) | [impl](../primitives/sub_agents/implementation.md) |
 | **Tool Use** | Structured function calling with schema-validated tool dispatch. | Prompt Chaining | [overview](../primitives/tool_use/overview.md) | [design](../primitives/tool_use/design.md) | [impl](../primitives/tool_use/implementation.md) |
 <!-- /AUTO -->

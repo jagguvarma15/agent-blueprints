@@ -183,6 +183,7 @@ Primitives are the building blocks the agent uses inside whatever pattern you pi
 |---|---|
 | Does the agent need state that persists across sessions or conversations? | [`memory`](../primitives/memory/overview.md) |
 | Does the agent need codified procedural knowledge (your org's review checklist, citation format, lookup-and-summarize routine)? | [`skills`](../primitives/skills/overview.md) |
+| Is Step Log the right shape for your use case? | [`step_log`](../primitives/step_log/overview.md) |
 | Is Sub-agents the right shape for your use case? | [`sub_agents`](../primitives/sub_agents/overview.md) |
 | Does the agent need to invoke functions / call APIs / interact with structured systems? | [`tool_use`](../primitives/tool_use/overview.md) |
 <!-- /AUTO -->
