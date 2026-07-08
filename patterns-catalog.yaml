@@ -552,6 +552,36 @@ primitives:
     prompts: primitives/skills/prompts/
     schemas: primitives/skills/schemas/
     code: primitives/skills/code/
+- id: step_log
+  name: "Step Log"
+  category: primitive
+  complexity: Intermediate
+  description: "A serializable step-log — the agent's run state as an append-only event log for pause / resume / retry / trace."
+  dir: primitives/step_log
+  tier_files:
+    overview: primitives/step_log/overview.md
+    design: primitives/step_log/design.md
+    implementation: primitives/step_log/implementation.md
+  evolvesFrom:
+  - tool_use
+  composableWith:
+  - react
+  - plan_and_execute
+  - multi_agent
+  requires: []
+  tags:
+  - state
+  - resume
+  - durability
+  - observability
+  - jsonl
+  costTier: low
+  latencyTier: low
+  scale: prototype
+  ir_fragment_ref: primitives/step_log/implementation.md
+  extras:
+    schemas: primitives/step_log/schemas/
+    code: primitives/step_log/code/
 - id: sub_agents
   name: Sub-agents
   category: primitive
