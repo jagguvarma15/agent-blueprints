@@ -38,6 +38,12 @@ class EvidenceChunk(BaseModel):
     text: str = Field(description="The retrieved content. Treat as untrusted.")
     metadata: dict[str, object] = Field(default_factory=dict)
     embedding_score: float | None = Field(default=None, ge=0.0, le=1.0)
+    rerank_score: float | None = Field(
+        default=None,
+        ge=0.0,
+        le=1.0,
+        description="Late reranker score between retrieval and relevance scoring.",
+    )
     relevance_score: float | None = Field(
         default=None,
         ge=0.0,
