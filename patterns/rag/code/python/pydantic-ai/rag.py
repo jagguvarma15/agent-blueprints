@@ -56,7 +56,7 @@ def _dot(a: list[float], b: list[float]) -> float:
 
 @dataclass
 class VectorStore:
-    """Tiny in-memory store. Replace with Qdrant / Pinecone / Chroma to ship."""
+    """Tiny in-memory store. Replace with pgvector / Qdrant / Chroma to ship."""
 
     items: list[tuple[str, list[float], str]] = field(default_factory=list)
 
