@@ -14,7 +14,7 @@ ir_fragment:
     - { name: memory, protocol: memory, required: true }
 ```
 
-> Code variants under `code/python/` are not yet shipped; the pseudocode here is framework-agnostic and mirrors [`schemas/state.py`](schemas/state.py).
+> The framework-agnostic sibling at [`code/python/agentic_rag.py`](code/python/agentic_rag.py) ships the hybrid-retrieval and reranking core (with a Vercel AI SDK variant at [`code/typescript/vercel-ai-sdk/agentic-rag.ts`](code/typescript/vercel-ai-sdk/agentic-rag.ts)); the pseudocode here covers the full multi-source loop and mirrors [`schemas/state.py`](schemas/state.py).
 
 ## Runner shape
 
@@ -114,7 +114,7 @@ class EvidenceChunk:
 
 ### Vector adapter
 
-Standard embedding + top-K query. Used as-is from baseline RAG. The `chunk_id` becomes `f"{source}:{doc_id}:{chunk_offset}"`.
+Two-stage: dense and sparse searches run in parallel and are fused with reciprocal rank fusion, then a reranker re-scores the fused candidates against the sub-question and keeps the top few (see the design doc's "Hybrid retrieval and late reranking"; the shipped sibling walks both stages). The `chunk_id` becomes `f"{source}:{doc_id}:{chunk_offset}"`, `embedding_score` carries the dense signal, and `rerank_score` carries the reranker's. Baseline RAG's single-stage top-K remains a valid degenerate form for small corpora.
 
 ### SQL adapter
 
@@ -214,5 +214,5 @@ This is the deep-agents shape applied to RAG. The planner becomes a thin top-lev
 ## What we deliberately don't ship
 
 - A specific embedding model. Provider-agnostic; pick per cost/quality.
-- A specific re-ranker. The relevance scorer described above is LLM-based; a learned re-ranker is a swappable upgrade.
+- A specific re-ranker model or service. The rerank stage is a first-class seam in the vector adapter; bind it to a hosted rerank service or a local cross-encoder per cost and latency.
 - A SQL translation library. The SQL adapter is sketched; production systems should use a vetted text-to-SQL approach with safe execution sandboxes.
