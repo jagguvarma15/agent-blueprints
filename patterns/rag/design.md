@@ -93,7 +93,7 @@ Retrieval is the ceiling on RAG quality. Three strategies that compound:
 - **Query rewriting.** Reformulate the user's question before retrieval. Useful for short queries that under-specify intent; can be implemented as a small LLM call.
 - **Multi-query.** Generate K paraphrases of the query, retrieve for each, union and deduplicate results. Improves recall at the cost of K× retrieval calls.
 
-For high-stakes RAG (medical, legal, financial), all three combined plus a cross-encoder reranker is the standard production stack.
+For high-stakes RAG (medical, legal, financial), all three combined plus a cross-encoder reranker is the standard production stack. This pattern's canonical shape stays single-stage — embed, top-K with a similarity threshold, generate; when hybrid search and a dedicated rerank stage earn their keep, they are first-class stages in the [Agentic RAG](../agentic_rag/design.md) pattern rather than bolt-ons here.
 
 ## Scaling
 - **Ingestion:** Batch process documents; parallelize chunking and embedding.
