@@ -68,6 +68,8 @@ class HashEmbedder implements Embedder {
 }
 
 // ── In-memory vector store ───────────────────────────────────────────────────
+// Replace with pgvector (rides the relational database already in the stack),
+// Qdrant, or Chroma in production.
 
 class InMemoryVectorStore {
   private items: Array<{ id: string; embedding: number[]; text: string; metadata: Record<string, unknown> }> = [];

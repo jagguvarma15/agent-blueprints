@@ -65,7 +65,9 @@ class RAGResult:
 class InMemoryVectorStore:
     """
     Simple dot-product similarity store.
-    Replace with Chroma, Pinecone, Weaviate, etc. in production.
+    Replace with pgvector (rides the relational database already in the
+    stack), Qdrant, or Chroma in production; normalize embeddings so the
+    dot product is cosine similarity.
     """
 
     def __init__(self):

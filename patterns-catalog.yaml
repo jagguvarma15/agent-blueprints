@@ -41,6 +41,7 @@ patterns:
   extras:
     prompts: patterns/agentic_rag/prompts/
     schemas: patterns/agentic_rag/schemas/
+    code: patterns/agentic_rag/code/
 - id: evaluator-optimizer
   name: Evaluator-Optimizer
   category: workflow

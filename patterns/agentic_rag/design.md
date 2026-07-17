@@ -67,16 +67,20 @@ The runtime side of the planner's routing. Takes a `(sub_question, source_name)`
 
 | Kind | Query shape | Returns |
 |---|---|---|
-| `vector` | Natural language → embedding → top-K | Chunks with embedding distance |
+| `vector` | Natural language → hybrid dense + sparse search, fused → top-K | Chunks with fused retrieval scores |
 | `sql` | Natural language → LLM-translated SQL → rows | Row sets as chunks |
 | `api` | Structured query → API call | Structured JSON as chunks |
 | `web` | Natural language → search → fetch | Web snippets as chunks |
 
 Adding a new source type is an adapter implementation. The runner doesn't know the difference.
 
+### Hybrid retrieval and late reranking
+
+The vector adapter's canonical shape at this tier is two-stage. First, dense (embedding) and sparse (keyword) searches run in parallel over the same corpus and are fused with reciprocal rank fusion — summed reciprocal ranks need no score calibration, and the sparse leg catches the names, codes, and jargon that embedding similarity misses. Second, a dedicated reranker re-scores the fused candidates against the sub-question with full attention (a cross-encoder-style model or a hosted rerank service) and keeps only the top few; its score lands in `EvidenceChunk.rerank_score`, distinct from `embedding_score`. The baseline single-stage top-K from the RAG pattern remains the right choice when corpus size and question difficulty don't justify the extra stage.
+
 ### Relevance Scorer
 
-Embedding similarity is a starting signal, not the answer. A scorer pass (often an LLM call) reads each retrieved chunk and labels it as relevant / partially-relevant / irrelevant. This is cheap (Haiku-class) and catches false-positive retrievals before they reach the answer.
+Reranking orders candidates; the scorer pass judges them. A scorer (often an LLM call) reads each surviving chunk and labels it as relevant / partially-relevant / irrelevant. This is cheap (Haiku-class) and catches false-positive retrievals before they reach the answer.
 
 ### Sufficiency Reflector
 
