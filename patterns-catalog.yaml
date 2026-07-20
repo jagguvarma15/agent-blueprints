@@ -695,6 +695,7 @@ modifiers:
   extras:
     prompts: modifiers/guardrails/prompts/
     schemas: modifiers/guardrails/schemas/
+    code: modifiers/guardrails/code/
 - id: human_in_the_loop
   name: "Human in the Loop"
   category: modifier
