@@ -149,6 +149,7 @@ patterns:
   extras:
     prompts: patterns/long_horizon/prompts/
     schemas: patterns/long_horizon/schemas/
+    code: patterns/long_horizon/code/
 - id: multi_agent
   name: Multi-Agent
   category: agent
