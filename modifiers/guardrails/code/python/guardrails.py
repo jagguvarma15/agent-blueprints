@@ -207,8 +207,7 @@ def run_layer(
         layer=layer,  # type: ignore[arg-type]
         verdicts=verdicts,
         blocked=any(v.kind == "block" for v in verdicts),
-        rewritten=any(v.kind == "rewrite" for v in verdicts)
-        and not any(v.kind == "block" for v in verdicts),
+        rewritten=any(v.kind == "rewrite" for v in verdicts) and not any(v.kind == "block" for v in verdicts),
         duration_ms=int((time.monotonic() - started) * 1000),
     )
 
@@ -235,18 +234,14 @@ def guarded_run(
     audit: list[BlockDecision] = []
     state = GuardrailsState(request_id=str(uuid.uuid4()), policy_version=POLICY_VERSION)
 
-    state.input_layer = run_layer(
-        "input", user_input, input_detectors, request_id=state.request_id, audit=audit
-    )
+    state.input_layer = run_layer("input", user_input, input_detectors, request_id=state.request_id, audit=audit)
     if state.input_layer.blocked:
         state.outcome, state.blocked_at = "blocked", "input"
         return _refusal(state.input_layer), state
 
     draft = agent(user_input)
 
-    state.output_layer = run_layer(
-        "output", draft, output_detectors, request_id=state.request_id, audit=audit
-    )
+    state.output_layer = run_layer("output", draft, output_detectors, request_id=state.request_id, audit=audit)
     if state.output_layer.blocked:
         state.outcome, state.blocked_at = "blocked", "output"
         return _refusal(state.output_layer), state
@@ -272,6 +267,7 @@ def _refusal(layer_result: LayerResult) -> str:
 # ── Offline demo ──────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
+
     def toy_agent(prompt: str) -> str:
         return f"Here is a helpful answer to: {prompt}"
 
